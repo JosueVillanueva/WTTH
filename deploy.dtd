@@ -1,0 +1,147 @@
+<!--
+  =============================================================================
+    DTD for the HPE Service Activator solution deployment configuration file
+  =============================================================================
+-->
+
+<!-- (c) Copyright 2008-2016 Hewlett Packard Enterprise Development LP -->
+
+<!-- Top-level XML elements -->
+<!ELEMENT Solution (Name, Backup?, Plugins?, CT?, Third-Party-Lib?, UI?, Inventory?, Inventory-Trees?, UMM?, Queue?, Workflows?, 
+          Web-Services?, XMaps?, Config?, Templates?, Designer?, NLS?, Messages?, SQL?, Scripts?, Other?)>
+
+<!-- Solution name -->
+<!ELEMENT Name            (#PCDATA)>
+
+<!-- Backup directory name -->
+<!ELEMENT Backup          (#PCDATA)>
+
+<!-- List of plug-ins -->
+<!ELEMENT Plugins (File*, Core-File*)>
+<!ELEMENT Core-File (#PCDATA)>
+<!ATTLIST Core-File delete (true|false) #IMPLIED>
+
+<!-- List of compound tasks -->
+<!ELEMENT CT (File+)>
+
+<!-- Java classes, archieves, properties, etc. -->
+<!ELEMENT Third-Party-Lib (File+)>
+
+<!-- Custom UI components (JSPs, Java servlets, JavaScripts, etc.) -->
+<!ELEMENT UI (File+)>
+
+<!-- Inventory components -->
+<!ELEMENT Inventory      (Resources | Output+)>
+<!ATTLIST Inventory db CDATA #IMPLIED>
+
+<!ELEMENT Resources      (File+)>
+<!ATTLIST Resources xmlpath CDATA #IMPLIED>
+<!ATTLIST Resources classpath CDATA #IMPLIED>
+<!ATTLIST Resources userClasspath CDATA #IMPLIED>
+<!ATTLIST Resources userJsqlPath CDATA #IMPLIED>
+<!ATTLIST Resources deployJSP CDATA #IMPLIED>
+<!ATTLIST Resources overwrite CDATA #IMPLIED>
+<!ATTLIST Resources convertPaths (true|false) #IMPLIED>
+<!ATTLIST Resources outputDir CDATA #IMPLIED>
+<!ELEMENT Output         (JAR?, JSP?, SQL?, Struts-Config?, Struts-Classes?)>
+<!ELEMENT JAR            (File+)>
+<!ELEMENT JSP            (File+)>
+<!ELEMENT Struts-Config  (File+)>
+<!ELEMENT Struts-Classes (File+)>
+<!-- Solution version dependency for the Solution/Inventory/Output element -->
+<!ATTLIST Output depend CDATA #IMPLIED>
+
+<!-- Inventory Trees -->
+<!ELEMENT Inventory-Trees (Tree-File+)>
+<!ELEMENT Tree-File            (#PCDATA)>
+<!ATTLIST Tree-File overwrite CDATA #IMPLIED>
+<!ATTLIST Tree-File undeployForce CDATA #IMPLIED>
+<!ATTLIST Tree-File delete (true|false) #IMPLIED>
+
+<!-- UMM -->
+<!ELEMENT UMM (File+)>
+
+<!-- Queue -->
+<!ELEMENT Queue (File+)>
+
+<!-- List of workflows -->
+<!ELEMENT Workflows (File+)>
+
+<!-- Web Services -->
+<!ELEMENT Web-Services (WSD*, war*)>
+<!ELEMENT WSD          (jar*)>
+<!ATTLIST WSD file CDATA #IMPLIED>
+<!ATTLIST WSD overwrite CDATA #IMPLIED>
+<!ELEMENT jar           (#PCDATA)>
+<!ELEMENT war           (#PCDATA)>
+<!ATTLIST war overwrite CDATA #IMPLIED>
+
+<!-- List of xMaps  -->
+<!ELEMENT XMaps (File+)>
+
+<!-- List of Config (typically used for message syntax validation) -->
+<!ELEMENT Config (File+)>
+
+<!-- List of template files (Java templates, XML/XSL templates, etc.) -->
+<!ELEMENT Templates (File+)>
+
+<!-- List of custom Workflow Designer components (nodes and handlers) -->
+<!ELEMENT Designer (File+)>
+
+<!-- List of localized resource bundle files -->
+<!ELEMENT NLS (File+)>
+
+<!-- List of messages (typically used for testing purposes) -->
+<!ELEMENT Messages (File+)>
+
+<!-- SQL files to be executed during the deploy/undeploy process -->
+<!ELEMENT SQL (Deploy*, Undeploy*)>
+<!ELEMENT Deploy          (#PCDATA)>
+<!ATTLIST Deploy db CDATA #IMPLIED>
+<!ATTLIST Deploy fromMajor CDATA #IMPLIED>
+<!ATTLIST Deploy fromMinor CDATA #IMPLIED>
+<!ATTLIST Deploy fromRevision CDATA #IMPLIED>
+<!ATTLIST Deploy toMajor CDATA #IMPLIED>
+<!ATTLIST Deploy toMinor CDATA #IMPLIED>
+<!ATTLIST Deploy toRevision CDATA #IMPLIED>
+<!ATTLIST Deploy numeric CDATA #IMPLIED>
+
+<!ELEMENT Undeploy        (#PCDATA)>
+<!ATTLIST Undeploy db CDATA #IMPLIED>
+<!-- Solution version dependency for the Solution/SQL/Deploy element -->
+<!ATTLIST Deploy depend CDATA #IMPLIED>
+<!-- Solution version dependency for the Solution/SQL/Undeploy element -->
+<!ATTLIST Undeploy depend CDATA #IMPLIED>
+
+<!-- Custom scripts to be executed before and after the deploy and undeploy operation -->
+<!ELEMENT Scripts (Before-Deploy?, After-Deploy?, Before-Undeploy?, After-Undeploy?)>
+<!ELEMENT Before-Deploy     (Script-Name, Argument*)>
+<!ELEMENT After-Deploy      (Script-Name, Argument*)>
+<!ELEMENT Before-Undeploy   (Script-Name, Argument*)>
+<!ELEMENT After-Undeploy    (Script-Name, Argument*)>
+<!ELEMENT Script-Name   (#PCDATA)>
+<!ELEMENT Argument      (#PCDATA)>
+<!-- Solution version dependency for the elements:
+         Solution/Scripts/Before-Deploy/Script-Name
+         Solution/Scripts/After-Deploy/Script-Name
+         Solution/Scripts/Before-Undeploy/Script-Name
+         Solution/Scripts/After-Undeploy/Script-Name
+-->
+<!ATTLIST Script-Name depend CDATA #IMPLIED>
+
+<!-- Files to copied to and from custom locations -->
+<!ELEMENT Other (Copy+)>
+<!ELEMENT Copy            (#PCDATA)>
+<!ATTLIST Copy src CDATA #REQUIRED>
+<!ATTLIST Copy dest CDATA #REQUIRED>
+<!ATTLIST Copy overwrite CDATA #IMPLIED>
+<!ATTLIST Copy directory (true|false) #IMPLIED>
+<!ATTLIST Copy executable (true|false) #IMPLIED>
+<!ATTLIST Copy delete (true|false) #IMPLIED>
+
+<!-- Miscellaneous -->
+<!ELEMENT File            (#PCDATA)>
+<!ATTLIST File overwrite CDATA #IMPLIED>
+<!ATTLIST File solution (true|false) #IMPLIED>
+<!ATTLIST File delete (true|false) #IMPLIED>
+<!ATTLIST File executable (true|false) #IMPLIED>

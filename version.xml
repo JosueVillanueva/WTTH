@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Version SYSTEM "version.dtd">
+
+<Version type="solution">
+   <Solution-Name>WTTH</Solution-Name>
+   <Label>Wireless To The Home</Label>
+   <Major>0</Major>
+   <Minor>1</Minor>
+   <Revision>1.0</Revision>
+</Version>

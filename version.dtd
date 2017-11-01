@@ -1,0 +1,38 @@
+<!--
+  =============================================================================
+    DTD for HPE Service Activator Deployment Manager version files
+  =============================================================================
+-->
+
+<!-- (c) Copyright 2008-2016 Hewlett Packard Enterprise Development LP -->
+
+<!-- Top-level XML elements -->
+<!ELEMENT Version (Solution-Name, Label, Major, Minor, Revision, Build-Label?, Requires*, Requires-Core?)>
+
+<!-- If "type" is not specified it is assumed that "solution" is meant -->
+<!ATTLIST Version type (solution|patch|customization) #REQUIRED>
+
+<!-- Name of the solution -->
+<!ELEMENT Solution-Name (#PCDATA)>
+
+<!-- Label to be display on Deployment Manager's UI -->
+<!ELEMENT Label (#PCDATA)>
+
+<!-- Version: <Major>.<Minor>.<Revision> -->
+<!ELEMENT Major (#PCDATA)>
+<!ELEMENT Minor (#PCDATA)>
+<!ELEMENT Revision (#PCDATA)>
+
+<!-- Build-Label contains extra&optional information about the solution build -->
+<!ELEMENT Build-Label (#PCDATA)>
+
+<!-- Requires: <Major>.<Minor>.<Revision> -->
+<!ELEMENT Requires (Solution, Major, Minor, Revision)>
+<!ATTLIST Requires numeric (true|false) "false">
+<!ATTLIST Requires orLater (major|minor|revision|no) "no">
+
+<!-- Name of solution that is required -->
+<!ELEMENT Solution (#PCDATA)>
+
+<!-- The version of HPE Service Activator that is at least required -->
+<!ELEMENT Requires-Core (#PCDATA)>

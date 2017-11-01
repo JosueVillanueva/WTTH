@@ -1,0 +1,277 @@
+<!-- 
+  =================================================================
+  A DTD file for bean definitions in
+  HPE Service Activator version 8.0
+  
+  (c) Copyright 2008-2016 Hewlett Packard Enterprise Development LP
+  =================================================================
+-->
+<!-- Root -->
+<!ELEMENT Bean (Name, Solution?, Beanlabel?, Description?, ConstraintName?, Package,
+        DBTable?, DBAlias?, HistDBTable?, Fields, DisplaySequence?, ParentFields?, JoinBridges?,
+        Keys, Operations?, Construction?, DBInitCustomCode?, GuiStorage?, GuiUpdate?, GuiDeletion?
+        , GuiPostStorage?, GuiPostUpdate?, GuiPostDeletion?, Validation?, FormValidations?)>
+<!ATTLIST Bean
+  inheritsFrom CDATA #IMPLIED
+  inheritsSolution CDATA #IMPLIED
+  audit (true|false) #IMPLIED
+  maxCount CDATA #IMPLIED
+  extAttributes (class) #IMPLIED
+  history (true|false) #IMPLIED
+  hideCount (true|false) #IMPLIED
+  noDatabaseTable (true|false) #IMPLIED
+  findByChildren (true|false) #IMPLIED
+>
+<!-- inheritsFrom: Define the parent bean -->
+<!-- audit: If the Bean is auditable or not. Default value is false -->
+<!-- maxCount: For resource reservation. It must be larger than 0. -->
+<!-- extAttributes: Generate an extra ext table for extending attribute dynamically. Supports class, instance attributes or both -->
+<!-- history: Generate history table or not. -->
+<!-- hideCount: Hide displaying of count__ field in UI or not (if there is maxCount attribute defined in bean or in a field, then there will be count__ field). Default value is false.-->
+<!-- noDatabaseTable: do not generate a database associated to this bean -->
+
+<!-- Name of the element. This one will be used, not the xml file name -->
+<!ELEMENT Name (#PCDATA)>
+<!-- Solution name -->
+<!ELEMENT Solution (#PCDATA)>
+<!-- Java package for JavaBean -->
+<!ELEMENT Package (#PCDATA)>
+<!-- Bean label -->
+<!ELEMENT Beanlabel (#PCDATA)>
+<!-- Database table where the fields of this bean will be stored -->
+<!ELEMENT DBTable (#PCDATA)>
+<!ATTLIST DBTable
+  tablespace CDATA #IMPLIED
+  indexTablespace CDATA #IMPLIED
+>
+<!-- Database alias where the fields of this bean will be stored -->
+<!ELEMENT DBAlias (#PCDATA)>
+<!-- History Database table where the fields of this bean will be stored -->
+<!ELEMENT HistDBTable (#PCDATA)>
+<!ATTLIST HistDBTable
+  tablespace CDATA #IMPLIED
+  indexTablespace CDATA #IMPLIED
+>
+<!-- Fields -->
+<!ELEMENT Fields (Field*)>
+<!ELEMENT Field (Name, Column?, Label?, Type, Default?, Description?, ListOfValues?, Loader?, ShowConditions?)>
+<!ATTLIST Field
+  mandatory (true|false) #IMPLIED
+  hiddenUpdate (true|false) #IMPLIED
+  hiddenView (true|false) #IMPLIED
+  searchable (true|false) #IMPLIED
+  dateFormat CDATA #IMPLIED
+  integerFormat (true|false) #IMPLIED
+  store (true|false) #IMPLIED
+  update (true|false) #IMPLIED
+  create (true|false) #IMPLIED
+  hiddenCreate (true|false) #IMPLIED
+  sequence (true|false) #IMPLIED
+  sequenceStart CDATA #IMPLIED
+  maxCount (true|false) #IMPLIED
+  password (true|false) #IMPLIED
+  encrypt (true|false) #IMPLIED
+  sequenceName CDATA #IMPLIED
+  guiValidation (true|false) #IMPLIED
+>
+<!-- If mandatory not set, its default value will be true. -->
+<!-- If hiddenUpdate not set, its default value will be false. -->
+<!-- If hiddenView not set, its default value will be false. -->
+<!-- If searchable not set, its default value will be true. -->
+<!-- If dateFormat not set, its default value will be java local date format. -->
+<!-- If integerFormat not set, its default value will be true which means use java local number format. -->
+<!-- If store not set, its default value will be true. When store=false, the field will not be kept in DB. -->
+<!-- If create not set, its default value will be true. -->
+<!-- If update not set, its default value will be true. -->
+<!-- If hiddenCreate not set, its default value will be false. -->
+<!-- If sequence not set, its default value will be false. -->
+<!-- "sequenceStart" attribute is only valid in the case of "sequence" attribute is set to true. It indicates the start value of sequence. Default value is 1 if not set.-->
+<!-- If maxCount not set, its default value will be false. -->
+<!-- If password not set, its default value will be false. -->
+
+<!-- Database column name -->
+<!ELEMENT Column (#PCDATA)>
+<!-- Name included in sql constraints -->
+<!ELEMENT ConstraintName (#PCDATA)>
+<!-- Type of the Field (case sensitive), including: String, int, Clob, Blob, long, boolean, double, float, Date -->
+<!ELEMENT Type (#PCDATA)>
+<!-- Default value for new beans -->
+<!ELEMENT Default (#PCDATA)>
+<!-- Description to show for this field -->
+<!ELEMENT Description (#PCDATA)>
+<!-- List to restrict possible values of this field -->
+<!ELEMENT ListOfValues (Value+ | (BeanName, BeanClass?, Label?, Method?, Param*))>
+<!ATTLIST ListOfValues
+  withoutForeignKey (true|false) #IMPLIED
+>
+<!-- Each possible value -->
+<!ELEMENT Value (#PCDATA)>
+<!ATTLIST Value
+  show CDATA #IMPLIED
+  selected (true|false) #IMPLIED
+>
+<!ELEMENT BeanName (#PCDATA)>
+<!ELEMENT BeanClass (#PCDATA)>
+<!ELEMENT Label (#PCDATA)>
+<!ELEMENT Method (#PCDATA)>
+<!ELEMENT Param (#PCDATA)>
+<!ATTLIST Param
+  type CDATA #IMPLIED
+>
+<!-- Java Code for retrieving the value of STF(store is set to false) fields-->
+<!ELEMENT Loader (#PCDATA)>
+<!ELEMENT ShowConditions (ShowCondition*)>
+<!ATTLIST ShowConditions
+    operator (and|or) #IMPLIED
+    behavior (show|write) #IMPLIED
+>
+<!ELEMENT ShowCondition (FieldName, Pattern?)>
+<!ATTLIST ShowCondition
+    empty (true|false) #IMPLIED
+>
+<!ELEMENT Pattern (#PCDATA)>
+<!-- DisplaySequence -->
+<!ELEMENT DisplaySequence (FieldName*)>
+<!ELEMENT FieldName (#PCDATA)>
+<!-- ParentFields -->
+<!ELEMENT ParentFields (ParentField*)>
+<!ELEMENT ParentField (Name, Label?, Description?, ListOfValues?, Loader?, ShowConditions?)>
+<!--ELEMENT Name (#PCDATA)-->
+<!--ELEMENT Label (#PCDATA)-->
+<!ATTLIST ParentField
+  hiddenView (true|false) #IMPLIED
+  hiddenUpdate (true|false) #IMPLIED
+  update (true|false) #IMPLIED
+  hiddenCreate (true|false) #IMPLIED
+  create (true|false) #IMPLIED
+  searchable (true|false) #IMPLIED
+  dateFormat CDATA #IMPLIED
+  integerFormat (true|false) #IMPLIED 
+>
+<!-- Keys -->
+<!ELEMENT Keys (Key*)>
+<!ELEMENT Key (Name?, KeyField*, JoinBridge*, WhereMap?)>
+<!ATTLIST Key
+  foreignBean CDATA #IMPLIED
+  foreignSolution CDATA #IMPLIED
+  foreignConstraintName CDATA #IMPLIED
+  pk (true|false) #IMPLIED
+  unique (true|false) #IMPLIED
+  makeIndex (true|false) #IMPLIED
+  restrict (true|false) #IMPLIED
+  includeBean (true|false) #IMPLIED
+  inverseIncludeBean CDATA #IMPLIED
+  nullOnDelete (true|false) #IMPLIED
+  uniqueResults (true|false) #IMPLIED
+  distinct (true|false) #IMPLIED
+  advancedSearch CDATA #IMPLIED
+  joinedBy CDATA #IMPLIED
+>
+<!-- foreignBean: it will have a foreign key relation with current bean -->
+<!-- pk: If this key is the PrimaryKey, default value is false -->
+<!-- unique: If this key should be declared unique, default value is false -->
+<!-- makeIndex: If an index should be create, default value is true -->
+<!-- restrict: If value is "false" then add "on delete cascade" constraint, default value is false -->
+<!-- includeBean: Only valid together with foreignBean attribute. Its default value is false.
+     If true, it will generate an extra foreign bean data member and a getter method for getting this data member from db. 
+-->
+
+<!-- Each of the KeyField of the key -->
+<!ELEMENT KeyField (#PCDATA)>
+<!ATTLIST KeyField
+  foreignField CDATA #IMPLIED
+  externalBean CDATA #IMPLIED
+  externalSolution CDATA #IMPLIED
+  alias CDATA #IMPLIED
+  joinField CDATA #IMPLIED
+  externalJoinField CDATA #IMPLIED
+  ignoreCase (true|false) #IMPLIED
+  comparator CDATA #IMPLIED
+  compareTo CDATA #IMPLIED
+>
+<!-- externalBean: If this key has a external bean -->
+<!-- alias: Alternative name of the table of the externalBean that will be used in the generated select SQL. -->
+<!-- joinField: Name of the field of the current bean will be used to join current bean and the bean definite in "externalBean".-->
+<!-- externalJoinField: Name of the field of the externalBean that will be used to join the current bean and the bean definite in the externalBean.-->
+
+<!-- Global JoingBridges -->
+<!ELEMENT JoinBridges (JoinBridge*)>
+
+<!-- Each of the joinbridge of the key -->
+<!ELEMENT JoinBridge (Jump*)>
+<!ATTLIST JoinBridge
+  name CDATA #IMPLIED
+  origin CDATA #IMPLIED
+  originSolution CDATA #IMPLIED
+  destination CDATA #IMPLIED
+  destinationSolution CDATA #IMPLIED
+  jumpField CDATA #IMPLIED
+  inverseJumpField CDATA #IMPLIED
+>
+
+<!-- name: name of the JoinBridge to make reference as a global JoinBridge -->
+
+<!ELEMENT Jump (#PCDATA)>
+<!ATTLIST Jump
+  jumpField CDATA #IMPLIED
+  inverseJumpField CDATA #IMPLIED
+  solution CDATA #IMPLIED
+>
+
+<!-- Map of the where clause when joinedBy = MAP -->
+<!ELEMENT WhereMap (#PCDATA)>
+<!-- Operations -->
+<!ELEMENT Operations (Store?, Update?, Remove?, CreatePartial?, DeletePartial?, FindBy*)>
+<!ELEMENT Store (Pre?, Post?)>
+<!ELEMENT Update (Pre?, Post?)>
+<!ELEMENT Remove (Pre?, Post?)>
+<!ELEMENT CreatePartial (#PCDATA)>
+<!ELEMENT DeletePartial (#PCDATA)>
+<!-- FindBy method to be created. One for each key will be created -->
+<!ELEMENT FindBy (OrderField*)>
+<!ATTLIST FindBy
+  key CDATA #IMPLIED
+>
+
+<!ELEMENT Pre (#PCDATA)>
+<!ELEMENT Post (#PCDATA)>
+
+<!ELEMENT OrderField (#PCDATA)>
+<!ATTLIST OrderField
+  desc (true|false) #IMPLIED
+  convertTo (number|string|date) #IMPLIED
+  format CDATA #IMPLIED
+>
+
+<!-- Add code at the end of every (but empty) constructor -->
+<!ELEMENT Construction (#PCDATA)>
+
+<!-- Add code in a special method (dbInitCustomCode) executed every time a bean is recovered from DB -->
+<!-- The connection is accessible in this method, not like the Construction tag -->
+<!ELEMENT DBInitCustomCode (#PCDATA)>
+
+<!-- Add code before executing a store using the struts GUI -->
+<!ELEMENT GuiStorage (#PCDATA)>
+<!-- Add code before executing a update using the struts GUI -->
+<!ELEMENT GuiUpdate (#PCDATA)>
+<!-- Add code before executing a delete using the struts GUI -->
+<!ELEMENT GuiDeletion (#PCDATA)>
+
+<!-- Add code after executing a store using the struts GUI -->
+<!ELEMENT GuiPostStorage (#PCDATA)>
+<!-- Add code after executing a update using the struts GUI -->
+<!ELEMENT GuiPostUpdate (#PCDATA)>
+<!-- Add code after executing a delete using the struts GUI -->
+<!ELEMENT GuiPostDeletion (#PCDATA)>
+
+
+<!-- Validation code-->
+<!ELEMENT Validation (#PCDATA)>
+
+<!-- Form validation code-->
+<!ELEMENT FormValidations (FormValidation*)>
+<!ELEMENT FormValidation (#PCDATA)>
+<!ATTLIST FormValidation
+  entry CDATA #IMPLIED
+  message CDATA #IMPLIED
+>

@@ -1,0 +1,63 @@
+<msg>
+	<header>
+		<attribute>
+			<name>action_name</name>
+			<value>SUSPEND</value>
+		</attribute>
+		<attribute>
+			<name>account_number</name>
+			<value>15786833</value>
+		</attribute>
+		<attribute>
+			<name>customer</name>
+			<value>DEISSY CRI PARRA</value>
+		</attribute>
+		<attribute>
+			<name>email_customer</name>
+			<value/>
+		</attribute>
+		<attribute>
+			<name>password_customer</name>
+			<value>MTU3ODY4MzM=</value>
+		</attribute>
+		<attribute>
+			<name>service_wo</name>
+			<value>0</value>
+		</attribute>
+		<attribute>
+			<name>origin_id</name>
+			<value>AGENDAMIENTO9</value>
+		</attribute>
+		<attribute>
+			<name>geographical_location_id</name>
+			<value>BOG</value>
+		</attribute>
+		<attribute>
+			<name>account_status</name>
+			<value>S</value>
+		</attribute>
+		<attribute>
+			<name>parent_account</name>
+			<value>19031</value>
+		</attribute>
+		<attribute>
+			<name>building_unit</name>
+			<value>38854</value>
+		</attribute>
+		<attribute>
+			<name>scope</name>
+			<value>RE</value>
+		</attribute>
+		<attribute>
+			<name>request_date</name>
+			<value>24-08-2017 12:11:24</value>
+		</attribute>
+		<attribute>
+			<name>service_type</name>
+			<value>wtth</value>
+		</attribute>
+	</header>
+	<body>
+		
+	</body>
+</msg>

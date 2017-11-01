@@ -1,0 +1,179 @@
+<!--
+  ==========================================================================
+  Inventory Tree definition DTD in
+  HPE Service Activator version 8.0.
+
+  ==========================================================================
+  (c) Copyright 2008-2016 Hewlett Packard Enterprise Development LP
+  ==========================================================================
+-->
+
+<!-- Used in several places -->
+<!ELEMENT Value (#PCDATA)>	
+<!ATTLIST Value
+    bold (true|false) #IMPLIED
+    italic (true|false) #IMPLIED
+    textColor CDATA #IMPLIED
+    bundle CDATA #IMPLIED
+>   
+
+<!-- The root for inventory definitions -->
+<!ELEMENT InventoryTree (Name, SequenceNumber?, Solution?, Description?, DataSource?, OperationTypeName*, BranchTypeName*, Branch*, Filter?, InitialCasePacket?)>
+
+<!-- default will be used to indicate if this tree will be open automatically in inventory UI. Default value will be "false" if not set. -->
+<!-- allowClassView will be used to indicate if class view tree will be enabled. -->
+<!ATTLIST InventoryTree
+	default (true|false) #IMPLIED
+    allowClassView (true|false) #IMPLIED
+    bundle CDATA #IMPLIED
+>
+
+<!ELEMENT Name (#PCDATA)>
+<!-- bundle will be used to use a specific bundle -->
+<!ATTLIST Name
+    bundle CDATA #IMPLIED
+>
+
+<!ELEMENT SequenceNumber (#PCDATA)>
+<!ELEMENT Solution (Name, Label?)>
+<!ELEMENT Description (#PCDATA)>
+<!ELEMENT DataSource (#PCDATA)>
+<!ELEMENT OperationTypeName (Name, Description?)>
+<!ELEMENT BranchTypeName (Name, Description?)>
+
+<!ELEMENT Branch (Name, DefName?, Condition*, BranchType?, Type?, Image*, ReservedImage?, Class-Name?, Find-By*, Font*, Label*, Scroll?, Parent-Find-By? ,Children?, Operation*, DefOperation*)>
+
+<!-- definedSearch will be used to modify default action to implement searches -->
+<!ATTLIST Branch
+    definedSearch CDATA #IMPLIED
+    advancedSearch CDATA #IMPLIED
+    bundle CDATA #IMPLIED
+    expand CDATA #IMPLIED
+>
+
+<!ELEMENT BranchType (#PCDATA)>
+<!ELEMENT DefName (#PCDATA)>
+<!-- bundle will be used to use a specific bundle -->
+<!ATTLIST DefName
+    bundle CDATA #IMPLIED
+>
+
+<!-- role will be used to check if current login user belongs to this role. role can be set to a constant or a variable. -->
+<!ELEMENT Condition (#PCDATA)>
+<!ATTLIST Condition
+	role CDATA #IMPLIED
+>
+
+<!ELEMENT Type (#PCDATA)>
+<!ELEMENT Image (#PCDATA | Condition | Value)*>
+<!ELEMENT ReservedImage (#PCDATA)>
+<!ELEMENT Class-Name (#PCDATA)>
+<!ELEMENT Font (#PCDATA | Condition | TextColor)*>
+<!-- bold: default value is false -->
+<!-- italic: default value is false -->
+<!ATTLIST Font
+	bold (true|false) #IMPLIED
+	italic (true|false) #IMPLIED
+>	
+<!ELEMENT TextColor (#PCDATA)>
+
+<!ELEMENT Label (#PCDATA | Condition | Value)*>
+<!ATTLIST Label
+    bundle CDATA #IMPLIED
+>
+<!ELEMENT Scroll (#PCDATA)>
+
+<!ELEMENT Children (Child*)>
+	<!ELEMENT Child (#PCDATA)>
+
+<!-- Operation: the operations that will be available in instance view -->
+<!ELEMENT Operation (Name, Condition*, Image+, Object?, OperationType?, Action)>
+
+<!-- flag attribute: 
+	"reserve" stands for reserve resource operation. 
+	"release" stands for release resource operation.
+-->
+<!ATTLIST Operation
+	default (true|false) #IMPLIED
+	warning (true|false) #IMPLIED
+	flag (reserve|release) #IMPLIED
+	bundle CDATA #IMPLIED 
+>
+
+<!-- DefOperation: the operations that will be available in class view -->
+<!ELEMENT DefOperation (Name, Image, Object?, OperationType?, Action)>
+
+<!-- defFlag attribute:
+	"extend" stands for extend attribute operation. 
+-->
+<!ATTLIST DefOperation
+	default (true|false) #IMPLIED
+	warning (true|false) #IMPLIED	
+	defFlag (extend) #IMPLIED
+    bundle CDATA #IMPLIED 
+>
+
+<!ELEMENT Object (#PCDATA)>
+<!ELEMENT OperationType (#PCDATA)>
+<!ELEMENT Action (Page, Param*,Workflow?)>
+<!ELEMENT Page (#PCDATA)>
+<!ELEMENT Param (Name, Value)>
+<!ELEMENT Workflow (Name,Label?,Bean*, WFParam*, Result*)>
+<!ATTLIST Workflow
+	 method  (startJob|startAndWaitForJob) #IMPLIED
+>
+<!ELEMENT Bean (Name, Class-Name, Find-By)>
+<!ELEMENT WFParam (Name, DisplayName?, Description?,BeanName?, PValue*)> 
+<!ATTLIST WFParam 	
+    source (branch|bean) #IMPLIED
+    dataType (String|int|float|long|double|boolean|Date)  #IMPLIED
+    dateFormat CDATA #IMPLIED
+    editable (true|false)	 #IMPLIED
+    dropdown (true|false)	#IMPLIED
+>
+<!ELEMENT PValue (#PCDATA)>
+<!ATTLIST PValue
+	default (true|false)  #IMPLIED
+>
+<!ELEMENT DisplayName (#PCDATA)>
+<!ELEMENT BeanName (#PCDATA)>
+<!ELEMENT Result (Name, DisplayName?) >
+
+
+
+<!ELEMENT Find-By (Condition*, Method, Key*)>
+<!ELEMENT Parent-Find-By (Method, Key*)>
+<!ELEMENT Method (#PCDATA)>
+<!ELEMENT Key (#PCDATA)>
+<!-- parentKey: default value is false-->
+<!-- type: default value is String-->
+<!ATTLIST Key
+	parentKey (true|false) #IMPLIED
+	type (int|long|float|double|boolean|Date|String) #IMPLIED
+>
+	
+<!ELEMENT InitialCasePacket (VariableValue*)>
+<!ELEMENT VariableValue (#PCDATA)>
+<!ATTLIST VariableValue
+	name CDATA #REQUIRED
+	value CDATA #REQUIRED
+>
+
+    
+<!-- Filter -->
+<!ELEMENT Filter (Field*)>
+<!ATTLIST Filter
+	expand CDATA #IMPLIED
+>
+<!ELEMENT Field (ListOfValues?)>
+<!ATTLIST Field
+    variable CDATA #REQUIRED
+    label CDATA #IMPLIED
+    bundle CDATA #IMPLIED
+    type (text|checkbox|select|date) #REQUIRED
+    group CDATA #IMPLIED
+>
+<!ELEMENT ListOfValues (Value+ | (BeanName, Attribute?, Method?, ParameterValue*))>
+<!ELEMENT Attribute (#PCDATA)>
+<!ELEMENT ParameterValue (#PCDATA)>
+

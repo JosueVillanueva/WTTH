@@ -1,0 +1,16 @@
+<soapenv:Envelope xmlns:hss="http://www.huawei.com/HSS" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+	<soapenv:Header>
+		<hss:MessageID>?</hss:MessageID>
+		<hss:MEName>nosequevayaaqui</hss:MEName>
+		<hss:Authentication>
+			<hss:Username>claro.colombia</hss:Username>
+			<hss:Password>claro.mx</hss:Password>
+		</hss:Authentication>
+	</soapenv:Header>
+	<soapenv:Body>
+		<hss:ADD_HSIFC>
+			<hss:IMPU>sip:+5718034952@ims.claro.com.co</hss:IMPU>
+			<hss:SIFCID>0</hss:SIFCID>
+		</hss:ADD_HSIFC>
+	</soapenv:Body>
+</soapenv:Envelope>

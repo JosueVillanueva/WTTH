@@ -1,0 +1,15 @@
+<soapenv:Envelope xmlns:hss="http://www.huawei.com/HSS" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+	<soapenv:Header>
+		<hss:MessageID>?</hss:MessageID>
+		<hss:MEName>nosequevayaaqui</hss:MEName>
+		<hss:Authentication>
+			<hss:Username>claro.colombia</hss:Username>
+			<hss:Password>claro.mx</hss:Password>
+		</hss:Authentication>
+	</soapenv:Header>
+	<soapenv:Body>
+		<hss:RMV_HSUB xmlns:spg="http://www.huawei.com/SPG" xmlns:ens="http://www.huawei.com/ENS">
+			<hss:SUBID>+5718034952</hss:SUBID>
+		</hss:RMV_HSUB>
+	</soapenv:Body>
+</soapenv:Envelope>
