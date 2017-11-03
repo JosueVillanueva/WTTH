@@ -8,32 +8,32 @@
 	<Fields>
 		<Field mandatory="true">
 			<Name>ip_address</Name>
-			<Type>string</Type>
+			<Type>String</Type>
 			<Description>ip address</Description>
 		</Field>
 		<Field mandatory="false">
 			<Name>network_element_type</Name>
-			<Type>string</Type>
+			<Type>String</Type>
 			<Description>NE primary key</Description>
 		</Field>
 		<Field mandatory="false">
 			<Name>device_name</Name>
-			<Type>string</Type>
+			<Type>String</Type>
 			<Description>device_name</Description>
 		</Field>
 		<Field mandatory="false">
 			<Name>port_number</Name>
-			<Type>string</Type>
+			<Type>String</Type>
 			<Description>port number</Description>
 		</Field>
 		<Field mandatory="false">
 			<Name>user_name</Name>
-			<Type>string</Type>
+			<Type>String</Type>
 			<Description>user name</Description>
 		</Field>
 		<Field mandatory="false">
 			<Name>password</Name>
-			<Type>string</Type>
+			<Type>String</Type>
 			<Description>password</Description>
 		</Field>
 	</Fields>

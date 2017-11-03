@@ -13,17 +13,17 @@
 		</Field>
 		<Field mandatory="true">
 			<Name>mobile_number</Name>
-			<Type>string</Type>
+			<Type>String</Type>
 			<Description>mobile phone number</Description>
 		</Field>
 		<Field mandatory="false">
 			<Name>fixed_number</Name>
-			<Type>string</Type>
+			<Type>String</Type>
 			<Description>fixed phone number</Description>
 		</Field>
 		<Field mandatory="false">
 			<Name>aux1</Name>
-			<Type>string</Type>
+			<Type>String</Type>
 			<Description>auxiliar field</Description>
 		</Field>
 	</Fields>

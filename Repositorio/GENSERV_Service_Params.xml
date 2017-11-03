@@ -8,17 +8,17 @@
 	<Fields>
 		<Field mandatory="true" update="false">
 			<Name>service_id</Name>
-			<Type>string</Type>
+			<Type>String</Type>
 			<Description>service primary key</Description>
 		</Field>
 		<Field mandatory="true">
 			<Name>costumer_id</Name>
-			<Type>string</Type>
+			<Type>String</Type>
 			<Description>costumer id</Description>
 		</Field>
 		<Field mandatory="false">
 			<Name>param_name</Name>
-			<Type>string</Type>
+			<Type>String</Type>
 			<Description>parameter name</Description>
 		</Field>
 		<Field mandatory="false">
