@@ -1,35 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE Bean SYSTEM "bean.dtd">
 <Bean>
-	<Name>IMS to Mov</Name>
+	<Name>IMStoMov</Name>
 	<Solution>WTTH</Solution>
 	<Package>com.hpe.ov.activator.inventory</Package>
 	<DBTable>WTTH_lrt_ims_to_mov</DBTable>
 	<Fields>
-		<Field mandatory="true" update="false" dateFormat="EEE MMM dd HH:mm:ss zzz yyyy">
-			<Name>request_date</Name>
-			<Type>date</Type>
-			<Description>request date</Description>
+		<Field mandatory="true" upDate="false" DateFormat="EEE MMM dd HH:mm:ss zzz yyyy">
+			<Name>requestDate</Name>
+			<Column>REQUEST_DATE</Column>
+			<Type>Date</Type>
+			<Description>request Date</Description>
 		</Field>
 		<Field mandatory="true">
-			<Name>mobile_number</Name>
+			<Name>mobileNumber</Name>
+			<Column>MOBILE_NUMBER</Column>
 			<Type>String</Type>
 			<Description>mobile phone number</Description>
 		</Field>
 		<Field mandatory="false">
-			<Name>fixed_number</Name>
+			<Name>fixedNumber</Name>
+			<Column>FIXED_NUMBER</Column>
 			<Type>String</Type>
 			<Description>fixed phone number</Description>
 		</Field>
 		<Field mandatory="false">
 			<Name>aux1</Name>
+			<Column>AUX1</Column>
 			<Type>String</Type>
 			<Description>auxiliar field</Description>
 		</Field>
 	</Fields>
 	<Keys>
 		<Key pk="true">
-			<KeyField>mobile_number</KeyField>
+			<KeyField>MOBILE_NUMBER</KeyField>
 		</Key>
 	</Keys>
+	<Operations>
+		<Store/>
+		<UpDate/>
+		<Remove/>
+		<FindBy>
+			<OrderField>MOBILE_NUMBER</OrderField>
+		</FindBy>
+	</Operations>
 </Bean>
