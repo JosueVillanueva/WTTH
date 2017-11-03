@@ -6,7 +6,7 @@
 	<Package>com.hpe.ov.activator.inventory</Package>
 	<DBTable>GENSERV_Customer</DBTable>
 	<Fields>
-		<Field mandatory="true" upDate="false">
+		<Field mandatory="true" update="false">
 			<Name>customerId</Name>
 			<Column>CUSTOMER_ID</Column>
 			<Type>String</Type>
@@ -19,13 +19,13 @@
 			<Description>account number</Description>
 		</Field>
 		<Field mandatory="false">
-			<Name>customer</Name>
+			<Name>customer_name</Name>
 			<Column>CUSTOMER</Column>
 			<Type>String</Type>
 			<Description>customer</Description>
 		</Field>
 		<Field mandatory="false">
-			<Name>emaiLCustomer</Name>
+			<Name>emailCustomer</Name>
 			<Column>EMAIL_CUSTOMER</Column>
 			<Type>String</Type>
 			<Description>Email customer</Description>
@@ -39,34 +39,33 @@
 		<Field mandatory="false">
 			<Name>aux1</Name>
 			<Column>AUX1</Column>
-			<Type>Long</Type>
+			<Type>long</Type>
 			<Description>auxiliar field</Description>
 		</Field>
 		<Field mandatory="false">
 			<Name>metada</Name>
 			<Column>METADATA</Column>
-			<Type>Long</Type>
+			<Type>long</Type>
 			<Description>additional info</Description>
 		</Field>
 	</Fields>
 	<Keys>
 		<Key pk="true">
-			<KeyField>CUSTOMER_ID</KeyField>
+			<KeyField>customerId</KeyField>
 		</Key>
 		<Key unique="false" makeIndex="true">
-			<Name>accountNumber</Name>
-			<KeyField>ACCOUNT_NUMBER</KeyField>
+			<KeyField>accountNumber</KeyField>
 		</Key>
 	</Keys>
 	<Operations>
 		<Store/>
-		<UpDate/>
+		<Update/>
 		<Remove/>
 		<FindBy>
-			<OrderField>CUSTOMER_ID</OrderField>
+			<OrderField>customerId</OrderField>
 		</FindBy>
 		<FindBy key="accountNumber">
-			<OrderField>CUSTOMER_ID</OrderField>
+			<OrderField>customerId</OrderField>
 		</FindBy>
 	</Operations>
 </Bean>

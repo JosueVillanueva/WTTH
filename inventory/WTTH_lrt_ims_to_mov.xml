@@ -6,7 +6,7 @@
 	<Package>com.hpe.ov.activator.inventory</Package>
 	<DBTable>WTTH_lrt_ims_to_mov</DBTable>
 	<Fields>
-		<Field mandatory="true" upDate="false" DateFormat="EEE MMM dd HH:mm:ss zzz yyyy">
+		<Field mandatory="true" update="false" dateFormat="EEE MMM dd HH:mm:ss zzz yyyy">
 			<Name>requestDate</Name>
 			<Column>REQUEST_DATE</Column>
 			<Type>Date</Type>
@@ -33,15 +33,15 @@
 	</Fields>
 	<Keys>
 		<Key pk="true">
-			<KeyField>FIXED_NUMBER</KeyField>
+			<KeyField>fixedNumber</KeyField>
 		</Key>
 	</Keys>
 	<Operations>
 		<Store/>
-		<UpDate/>
+		<Update/>
 		<Remove/>
 		<FindBy>
-			<OrderField>FIXED_NUMBER</OrderField>
+			<OrderField>fixedNumber</OrderField>
 		</FindBy>
 	</Operations>
 </Bean>

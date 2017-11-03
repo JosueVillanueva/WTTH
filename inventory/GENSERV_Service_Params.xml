@@ -6,7 +6,7 @@
 	<Package>com.hpe.ov.activator.inventory</Package>
 	<DBTable>GENSERV_Service_Params</DBTable>
 	<Fields>
-		<Field mandatory="true" upDate="false">
+		<Field mandatory="true" update="false">
 			<Name>serviceId</Name>
 			<Column>SERVICE_ID</Column>
 			<Type>String</Type>
@@ -45,29 +45,27 @@
 	</Fields>
 	<Keys>
 		<Key pk="true">
-			<KeyField>SERVICE_ID</KeyField>
+			<KeyField>serviceId</KeyField>
 		</Key>
 		<Key unique="false" makeIndex="true">
-			<Name>customerId</Name>
-			<KeyField>CUSTOMER_ID</KeyField>
+			<KeyField>customerId</KeyField>
 		</Key>
 		<Key unique="false" makeIndex="true">
-			<Name>paramName</Name>
-			<KeyField>PARAM_NAME</KeyField>
+			<KeyField>paramName</KeyField>
 		</Key>
 	</Keys>
 	<Operations>
 		<Store/>
-		<UpDate/>
+		<Update/>
 		<Remove/>
 		<FindBy>
-			<OrderField>SERVICE_ID</OrderField>
+			<OrderField>serviceId</OrderField>
 		</FindBy>
 		<FindBy key="customerId">
-			<OrderField>SERVICE_ID</OrderField>
+			<OrderField>serviceId</OrderField>
 		</FindBy>
 		<FindBy key="paramName">
-			<OrderField>SERVICE_ID</OrderField>
+			<OrderField>serviceId</OrderField>
 		</FindBy>
 	</Operations>
 </Bean>

@@ -6,7 +6,7 @@
 	<Package>com.hpe.ov.activator.inventory</Package>
 	<DBTable>GENSERV_Action_Templates</DBTable>
 	<Fields>
-		<Field mandatory="true" upDate="false">
+		<Field mandatory="true" update="false">
 			<Name>service</Name>
 			<Column>SERVICE</Column>
 			<Type>String</Type>
@@ -33,16 +33,16 @@
 	</Fields>
 	<Keys>
 		<Key pk="true">
-			<KeyField>SERVICE</KeyField>
-			<KeyField>ACTION_NAME</KeyField>
+			<KeyField>service</KeyField>
+			<KeyField>actionName</KeyField>
 		</Key>
 	</Keys>
 	<Operations>
 		<Store/>
-		<UpDate/>
+		<Update/>
 		<Remove/>
 		<FindBy>
-			<OrderField>SERVICE</OrderField>
+			<OrderField>service</OrderField>
 		</FindBy>
 	</Operations>
 </Bean>

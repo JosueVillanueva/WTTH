@@ -6,7 +6,7 @@
 	<Package>com.hpe.ov.activator.inventory</Package>
 	<DBTable>GENSERV_Services</DBTable>
 	<Fields>
-		<Field mandatory="true" upDate="false">
+		<Field mandatory="true" update="false">
 			<Name>serviceId</Name>
 			<Column>SERVICE_ID</Column>
 			<Type>String</Type>
@@ -39,41 +39,39 @@
 		<Field mandatory="false">
 			<Name>aux1</Name>
 			<Column>AUX1</Column>
-			<Type>Long</Type>
+			<Type>long</Type>
 			<Description>auxiliar field</Description>
 		</Field>
 		<Field mandatory="false">
 			<Name>metada</Name>
 			<Column>METADATA</Column>
-			<Type>Long</Type>
+			<Type>long</Type>
 			<Description>additional info</Description>
 		</Field>
 	</Fields>
 	<Keys>
 		<Key pk="true">
-			<KeyField>SERVICE_ID</KeyField>
+			<KeyField>serviceId</KeyField>
 		</Key>
 		<Key unique="false" makeIndex="true">
-			<Name>customerId</Name>
-			<KeyField>CUSTOMER_ID</KeyField>
+			<KeyField>customerId</KeyField>
 		</Key>
 		<Key unique="false" makeIndex="true">
-			<Name>accountNumber</Name>
-			<KeyField>ACCOUNT_NUMBER</KeyField>
+			<KeyField>accountNumber</KeyField>
 		</Key>
 	</Keys>
 	<Operations>
 		<Store/>
-		<UpDate/>
+		<Update/>
 		<Remove/>
 		<FindBy>
-			<OrderField>SERVICE_ID</OrderField>
+			<OrderField>serviceId</OrderField>
 		</FindBy>
 		<FindBy key="customerId">
-			<OrderField>SERVICE_ID</OrderField>
+			<OrderField>serviceId</OrderField>
 		</FindBy>
 		<FindBy key="accountNumber">
-			<OrderField>SERVICE_ID</OrderField>
+			<OrderField>serviceId</OrderField>
 		</FindBy>
 	</Operations>
 </Bean>

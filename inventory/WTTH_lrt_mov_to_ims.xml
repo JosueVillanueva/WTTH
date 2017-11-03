@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE Bean SYSTEM "bean.dtd">
 <Bean>
-	<Name>IMStoMov</Name>
+	<Name>MovtoIMS</Name>
 	<Solution>WTTH</Solution>
 	<Package>com.hpe.ov.activator.inventory</Package>
-	<DBTable>WTTH_lrt_ims_to_mov</DBTable>
+	<DBTable>WTTH_lrt_mov_to_ims</DBTable>
 	<Fields>
-		<Field mandatory="true" upDate="false" DateFormat="EEE MMM dd HH:mm:ss zzz yyyy">
+		<Field mandatory="true" update="false" dateFormat="EEE MMM dd HH:mm:ss zzz yyyy">
 			<Name>requestDate</Name>
 			<Column>REQUEST_DATE</Column>
 			<Type>Date</Type>
@@ -33,15 +33,15 @@
 	</Fields>
 	<Keys>
 		<Key pk="true">
-			<KeyField>MOBILE_NUMBER</KeyField>
+			<KeyField>mobileNumber</KeyField>
 		</Key>
 	</Keys>
 	<Operations>
 		<Store/>
-		<UpDate/>
+		<Update/>
 		<Remove/>
 		<FindBy>
-			<OrderField>MOBILE_NUMBER</OrderField>
+			<OrderField>mobileNumber</OrderField>
 		</FindBy>
 	</Operations>
 </Bean>

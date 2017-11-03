@@ -45,15 +45,15 @@
 	</Fields>
 	<Keys>
 		<Key pk="true">
-			<KeyField>IP_ADDRESS</KeyField>
+			<KeyField>ipAddress</KeyField>
 		</Key>
 	</Keys>
 	<Operations>
 		<Store/>
-		<UpDate/>
+		<Update/>
 		<Remove/>
 		<FindBy>
-			<OrderField>IP_ADDRESS</OrderField>
+			<OrderField>ipAddress</OrderField>
 		</FindBy>
 	</Operations>
 </Bean>
