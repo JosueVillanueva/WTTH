@@ -12,7 +12,7 @@
 			<Type>String</Type>
 			<Description>service primary key</Description>
 		</Field>
-		<Field mandatory="falso">
+		<Field mandatory="false">
 			<Name>actionName</Name>
 			<Column>ACTION_NAME</Column>
 			<Type>String</Type>
