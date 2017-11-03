@@ -1,45 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE Bean SYSTEM "bean.dtd">
 <Bean>
-	<Name>Network Element</Name>
+	<Name>NetworkElement</Name>
 	<Solution>WTTH</Solution>
 	<Package>com.hpe.ov.activator.inventory</Package>
 	<DBTable>GENSERV_Network_Element</DBTable>
 	<Fields>
 		<Field mandatory="true">
-			<Name>ip_address</Name>
+			<Name>ipAddress</Name>
+			<Column>IP_ADDRESS</Column>
 			<Type>String</Type>
-			<Description>ip address</Description>
+			<Description>IP address</Description>
 		</Field>
 		<Field mandatory="false">
-			<Name>network_element_type</Name>
+			<Name>networkElementType</Name>
+			<Column>NETWORK_ELEMENT_TYPE</Column>
 			<Type>String</Type>
 			<Description>NE primary key</Description>
 		</Field>
 		<Field mandatory="false">
-			<Name>device_name</Name>
+			<Name>deviceName</Name>
+			<Column>DEVICE_NAME</Column>
 			<Type>String</Type>
-			<Description>device_name</Description>
+			<Description>device name</Description>
 		</Field>
 		<Field mandatory="false">
-			<Name>port_number</Name>
+			<Name>portNumber</Name>
+			<Column>PORT_NUMBER</Column>
 			<Type>String</Type>
 			<Description>port number</Description>
 		</Field>
 		<Field mandatory="false">
-			<Name>user_name</Name>
+			<Name>userName</Name>
+			<Column>USER_NAME</Column>
 			<Type>String</Type>
 			<Description>user name</Description>
 		</Field>
 		<Field mandatory="false">
 			<Name>password</Name>
+			<Column>PASSWORD</Column>
 			<Type>String</Type>
 			<Description>password</Description>
 		</Field>
 	</Fields>
 	<Keys>
 		<Key pk="true">
-			<KeyField>ip_address</KeyField>
+			<KeyField>IP_ADDRESS</KeyField>
 		</Key>
 	</Keys>
+	<Operations>
+		<Store/>
+		<UpDate/>
+		<Remove/>
+		<FindBy>
+			<OrderField>IP_ADDRESS</OrderField>
+		</FindBy>
+	</Operations>
 </Bean>
