@@ -6,67 +6,74 @@
 	<Package>com.hpe.ov.activator.inventory</Package>
 	<DBTable>GENSERV_Services</DBTable>
 	<Fields>
-		<Field mandatory="true" update="false">
-			<Name>service_id</Name>
+		<Field mandatory="true" upDate="false">
+			<Name>serviceId</Name>
+			<Column>SERVICE_ID</Column>
 			<Type>String</Type>
 			<Description>service primary key</Description>
 		</Field>
 		<Field mandatory="false">
-			<Name>costumer_id</Name>
+			<Name>customerId</Name>
+			<Column>COSTUMER_ID</Column>
 			<Type>String</Type>
-			<Description>costumer id</Description>
+			<Description>customer id</Description>
 		</Field>
 		<Field mandatory="false">
-			<Name>service_type</Name>
+			<Name>serviceType</Name>
+			<Column>SERVICE_TYPE</Column>
 			<Type>String</Type>
 			<Description>service type</Description>
 		</Field>
 		<Field mandatory="false">
-			<Name>account_number</Name>
+			<Name>accountNumber</Name>
+			<Column>ACCOUNT_NUMBER</Column>
 			<Type>String</Type>
 			<Description>account number</Description>
 		</Field>
 		<Field mandatory="false">
-			<Name>account_status</Name>
+			<Name>accountStatus</Name>
+			<Column>ACCOUNT_STATUS</Column>
 			<Type>String</Type>
 			<Description>account_status</Description>
 		</Field>
 		<Field mandatory="false">
 			<Name>aux1</Name>
-			<Type>long</Type>
+			<Column>AUX1</Column>
+			<Type>Long</Type>
 			<Description>auxiliar field</Description>
 		</Field>
 		<Field mandatory="false">
 			<Name>metada</Name>
-			<Type>long</Type>
+			<Column>METADATA</Column>
+			<Type>Long</Type>
 			<Description>additional info</Description>
 		</Field>
 	</Fields>
 	<Keys>
 		<Key pk="true">
-			<KeyField>service_id</KeyField>
+			<KeyField>SERVICE_ID</KeyField>
 		</Key>
 		<Key unique="false" makeIndex="true">
-			<Name>costumerId</Name>
-			<KeyField>costumer_id</KeyField>
+			<Name>customerId</Name>
+			<KeyField>CUSTOMER_ID</KeyField>
 		</Key>
 		<Key unique="false" makeIndex="true">
 			<Name>accountNumber</Name>
-			<KeyField>account_number</KeyField>
+			<KeyField>ACCOUNT_NUMBER</KeyField>
 		</Key>
 	</Keys>
 	<Operations>
 		<Store/>
-		<Update/>
+		<UpDate/>
 		<Remove/>
 		<FindBy>
-			<OrderField>service_id</OrderField>
+			<OrderField>SERVICE_ID</OrderField>
 		</FindBy>
-		<FindBy key="costumer_id">
-			<OrderField>service_id</OrderField>
+		<FindBy key="customerId">
+			<OrderField>SERVICE_ID</OrderField>
 		</FindBy>
 		<FindBy key="accountNumber">
-			<OrderField>service_id</OrderField>
+			<OrderField>SERVICE_ID</OrderField>
 		</FindBy>
 	</Operations>
 </Bean>
