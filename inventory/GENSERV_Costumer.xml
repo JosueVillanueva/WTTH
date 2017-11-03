@@ -1,65 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE Bean SYSTEM "bean.dtd">
 <Bean>
-	<Name>Costumer</Name>
+	<Name>Customer</Name>
 	<Solution>WTTH</Solution>
 	<Package>com.hpe.ov.activator.inventory</Package>
-	<DBTable>GENSERV_Costumer</DBTable>
+	<DBTable>GENSERV_Customer</DBTable>
 	<Fields>
-		<Field mandatory="true" update="false">
-			<Name>costumer_id</Name>
+		<Field mandatory="true" upDate="false">
+			<Name>customerId</Name>
+			<Column>CUSTOMER_ID</Column>
 			<Type>String</Type>
-			<Description>Costumer primary key</Description>
+			<Description>customer primary key</Description>
 		</Field>
 		<Field mandatory="false">
-			<Name>account_number</Name>
+			<Name>accountNumber</Name>
+			<Column>ACCOUNT_NUMBER</Column>
 			<Type>String</Type>
 			<Description>account number</Description>
 		</Field>
 		<Field mandatory="false">
-			<Name>costumer</Name>
+			<Name>customer</Name>
+			<Column>CUSTOMER</Column>
 			<Type>String</Type>
-			<Description>costumer</Description>
+			<Description>customer</Description>
 		</Field>
 		<Field mandatory="false">
-			<Name>email_costumer</Name>
+			<Name>emaiLCustomer</Name>
+			<Column>EMAIL_CUSTOMER</Column>
 			<Type>String</Type>
-			<Description>Email costumer</Description>
+			<Description>Email customer</Description>
 		</Field>
 		<Field mandatory="false">
-			<Name>password_costumer</Name>
+			<Name>passwordCustomer</Name>
+			<Column>PASSWORD_CUSTOMER</Column>
 			<Type>String</Type>
-			<Description>Product Id</Description>
+			<Description>Password Customer</Description>
 		</Field>
 		<Field mandatory="false">
 			<Name>aux1</Name>
-			<Type>long</Type>
+			<Column>AUX1</Column>
+			<Type>Long</Type>
 			<Description>auxiliar field</Description>
 		</Field>
 		<Field mandatory="false">
 			<Name>metada</Name>
-			<Type>long</Type>
+			<Column>METADATA</Column>
+			<Type>Long</Type>
 			<Description>additional info</Description>
 		</Field>
 	</Fields>
 	<Keys>
 		<Key pk="true">
-			<KeyField>costumer_id</KeyField>
+			<KeyField>CUSTOMER_ID</KeyField>
 		</Key>
 		<Key unique="false" makeIndex="true">
 			<Name>accountNumber</Name>
-			<KeyField>account_number</KeyField>
+			<KeyField>ACCOUNT_NUMBER</KeyField>
 		</Key>
 	</Keys>
 	<Operations>
 		<Store/>
-		<Update/>
+		<UpDate/>
 		<Remove/>
 		<FindBy>
-			<OrderField>costumer_id</OrderField>
+			<OrderField>CUSTOMER_ID</OrderField>
 		</FindBy>
 		<FindBy key="accountNumber">
-			<OrderField>costumer_id</OrderField>
+			<OrderField>CUSTOMER_ID</OrderField>
 		</FindBy>
 	</Operations>
 </Bean>
