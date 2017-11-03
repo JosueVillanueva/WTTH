@@ -1,36 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE Bean SYSTEM "bean.dtd">
 <Bean>
-	<Name>Action Templates</Name>
+	<Name>ActionTemplates</Name>
 	<Solution>WTTH</Solution>
 	<Package>com.hpe.ov.activator.inventory</Package>
 	<DBTable>GENSERV_Action_Templates</DBTable>
 	<Fields>
-		<Field mandatory="true" update="false">
+		<Field mandatory="true" upDate="false">
 			<Name>service</Name>
+			<Column>SERVICE</Column>
 			<Type>String</Type>
 			<Description>service primary key</Description>
 		</Field>
-		<Field mandatory="false">
-			<Name>action_name</Name>
+		<Field mandatory="falso">
+			<Name>actionName</Name>
+			<Column>ACTION_NAME</Column>
 			<Type>String</Type>
 			<Description>action name primary key</Description>
 		</Field>
 		<Field mandatory="false">
-			<Name>network_element_type</Name>
+			<Name>networkElementType</Name>
+			<Column>NETWWORK_ELEMENT_TYPE</Column>
 			<Type>String</Type>
 			<Description>network element type</Description>
 		</Field>
 		<Field mandatory="false">
-			<Name>template_name</Name>
+			<Name>templateName</Name>
+			<Column>TEMPLATE_NAME</Column>
 			<Type>String</Type>
-			<Description>template_name</Description>
+			<Description>template name</Description>
 		</Field>
 	</Fields>
 	<Keys>
 		<Key pk="true">
-			<KeyField>service</KeyField>
-			<KeyField>action_name</KeyField>
+			<KeyField>SERVICE</KeyField>
+			<KeyField>ACTION_NAME</KeyField>
 		</Key>
 	</Keys>
+	<Operations>
+		<Store/>
+		<UpDate/>
+		<Remove/>
+		<FindBy>
+			<OrderField>SERVICE</OrderField>
+		</FindBy>
+	</Operations>
 </Bean>
