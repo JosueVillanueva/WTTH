@@ -1,31 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE Bean SYSTEM "bean.dtd">
 <Bean>
-	<Name>Service Mapping</Name>
+	<Name>ServiceMapping</Name>
 	<Solution>WTTH</Solution>
 	<Package>com.hpe.ov.activator.inventory</Package>
 	<DBTable>GENSERV_Service_Mapping</DBTable>
 	<Fields>
-		<Field mandatory="true" update="false">
+		<Field mandatory="true" upDate="false">
 			<Name>service</Name>
+			<Column>SERVICE</Column>
 			<Type>String</Type>
 			<Description>service primary key</Description>
 		</Field>
 		<Field mandatory="true">
-			<Name>action_name</Name>
+			<Name>actionName</Name>
+			<Column>ACTION_NAME</Column>
 			<Type>String</Type>
 			<Description>action name</Description>
 		</Field>
 		<Field mandatory="false">
-			<Name>wf_name</Name>
+			<Name>wfName</Name>
+			<Column>WF_NAME</Column>
 			<Type>String</Type>
 			<Description>workflow name</Description>
 		</Field>
 	</Fields>
 	<Keys>
 		<Key pk="true">
-			<KeyField>service</KeyField>
-			<KeyField>action_name</KeyField>
+			<KeyField>SERVICE</KeyField>
+			<KeyField>ACTION_NAME</KeyField>
 		</Key>
 	</Keys>
+	<Operations>
+		<Store/>
+		<UpDate/>
+		<Remove/>
+		<FindBy>
+			<OrderField>SERVICE</OrderField>
+		</FindBy>
+	</Operations>
 </Bean>
