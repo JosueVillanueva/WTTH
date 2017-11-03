@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE Bean SYSTEM "bean.dtd">
+<Bean>
+	<Name>Service Params</Name>
+	<Solution>WTTH</Solution>
+	<Package>com.hpe.ov.activator.inventory</Package>
+	<DBTable>GENSERV_Service_Params</DBTable>
+	<Fields>
+		<Field mandatory="true" update="false">
+			<Name>service_id</Name>
+			<Type>string</Type>
+			<Description>service primary key</Description>
+		</Field>
+		<Field mandatory="true">
+			<Name>costumer_id</Name>
+			<Type>string</Type>
+			<Description>costumer id</Description>
+		</Field>
+		<Field mandatory="false">
+			<Name>param_name</Name>
+			<Type>string</Type>
+			<Description>parameter name</Description>
+		</Field>
+		<Field mandatory="false">
+			<Name>param_value</Name>
+			<Type>String</Type>
+			<Description>parameter value</Description>
+		</Field>
+		<Field mandatory="false">
+			<Name>aux1</Name>
+			<Type>long</Type>
+			<Description>auxiliar field</Description>
+		</Field>
+		<Field mandatory="false">
+			<Name>metada</Name>
+			<Type>long</Type>
+			<Description>additional info</Description>
+		</Field>
+	</Fields>
+	<Keys>
+		<Key pk="true">
+			<KeyField>service_id</KeyField>
+		</Key>
+		<Key unique="false" makeIndex="true">
+			<Name>costumerId</Name>
+			<KeyField>costumer_id</KeyField>
+		</Key>
+		<Key unique="false" makeIndex="true">
+			<Name>paramName</Name>
+			<KeyField>param_name</KeyField>
+		</Key>
+	</Keys>
+	<Operations>
+		<Store/>
+		<Update/>
+		<Remove/>
+		<FindBy>
+			<OrderField>service_id</OrderField>
+		</FindBy>
+		<FindBy key="costumerId">
+			<OrderField>service_id</OrderField>
+		</FindBy>
+		<FindBy key="paramName">
+			<OrderField>service_id</OrderField>
+		</FindBy>
+	</Operations>
+</Bean>
