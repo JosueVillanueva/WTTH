@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE Bean SYSTEM "bean.dtd">
+<Bean>
+	<Name>Services</Name>
+	<Solution>WTTH</Solution>
+	<Package>com.hpe.ov.activator.inventory</Package>
+	<DBTable>GENSERV_Services</DBTable>
+	<Fields>
+		<Field mandatory="true" update="false">
+			<Name>service_id</Name>
+			<Type>String</Type>
+			<Description>service primary key</Description>
+		</Field>
+		<Field mandatory="false">
+			<Name>costumer_id</Name>
+			<Type>String</Type>
+			<Description>costumer id</Description>
+		</Field>
+		<Field mandatory="false">
+			<Name>service_type</Name>
+			<Type>String</Type>
+			<Description>service type</Description>
+		</Field>
+		<Field mandatory="false">
+			<Name>account_number</Name>
+			<Type>String</Type>
+			<Description>account number</Description>
+		</Field>
+		<Field mandatory="false">
+			<Name>account_status</Name>
+			<Type>String</Type>
+			<Description>account_status</Description>
+		</Field>
+		<Field mandatory="false">
+			<Name>aux1</Name>
+			<Type>long</Type>
+			<Description>auxiliar field</Description>
+		</Field>
+		<Field mandatory="false">
+			<Name>metada</Name>
+			<Type>long</Type>
+			<Description>additional info</Description>
+		</Field>
+	</Fields>
+	<Keys>
+		<Key pk="true">
+			<KeyField>service_id</KeyField>
+		</Key>
+		<Key unique="false" makeIndex="true">
+			<Name>costumerId</Name>
+			<KeyField>costumer_id</KeyField>
+		</Key>
+		<Key unique="false" makeIndex="true">
+			<Name>accountNumber</Name>
+			<KeyField>account_number</KeyField>
+		</Key>
+	</Keys>
+	<Operations>
+		<Store/>
+		<Update/>
+		<Remove/>
+		<FindBy>
+			<OrderField>service_id</OrderField>
+		</FindBy>
+		<FindBy key="costumer_id">
+			<OrderField>service_id</OrderField>
+		</FindBy>
+		<FindBy key="accountNumber">
+			<OrderField>service_id</OrderField>
+		</FindBy>
+	</Operations>
+</Bean>
