@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE Bean SYSTEM "bean.dtd">
+<Bean>
+	<Name>ConfigurationParams</Name>
+	<Solution>WTTH</Solution>
+	<Package>com.hpe.ov.activator.inventory</Package>
+	<DBTable>GENSERV_Configuration_Params</DBTable>
+	<Fields>
+		<Field mandatory="false">
+			<Name>paramName</Name>
+			<Column>PARAM_NAME</Column>
+			<Type>String</Type>
+			<Description>parameter name</Description>
+		</Field>
+		<Field mandatory="false">
+			<Name>paramValue</Name>
+			<Column>PARAM_VALUE</Column>
+			<Type>String</Type>
+			<Description>parameter value</Description>
+		</Field>
+	</Fields>
+	<Keys>
+		<Key pk="true">
+			<KeyField>paramName</KeyField>
+		</Key>
+	</Keys>
+	<Operations>
+		<Store/>
+		<Update/>
+		<Remove/>
+		<FindBy>
+			<OrderField>paramName</OrderField>
+		</FindBy>
+	</Operations>
+</Bean>

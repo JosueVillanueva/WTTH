@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE Bean SYSTEM "bean.dtd">
+<Bean>
+	<Name>ErrorHandling</Name>
+	<Solution>WTTH</Solution>
+	<Package>com.hpe.ov.activator.inventory</Package>
+	<DBTable>GENSERV_Error_Handling</DBTable>
+	<Fields>
+		<Field mandatory="false">
+			<Name>errorCode</Name>
+			<Column>ERROR_CODE</Column>
+			<Type>String</Type>
+			<Description>error code</Description>
+		</Field>
+		<Field mandatory="false">
+			<Name>errorDesc</Name>
+			<Column>ERROR_DESC</Column>
+			<Type>String</Type>
+			<Description>error description</Description>
+		</Field>
+		<Field mandatory="false">
+			<Name>valid</Name>
+			<Column>VALID</Column>
+			<Type>String</Type>
+			<Description>error validation</Description>
+		</Field>
+		<Field mandatory="false">
+			<Name>retryTimes</Name>
+			<Column>RETRY_TIMES</Column>
+			<Type>int</Type>
+			<Description>retry times</Description>
+		</Field>
+		<Field mandatory="false">
+			<Name>retryCount</Name>
+			<Column>RETRY_COUNT</Column>
+			<Type>int</Type>
+			<Description>retry count</Description>
+		</Field>
+	</Fields>
+	<Keys>
+		<Key pk="true">
+			<KeyField>errorCode</KeyField>
+		</Key>
+	</Keys>
+	<Operations>
+		<Store/>
+		<Update/>
+		<Remove/>
+		<FindBy>
+			<OrderField>errorCode</OrderField>
+		</FindBy>
+		<FindBy key="valid">
+			<OrderField>errorCode</OrderField>
+		</FindBy>
+	</Operations>
+</Bean>
