@@ -5,6 +5,7 @@
 	<Solution>WTTH</Solution>
 	<Package>com.hpe.ov.activator.inventory</Package>
 	<DBTable>GENSERV_Configuration_Params</DBTable>
+	<DBAlias>config_params</DBAlias>
 	<Fields>
 		<Field mandatory="false">
 			<Name>paramName</Name>
