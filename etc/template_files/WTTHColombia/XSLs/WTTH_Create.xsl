@@ -3,12 +3,11 @@
 	<xsl:param name= "password"/>
 	<xsl:param name= "MEName_value"/>
 	<xsl:param name= "husername"/>
-	<xsl:param name= "impi_value"/>
+	<xsl:param name= "telephone_WO_c"/>
 	<xsl:param name= "pwd_value"/>
 	<xsl:param name= "sub_id"/>
-	<xsl:param name= "impu_value"/>
+	<xsl:param name= "telephone_full"/>
 	<xsl:param name= "which_xml"/>
-	<xsl:param name= "E164NUM_value"/>
 	<xsl:param name= "LP_value"/>
 	<xsl:param name= "CSC_value"/>
 	<xsl:param name= "UNAME_value"/>
@@ -18,6 +17,7 @@
 	<xsl:param name= "CCO1_value"/>
 	<xsl:param name= "CCO5_value"/>
 	<xsl:param name= "COP_value"/>
+	<xsl:param name= "authurl"/>
 
 
 	<xsl:template match="/">
@@ -68,7 +68,7 @@
 					</soapenv:Header>
 					<soapenv:Body>
 						<xsl:call-template name="reg_comss">
-							<xsl:with-param name="impu_value" select="$impu_value"/>
+							<xsl:with-param name="telephone_full" select="$telephone_full"/>
 						</xsl:call-template>
 					</soapenv:Body>
 				</soapenv:Envelope>
@@ -91,8 +91,8 @@
 					</soapenv:Header>
 					<soapenv:Body>
 						<xsl:call-template name="add_dnaptrrec">
-							<xsl:with-param name="impu_value" select="$impu_value"/>
-							<xsl:with-param name="E164NUM_value" select="$E164NUM_value"/>
+							<xsl:with-param name="telephone_full" select="$telephone_full"/>
+							<xsl:with-param name="telephone_WO_c" select="$telephone_WO_c"/>
 						</xsl:call-template>
 					</soapenv:Body>
 				</soapenv:Envelope>
@@ -117,52 +117,56 @@
 						<xsl:choose>
 							<xsl:when test="$which_xml='ADD_HHDAINF'">
 								<xsl:call-template name="add_hhdainf">
-									<xsl:with-param name="impi_value" select="$impi_value"/>
+									<xsl:with-param name="telephone_full" select="$telephone_full"/>
 									<xsl:with-param name="husername" select="$husername"/>
 									<xsl:with-param name="pwd_value" select="$pwd_value"/>
+									<xsl:with-param name="authurl" select="$authurl"/>
 								</xsl:call-template>
 							</xsl:when>
 							<xsl:when test="$which_xml='ADD_HSUB'">
 								<xsl:call-template name="add_hsub">
 									<xsl:with-param name="sub_id" select="$sub_id"/>
-									<xsl:with-param name="impi_value" select="$impi_value"/>
-									<xsl:with-param name="impu_value" select="$impu_value"/>
+									<xsl:with-param name="telephone_full" select="$telephone_full"/>
+									<xsl:with-param name="authurl" select="$authurl"/>
 								</xsl:call-template>
 							</xsl:when>
 							<xsl:when test="$which_xml='SET_HVNTPLID'">
 								<xsl:call-template name="set_hvntplid">
-									<xsl:with-param name="impu_value" select="$impu_value"/>
+									<xsl:with-param name="telephone_full" select="$telephone_full"/>
+									<xsl:with-param name="authurl" select="$authurl"/>
 								</xsl:call-template>
 							</xsl:when>
 							<xsl:when test="$which_xml='SET_HREGAUTH'">
 								<xsl:call-template name="set_hregauth">
-									<xsl:with-param name="impu_value" select="$impu_value"/>
+									<xsl:with-param name="telephone_full" select="$telephone_full"/>
+									<xsl:with-param name="authurl" select="$authurl"/>
 								</xsl:call-template>
 							</xsl:when>
 							<xsl:when test="$which_xml='ADD_HIMPU'">
 								<xsl:call-template name="add_himpu">
-									<xsl:with-param name="impi_value" select="$impi_value"/>
-									<xsl:with-param name="impu_value" select="$impu_value"/>
+									<xsl:with-param name="telephone_full" select="$telephone_full"/>
+									<xsl:with-param name="authurl" select="$authurl"/>
 								</xsl:call-template>
 							</xsl:when>
 							<xsl:when test="$which_xml='SET_HIRS'">
 								<xsl:call-template name="set_hirs">
-									<xsl:with-param name="impi_value" select="$impi_value"/>
+									<xsl:with-param name="telephone_full" select="$telephone_full"/>
 								</xsl:call-template>
 							</xsl:when>
 							<xsl:when test="$which_xml='SET_HSPSHARE'">
 								<xsl:call-template name="set_hspshare">
-									<xsl:with-param name="impu_value" select="$impu_value"/>
+									<xsl:with-param name="telephone_full" select="$telephone_full"/>
 								</xsl:call-template>
 							</xsl:when>
 							<xsl:when test="$which_xml='SET_HALIASPU'">
 								<xsl:call-template name="set_haliaspu">
-									<xsl:with-param name="impi_value" select="$impi_value"/>
+									<xsl:with-param name="telephone_full" select="$telephone_full"/>
 								</xsl:call-template>
 							</xsl:when>
 							<xsl:when test="$which_xml='ADD_HSIFC'">
 								<xsl:call-template name="add_hsifc">
-									<xsl:with-param name="impu_value" select="$impu_value"/>
+									<xsl:with-param name="telephone_full" select="$telephone_full"/>
+									<xsl:with-param name="telephone_full" select="$telephone_full"/>
 								</xsl:call-template>
 							</xsl:when>
 						</xsl:choose>

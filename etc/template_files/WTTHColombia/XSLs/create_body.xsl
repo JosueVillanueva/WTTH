@@ -4,7 +4,7 @@
 	<xsl:param name= "husername"/>
 	<xsl:param name= "pwd_value"/>
 	<xsl:param name= "sub_id"/>
-	<xsl:param name= "impu_value"/>
+	<xsl:param name= "telephone_full"/>
 	<xsl:param name= "LP_value"/>
 	<xsl:param name= "CSC_value"/>
 	<xsl:param name= "UNAME_value"/>
@@ -14,15 +14,16 @@
 	<xsl:param name= "CCO1_value"/>
 	<xsl:param name= "CCO5_value"/>
 	<xsl:param name= "COP_value"/>
-	<xsl:param name= "E164NUM_value"/>
+	<xsl:param name= "telephone_WO_c"/>
+	<xsl:param name= "authurl"/>
 
 
 	<xsl:template match="/" name="add_hhdainf">
 		<hss:ADD_HHDAINF xsl:exclude-result-prefixes="hss spg ens">
 			<hss:IMPI>
-				<xsl:value-of select="$impi_value"/>@ims.claro.com.co</hss:IMPI>
+				<xsl:value-of select="$telephone_full"/><xsl:value-of select="$authurl"/></hss:IMPI>
 			<hss:HUSERNAME>
-				<xsl:value-of select="$husername"/>@ims.claro.com.co</hss:HUSERNAME>
+				<xsl:value-of select="$husername"/><xsl:value-of select="$authurl"/></hss:HUSERNAME>
 			<hss:PWD>
 				<xsl:value-of select="$pwd_value"/>
 			</hss:PWD>
@@ -32,23 +33,23 @@
 	<xsl:template match="/" name="add_hsub">
 		<hss:ADD_HSUB xsl:exclude-result-prefixes="hss spg ens">
 			<hss:SUBID>
-				<xsl:value-of select="$sub_id"/>@ims.claro.com.co</hss:SUBID>
+				<xsl:value-of select="$sub_id"/><xsl:value-of select="$authurl"/></hss:SUBID>
 			<hss:IMPI>
-				<xsl:value-of select="$impi_value"/>@ims.claro.com.co</hss:IMPI>
-			<hss:IMPU>sip:<xsl:value-of select="$impu_value"/>@ims.claro.com.co</hss:IMPU>
+				<xsl:value-of select="$telephone_full"/><xsl:value-of select="$authurl"/></hss:IMPI>
+			<hss:IMPU>sip:<xsl:value-of select="$telephone_full"/><xsl:value-of select="$authurl"/></hss:IMPU>
 		</hss:ADD_HSUB>
 	</xsl:template>
 
 	<xsl:template match="/" name="set_hvntplid">
 		<hss:SET_HVNTPLID xsl:exclude-result-prefixes="hss spg ens">
-			<hss:IMPU>sip:<xsl:value-of select="$impu_value"/>@ims.claro.com.co</hss:IMPU>
+			<hss:IMPU>sip:<xsl:value-of select="$telephone_full"/><xsl:value-of select="$authurl"/></hss:IMPU>
 			<hss:VNTPLID>1</hss:VNTPLID>      
 		</hss:SET_HVNTPLID>
 	</xsl:template>
 
 	<xsl:template match="/" name="set_hregauth">
 		<hss:SET_HREGAUTH xsl:exclude-result-prefixes="hss spg ens">
-			<hss:IMPU>sip:<xsl:value-of select="$impu_value"/>@ims.claro.com.co</hss:IMPU>
+			<hss:IMPU>sip:<xsl:value-of select="$telephone_full"/><xsl:value-of select="$authurl"/></hss:IMPU>
 			<hss:REGAUTH>1</hss:REGAUTH>
 		</hss:SET_HREGAUTH>
 	</xsl:template>
@@ -56,8 +57,8 @@
 	<xsl:template match="/" name="add_himpu">
 		<hss:ADD_HIMPU xsl:exclude-result-prefixes="hss spg ens">
 			<hss:IMPI>
-				<xsl:value-of select="$impi_value"/>@ims.claro.com.co</hss:IMPI>
-			<hss:IMPU>tel:<xsl:value-of select="$impu_value"/>
+				<xsl:value-of select="$impi_value"/><xsl:value-of select="$authurl"/></hss:IMPI>
+			<hss:IMPU>tel:<xsl:value-of select="$telephone_full"/>
 			</hss:IMPU>
 			<hss:IMPUTYPE>1</hss:IMPUTYPE>
 		</hss:ADD_HIMPU>
@@ -66,14 +67,14 @@
 	<xsl:template match="/" name="set_hirs">
 		<hss:SET_HIRS xsl:exclude-result-prefixes="hss spg ens">
 			<hss:IRSID>1</hss:IRSID>
-			<hss:IMPULIST>"sip:<xsl:value-of select="$impi_value"/>@ims.claro.com.co"&amp;"tel:<xsl:value-of select="$impi_value"/>"</hss:IMPULIST>
+			<hss:IMPULIST>"sip:<xsl:value-of select="$telephone_full"/><xsl:value-of select="$authurl"/>"&amp;"tel:<xsl:value-of select="$impi_value"/>"</hss:IMPULIST>
 		</hss:SET_HIRS>
 	</xsl:template>
 
 	<xsl:template match="/" name="set_hspshare">
 		<hss:SET_HSPSHARE xsl:exclude-result-prefixes="hss spg ens">
-			<hss:BASEIMPU>sip:<xsl:value-of select="$impu_value"/>@ims.claro.com.co</hss:BASEIMPU>
-			<hss:IMPU>tel:<xsl:value-of select="$impu_value"/>
+			<hss:BASEIMPU>sip:<xsl:value-of select="$telephone_full"/><xsl:value-of select="$authurl"/></hss:BASEIMPU>
+			<hss:IMPU>tel:<xsl:value-of select="$telephone_full"/>
 			</hss:IMPU>
 		</hss:SET_HSPSHARE>
 	</xsl:template>
@@ -81,20 +82,20 @@
 	<xsl:template match="/" name="set_haliaspu">
 		<hss:SET_HALIASPU xsl:exclude-result-prefixes="hss spg ens">
 			<hss:ALIASID>1</hss:ALIASID>
-			<hss:IMPULIST>"sip:<xsl:value-of select="$impi_value"/>@ims.claro.com.co"&amp;"tel:<xsl:value-of select="$impi_value"/>"</hss:IMPULIST>
+			<hss:IMPULIST>"sip:<xsl:value-of select="$telephone_full"/><xsl:value-of select="$authurl"/>"&amp;"tel:<xsl:value-of select="$impi_value"/>"</hss:IMPULIST>
 		</hss:SET_HALIASPU>
 	</xsl:template>
 
 	<xsl:template match="/" name="add_hsifc">
 		<hss:ADD_HSIFC xsl:exclude-result-prefixes="hss spg ens">
-			<hss:IMPU>sip:<xsl:value-of select="$impu_value"/>@ims.claro.com.co</hss:IMPU>
+			<hss:IMPU>sip:<xsl:value-of select="$telephone_full"/><xsl:value-of select="$authurl"/></hss:IMPU>
 			<hss:SIFCID>0</hss:SIFCID>
 		</hss:ADD_HSIFC>
 	</xsl:template>
 
 	<xsl:template match="/" name="add_sbr">
 		<spg:ADD_SBR xsl:exclude-result-prefixes="hss spg ens">
-			<spg:IMPU>sip:<xsl:value-of select="$impu_value"/>@ims.claro.com.co</spg:IMPU>
+			<spg:IMPU>sip:<xsl:value-of select="$telephone_full"/><xsl:value-of select="$authurl"/></spg:IMPU>
 			<spg:TEMPLATEIDX>65535</spg:TEMPLATEIDX>
 			<spg:DPSIDX>1</spg:DPSIDX>
 			<spg:LP>
@@ -189,20 +190,20 @@
 	<xsl:template match="/" name="add_dnaptrrec">
 		<ens:ADD_DNAPTRREC xsl:exclude-result-prefixes="hss spg ens">
 			<ens:E164NUM>
-				<xsl:value-of select="$E164NUM_value"/>
+				<xsl:value-of select="$telephone_WO_c"/>
 			</ens:E164NUM>
 			<ens:ZONENAME>e164.arpa</ens:ZONENAME>
 			<ens:ORDER>10</ens:ORDER>
 			<ens:PREFERENCE>20</ens:PREFERENCE>
 			<ens:FLAGS>U</ens:FLAGS>
 			<ens:SERVICE>E2U+sip</ens:SERVICE>
-			<ens:REGEXP>!(^.*)$!sip:<xsl:value-of select="$impu_value"/>@ims.claro.com.co!</ens:REGEXP>
+			<ens:REGEXP>!(^.*)$!sip:<xsl:value-of select="$telephone_full"/><xsl:value-of select="$authurl"/>!</ens:REGEXP>
 		</ens:ADD_DNAPTRREC>
 	</xsl:template>
 
 	<xsl:template match="/" name="reg_comss">
 		<spg:REG_COMSS xsl:exclude-result-prefixes="hss spg ens">
-			<spg:IMPU>sip:<xsl:value-of select="$impu_value"/>@ims.claro.com.co</spg:IMPU>
+			<spg:IMPU>sip:<xsl:value-of select="$telephone_full"/><xsl:value-of select="$authurl"/></spg:IMPU>
 			<spg:REGFLAG>1</spg:REGFLAG>
 		</spg:REG_COMSS>
 	</xsl:template>
@@ -210,7 +211,7 @@
 	<xsl:template match="/" name="rmv_dnaptrrec">
 		<ens:RMV_DNAPTRREC>
 		 <!--Optional:-->
-		 <ens:E164NUM><xsl:value-of select="$E164NUM_value"/></ens:E164NUM>
+		 <ens:E164NUM><xsl:value-of select="$telephone_WO_c"/></ens:E164NUM>
 		 <!--Optional:-->
 		 <ens:ZONENAME>e164.arpa</ens:ZONENAME>
 		</ens:RMV_DNAPTRREC>
@@ -218,25 +219,25 @@
 	
 	<xsl:template match="/" name="rmv_sbr">
 		<spg:RMV_SBR>
-		 <spg:IMPU>sip:<xsl:value-of select="$impu_value"/>@ims.claro.com.co</spg:IMPU>
+		 <spg:IMPU>sip:<xsl:value-of select="$telephone_full"/><xsl:value-of select="$authurl"/></spg:IMPU>
 		</spg:RMV_SBR>
 	</xsl:template>
 	
 	<xsl:template match="/" name="rmv_himpu">
 		<hss:RMV_HIMPU>
-           <hss:IMPU>tel:<xsl:value-of select="$impu_value"/></hss:IMPU>
+           <hss:IMPU>tel:<xsl:value-of select="$telephone_full"/></hss:IMPU>
         </hss:RMV_HIMPU>
 	</xsl:template>
 	
 	<xsl:template match="/" name="rmv_hsub">
 		<hss:RMV_HSUB>
-		 <hss:SUBID><xsl:value-of select="$sub_id"/>@ims.claro.com.co</hss:SUBID>
+		 <hss:SUBID><xsl:value-of select="$sub_id"/><xsl:value-of select="$authurl"/></hss:SUBID>
 		</hss:RMV_HSUB>
 	</xsl:template>
 	
 	<xsl:template match="/" name="rmv_hhdainf">
 		<hss:RMV_HHDAINF>
-		 <hss:IMPI><xsl:value-of select="$impi_value"/>@ims.claro.com.co</hss:IMPI>
+		 <hss:IMPI><xsl:value-of select="$telephone_full"/><xsl:value-of select="$authurl"/></hss:IMPI>
 		</hss:RMV_HHDAINF>
 	</xsl:template>
 </xsl:stylesheet>

@@ -1,7 +1,7 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 	<xsl:param name= "username"/>
 	<xsl:param name= "password"/>
-	<xsl:param name= "impu_value"/>
+	<xsl:param name= "telephone_full"/>
 	<xsl:param name= "OUTRST_value"/>
 
 

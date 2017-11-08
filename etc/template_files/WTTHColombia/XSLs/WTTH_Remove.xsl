@@ -2,9 +2,9 @@
 	<xsl:param name= "username"/>
 	<xsl:param name= "password"/>
 	<xsl:param name= "MEName_value"/>
-	<xsl:param name= "impi_value"/>
+	<xsl:param name= "telephone_WO_c"/>
 	<xsl:param name= "sub_id"/>
-	<xsl:param name= "impu_value"/>
+	<xsl:param name= "telephone_full"/>
 	<xsl:param name= "which_xml"/>
 	<xsl:param name= "E164NUM_value"/>
 
@@ -28,7 +28,7 @@
 					</soapenv:Header>
 					<soapenv:Body>
 						<xsl:call-template name="rmv_sbr">
-							<xsl:with-param name="impu_value" select="$impu_value"/>
+							<xsl:with-param name="telephone_full" select="$telephone_full"/>
 						</xsl:call-template>
 					</soapenv:Body>
 				</soapenv:Envelope>
@@ -51,7 +51,7 @@
 					</soapenv:Header>
 					<soapenv:Body>
 						<xsl:call-template name="rmv_dnaptrrec">
-							<xsl:with-param name="E164NUM_value" select="$E164NUM_value"/>
+							<xsl:with-param name="telephone_WO_c" select="$telephone_WO_c"/>
 						</xsl:call-template>
 					</soapenv:Body>
 				</soapenv:Envelope>
@@ -76,7 +76,7 @@
 						<xsl:choose>
 							<xsl:when test="$which_xml='RMV_HHDAINF'">
 								<xsl:call-template name="rmv_hhdainf">
-									<xsl:with-param name="impi_value" select="$impi_value"/>
+									<xsl:with-param name="telephone_full" select="$telephone_full"/>
 								</xsl:call-template>
 							</xsl:when>
 							<xsl:when test="$which_xml='RMV_HSUB'">
@@ -86,7 +86,7 @@
 							</xsl:when>
 							<xsl:when test="$which_xml='RMV_HIMPU'">
 								<xsl:call-template name="rmv_himpu">
-									<xsl:with-param name="impu_value" select="$impu_value"/>
+									<xsl:with-param name="telephone_full" select="$telephone_full"/>
 								</xsl:call-template>
 							</xsl:when>
 						</xsl:choose>
