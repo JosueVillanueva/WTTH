@@ -41,6 +41,10 @@
 		<Key pk="true">
 			<KeyField>errorCode</KeyField>
 		</Key>
+		<Key unique="false" makeIndex="true">
+			<Name>valid</Name>
+			<KeyField>valid</KeyField>
+		</Key>
 	</Keys>
 	<Operations>
 		<Store/>
