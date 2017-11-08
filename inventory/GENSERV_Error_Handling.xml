@@ -41,9 +41,6 @@
 		<Key pk="true">
 			<KeyField>errorCode</KeyField>
 		</Key>
-		<Key>
-			<KeyField>valid</KeyField>
-		</Key>
 	</Keys>
 	<Operations>
 		<Store/>
