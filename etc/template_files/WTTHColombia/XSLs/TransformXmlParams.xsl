@@ -4,7 +4,7 @@
 	<xsl:template match="/">
 		<msg>
 			<header>
-				<xsl:for-each select="/msg/header/params">
+				<xsl:for-each select="/msg/header/attribute">
 
 					<xsl:element  name="{name}">
 						<xsl:value-of select="value" />
@@ -13,21 +13,26 @@
 			</header>
 			<body>
 				<service>
-					<xsl:apply-templates select="/msg/body/service/*"/>
+					<xsl:apply-templates select="/msg/body/voice/telephone/*"/>
 				</service>
 			</body>
 		</msg>
 	</xsl:template>
 	<xsl:template match="*">
 		<xsl:choose>
-			<xsl:when test="name()!='params'">
+			<xsl:when test="name()!='attribute'">
 				<xsl:element  name="{name()}">
 					<xsl:apply-templates select="*"/>
 				</xsl:element>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:element  name="{name}">
-					<xsl:value-of select="value" />
+					<xsl:element  name="{name()}">	
+						<xsl:value-of select="new_value"/> 
+					</xsl:element>
+					<xsl:element  name="{name()}">	
+						<xsl:value-of select="old_value"/> 
+					</xsl:element>
 				</xsl:element>
 			</xsl:otherwise>
 		</xsl:choose>
