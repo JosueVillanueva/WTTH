@@ -1,13 +1,13 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:hss="http://www.huawei.com/HSS" xmlns:spg="http://www.huawei.com/SPG" xmlns:ens="http://www.huawei.com/ENS">
 	<xsl:output method="xml" omit-xml-declaration="yes" indent="no"/>
-	<xsl:param name= "impi_value"/>	
-	<xsl:param name= "husername"/>
+	<!--xsl:param name= "impi_value"/-->	
+	<!--xsl:param name= "husername"/-->
 	<xsl:param name= "pwd_value"/>
-	<xsl:param name= "sub_id"/>
+	<!--xsl:param name= "sub_id"/-->
 	<xsl:param name= "telephone_full"/>
 	<xsl:param name= "LP_value"/>
 	<xsl:param name= "CSC_value"/>
-	<xsl:param name= "UNAME_value"/>
+	<!--xsl:param name= "UNAME_value"/-->
 	<xsl:param name= "LCT_value"/>
 	<xsl:param name= "NTT_value"/>
 	<xsl:param name= "ITT_value"/>
@@ -16,9 +16,72 @@
 	<xsl:param name= "COP_value"/>
 	<xsl:param name= "telephone_WO_c"/>
 	<xsl:param name= "authurl"/>
+	<xsl:param name= "telephone"/>
+	<xsl:param name= "ciy_code"/>
+	<xsl:param name= "country_code"/>
 
 
-	<xsl:template match="/" name="add_hhdainf">
+	<xsl:template match="/" name="add_naptrrecord">
+		<AddNAPTRRecord xmlns="http://www.huawei.com/SPG">
+			<E164NUM><xsl:value-of select="$telephone_WO_c"/></E164NUM>
+			<ZONENAME>e164.arpa</ZONENAME>
+			<ORDER>10</ORDER>
+			<PREFERENCE>20</PREFERENCE>
+			<FLAGS>U</FLAGS>
+			<SERVICE>E2U+sip</SERVICE>
+			<REGEXP>!(^.*)$!sip:+\1<xsl:value-of select="$authurl"/>!</REGEXP>
+		</AddNAPTRRecord>
+	</xsl:template>
+	
+	<xsl:template match="/" name="add_sbr">
+		<ADD_SBR xmlns="http://www.huawei.com/SPG">
+			<IMPU>sip:<xsl:value-of select="$telephone_full"/><xsl:value-of select="$authurl"/></IMPU>
+			<TEMPLATEIDX>65535</TEMPLATEIDX>
+			<DSPIDX>1</DSPIDX>
+			<LP><xsl:value-of select="$LP_value"/></LP>
+			<CSC><xsl:value-of select="$CSC_value"/></CSC>
+			<NSCFU>1</NSCFU>
+			<NSCLIP>1</NSCLIP>
+			<NSCW>1</NSCW>
+			<NSWAKE_UP>1</NSWAKE_UP>
+			<NS3PTY>1</NS3PTY>
+			<NSCBA>1</NSCBA>
+			<NSHOLD>1</NSHOLD>
+			<NSECT>1</NSECT>
+			<NSSD1D>1</NSSD1D>
+			<NSSD2D>1</NSSD2D>
+			<LCO>1</LCO>
+			<LC>1</LC>
+			<LCT><xsl:value-of select="$LCT_value"/></LCT>
+			<NTT><xsl:value-of select="$NTT_value"/></NTT>
+			<ITT><xsl:value-of select="$ITT_value"/></ITT>
+			<ICTX>1</ICTX>
+			<OCTX>1</OCTX>
+			<CCO1><xsl:value-of select="$CCO1_value"/></CCO1>
+			<CCO5><xsl:value-of select="$CCO5_value"/></CCO5>
+			<TIDCW>2</TIDCW>
+			<COP><xsl:value-of select="$COP_value"/></COP>
+			<MAXPARACALL>1</MAXPARACALL>
+		</ADD_SBR>
+	</xsl:template>
+	
+	<xsl:template match="/" name="add_imssub">
+		<AddIMSSub xmlns="http://www.huawei.com/SPG">
+			<DN><xsl:value-of select="$telephone"/></DN>
+			<AC><xsl:value-of select="$ciy_code"/></AC>
+			<NC><xsl:value-of select="$country_code"/></NC>
+			<DOMAIN><xsl:value-of select="$authurl"/></DOMAIN>
+			<PASSWORD><xsl:value-of select="$pwd_value"/></PASSWORD>
+			<HUSERNAME><xsl:value-of select="$telephone_full"/><xsl:value-of select="$authurl"/></HUSERNAME>
+			<USERTYPE>0</USERTYPE>
+			<IMPUTPLID>0</IMPUTPLID>
+			<SPTPLID>1</SPTPLID>
+			<CHARGTPLID>1</CHARGTPLID>
+			<IMPI><xsl:value-of select="$telephone_full"/><xsl:value-of select="$authurl"/></IMPI>
+		</AddIMSSub>
+	</xsl:template>
+	
+	<!--xsl:template match="/" name="add_hhdainf">
 		<hss:ADD_HHDAINF xsl:exclude-result-prefixes="hss spg ens">
 			<hss:IMPI>
 				<xsl:value-of select="$telephone_full"/><xsl:value-of select="$authurl"/></hss:IMPI>
@@ -206,7 +269,7 @@
 			<spg:IMPU>sip:<xsl:value-of select="$telephone_full"/><xsl:value-of select="$authurl"/></spg:IMPU>
 			<spg:REGFLAG>1</spg:REGFLAG>
 		</spg:REG_COMSS>
-	</xsl:template>
+	</xsl:template-->
 	
 	<xsl:template match="/" name="rmv_dnaptrrec">
 		<ens:RMV_DNAPTRREC>

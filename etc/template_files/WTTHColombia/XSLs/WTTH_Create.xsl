@@ -2,15 +2,15 @@
 	<xsl:param name= "username"/>
 	<xsl:param name= "password"/>
 	<xsl:param name= "MEName_value"/>
-	<xsl:param name= "husername"/>
+	<!--xsl:param name= "husername"/-->
 	<xsl:param name= "telephone_WO_c"/>
 	<xsl:param name= "pwd_value"/>
-	<xsl:param name= "sub_id"/>
+	<!--xsl:param name= "sub_id"/-->
 	<xsl:param name= "telephone_full"/>
 	<xsl:param name= "which_xml"/>
 	<xsl:param name= "LP_value"/>
 	<xsl:param name= "CSC_value"/>
-	<xsl:param name= "UNAME_value"/>
+	<!--xsl:param name= "UNAME_value"/-->
 	<xsl:param name= "LCT_value"/>
 	<xsl:param name= "NTT_value"/>
 	<xsl:param name= "ITT_value"/>
@@ -18,11 +18,58 @@
 	<xsl:param name= "CCO5_value"/>
 	<xsl:param name= "COP_value"/>
 	<xsl:param name= "authurl"/>
+	<xsl:param name= "telephone"/>
+	<xsl:param name= "ciy_code"/>
+	<xsl:param name= "country_code"/>
 
 
 	<xsl:template match="/">
 		<xsl:import href="create_body.xsl"/>
-		<xsl:choose>
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:spg="http://www.huawei.com/SPG">
+			<soapenv:Header>
+				<ResendFlag>?</ResendFlag>
+				<Authentication>
+					<Username><xsl:value-of select="$username"/></Username>
+					<Password><xsl:value-of select="$password"/></Password>
+				</Authentication>
+				<MessageID/>
+			</soapenv:Header>
+			<soapenv:Body>
+				<xsl:choose>
+					<xsl:when test="$which_xml='ADD_SBR'">
+						<xsl:call-template name="add_sbr">
+							<xsl:with-param name="telephone_full" select="$telephone_full"/>
+							<xsl:with-param name="authurl" select="$authurl"/>
+							<xsl:with-param name="LP_value" select="$LP_value"/>
+							<xsl:with-param name="CSC_value" select="$CSC_value"/>
+							<xsl:with-param name="LCT_value" select="$LCT_value"/>
+							<xsl:with-param name="NTT_value" select="$NTT_value"/>
+							<xsl:with-param name="ITT_value" select="$ITT_value"/>
+							<xsl:with-param name="CCO1_value" select="$CCO1_value"/>
+							<xsl:with-param name="CCO5_value" select="$CCO5_value"/>
+							<xsl:with-param name="COP_value" select="$COP_value"/>
+						</xsl:call-template>
+					</xsl:when>
+					<xsl:when test="$which_xml='AddNAPTRRecord'">
+						<xsl:call-template name="add_naptrrecord">
+							<xsl:with-param name="telephone_WO_c" select="$telephone_WO_c"/>
+							<xsl:with-param name="authurl" select="$authurl"/>
+						</xsl:call-template>
+					</xsl:when>
+					<xsl:when test="$which_xml='AddIMSSub'">
+						<xsl:call-template name="add_imssub">
+							<xsl:with-param name="telephone" select="$telephone"/>
+							<xsl:with-param name="ciy_code" select="$ciy_code"/>
+							<xsl:with-param name="country_code" select="$country_code"/>
+							<xsl:with-param name="authurl" select="$authurl"/>
+							<xsl:with-param name="pwd_value" select="$pwd_value"/>
+							<xsl:with-param name="telephone_full" select="$telephone_full"/>
+						</xsl:call-template>
+					</xsl:when>
+				</xsl:choose>
+			</soapenv:Body>
+		</soapenv:Envelope>
+		<!--xsl:choose>
 			<xsl:when test="$which_xml='ADD_SBR'">
 				<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:spg="http://www.huawei.com/SPG">
 					<soapenv:Header>
@@ -72,8 +119,8 @@
 						</xsl:call-template>
 					</soapenv:Body>
 				</soapenv:Envelope>
-			</xsl:when>
-			<xsl:when test="$which_xml='ADD_DNAPTRREC'">
+			</xsl:when-->
+			<!--xsl:when test="$which_xml='ADD_DNAPTRREC'">
 				<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ens="http://www.huawei.com/ENS">
 					<soapenv:Header>
 						<ens:MessageID>?</ens:MessageID>
@@ -96,8 +143,8 @@
 						</xsl:call-template>
 					</soapenv:Body>
 				</soapenv:Envelope>
-			</xsl:when>
-			<xsl:otherwise>
+			</xsl:when-->
+			<!--xsl:otherwise>
 				<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:hss="http://www.huawei.com/HSS">
 					<soapenv:Header>
 						<hss:MessageID>?</hss:MessageID>
@@ -172,7 +219,7 @@
 						</xsl:choose>
 					</soapenv:Body>
 				</soapenv:Envelope>
-			</xsl:otherwise>
-		</xsl:choose>
+			</xsl:otherwis>
+		</xsl:choose-->
 	</xsl:template>
 </xsl:stylesheet>
