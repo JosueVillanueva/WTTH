@@ -1,4 +1,3 @@
-
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
@@ -6,8 +5,8 @@
     <xsl:param name= "fixed_number"/>
     <xsl:param name= "mobile_number"/>
 			<route>
-				<user type="E164"><xsl:value-of select="$fixed_number" /></user>
-				<next type="regex">!<xsl:value-of select="$mobile_number"/>+(^.*$)!sip:\1@sbcims!</next>
+				<user type="E164"><xsl:value-of select="$mobile_number" /></user> 
+				<next type="regex">!sip:<xsl:value-of select="$fixed_number"/>@mgcfims!</next>
 			</route>			
    </xsl:template>
 
@@ -33,9 +32,9 @@
                     <xsl:with-param name="separator" select="$separator"/>
                 </xsl:call-template>
             </xsl:when>
-			 <xsl:otherwise>
+            <xsl:otherwise>
                 <xsl:call-template name="add_route">
-					<xsl:with-param name="fixed_number" select="$fixed_numbers"/>
+                    <xsl:with-param name="fixed_number" select="$fixed_numbers"/>
                     <xsl:with-param name="mobile_number" select="$mobile_numbers"/>
                 </xsl:call-template>
             </xsl:otherwise>
@@ -45,5 +44,3 @@
 	
 	
 </xsl:stylesheet>
-
-

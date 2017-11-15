@@ -1,0 +1,1046 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Workflow SYSTEM "workflow.dtd">
+
+<Workflow Init-On-Startup="false" Unique="false" auditEnabled="false" auditStateChangeEvent="false" autoAuditEnabled="true" disablePersistence="true" statEnabled="false">
+   <Name>WTTH_SR</Name>
+   <Solution>WTTH</Solution>
+   <Start-Node>PrintStart</Start-Node>
+   <Nodes>
+      <Process-Node>
+         <Name>PrintStart</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="Start WF %s "/>
+            <Param name="queue" value="variable:WORKFLOW_NAME"/>
+            <Param name="param0" value="WORKFLOW_NAME"/>
+         </Action>
+         <Next-Node>VariableMapper</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>VariableMapper</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="action" value="create"/>
+            <Param name="fixed_number" value="4343422099"/>
+            <Param name="mobile_number" value="4434719523"/>
+         </Action>
+         <Next-Node>Log</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>Log</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="WTTH"/>
+            <Param name="log_level" value="INFORMATIVE"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="#################Start %s Action %s fixed_number %s#######################"/>
+            <Param name="param0" value="WORKFLOW_NAME"/>
+            <Param name="param1" value="action"/>
+            <Param name="param2" value="fixed_number"/>
+         </Action>
+         <Next-Node>MapPaths</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>MapPaths</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="path_xml_ims_to_mov" value="%FILE_URL_PREFIX%C:\Users\HectorS5\Documents\Proyects\WTTH-colombia\WTTH\etc\template_files\WTTHColombia\XSLs\test\lrt_ims_to_mov.xml"/>
+            <Param name="path_xml_mov_to_ims" value="%FILE_URL_PREFIX%C:\Users\HectorS5\Documents\Proyects\WTTH-colombia\WTTH\etc\template_files\WTTHColombia\XSLs\test\lrt_mov_to_ims.xml"/>
+            <Param name="path_xml_sftp" value="%FILE_URL_PREFIX%C:\Users\HectorS5\Documents\Proyects\WTTH-colombia\WTTH\etc\template_files\WTTHColombia\XSLs\test\sftp.xml"/>
+            <Param name="path_xsl_ims_to_mov" value="%FILE_URL_PREFIX%C:\Users\HectorS5\Documents\Proyects\WTTH-colombia\WTTH\etc\template_files\WTTHColombia\XSLs\WTTH_ims_to_mov_b.xsl"/>
+            <Param name="path_xsl_mov_to_ims" value="%FILE_URL_PREFIX%C:\Users\HectorS5\Documents\Proyects\WTTH-colombia\WTTH\etc\template_files\WTTHColombia\XSLs\WTTH_mov_to_ims_b.xsl"/>
+            <Param name="path_xsl_sftp" value="%FILE_URL_PREFIX%C:\Users\HectorS5\Documents\Proyects\WTTH-colombia\WTTH\etc\template_files\WTTHColombia\XSLs\test\sftp_test.xsl"/>
+         </Action>
+         <Next-Node>Switch</Next-Node>
+      </Process-Node>
+      <Switch-Node disablePersistence="true">
+         <Name>Switch</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.SwitchCase</Class-Name>
+            <Param name="key" value="action"/>
+            <Param name="case0" value="constant:delete"/>
+            <Param name="case1" value="constant:create"/>
+         </Action>
+         <Switch name="case0">DeleteLine</Switch>
+         <Switch name="case1">getDate</Switch>
+         <Default>mapError2</Default>
+      </Switch-Node>
+      <Process-Node>
+         <Name>Activate</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Activate</Class-Name>
+            <Param name="ignore_lock_argument" value="constant:true"/>
+            <Param name="task" value="GLOBAL.GenericCLI_Activate"/>
+            <Param name="param0" value="url_sftp"/>
+            <Param name="param1" value="path_xml_sftp"/>
+         </Action>
+         <Next-Node>PutMessage5</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>DeleteLine</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.DeleteInventory</Class-Name>
+            <Param name="bean" value="constant:com.hpe.ov.activator.inventory.IMStoMov"/>
+            <Param name="throw_excep" value="constant:true"/>
+            <Param name="key_field0" value="constant:fixedNumber"/>
+            <Param name="key_value0" value="fixed_number"/>
+         </Action>
+         <Next-Node>deleteOK?</Next-Node>
+      </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>Equal</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
+            <Param name="op1" value="ims_to_mov_obj#"/>
+            <Param name="op2" value="count_ims_to_mov"/>
+         </Action>
+         <True-Next-Node>PutMessage3</True-Next-Node>
+         <False-Next-Node>PutMessage4</False-Next-Node>
+      </Rule-Node>
+      <Process-Node disablePersistence="true">
+         <Name>Error</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.DoNothing</Class-Name>
+         </Action>
+         <Next-Node>PutMessage</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>Map number´s</Name>
+         <Description>map fixed number and mobile number</Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="fixed_numbers" value="%fixed_numbers%,%ims_to_mov_obj[count_ims_to_mov].fixedNumber%"/>
+            <Param name="mobile_numbers" value="%mobile_numbers%,%ims_to_mov_obj[count_ims_to_mov].mobileNumber%"/>
+         </Action>
+         <Next-Node>countImsToMov++</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>PutMessage</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="Error"/>
+            <Param name="queue" value="variable:WORKFLOW_NAME"/>
+         </Action>
+      </Process-Node>
+      <Process-Node>
+         <Name>PutMessage2</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="ims_to_mov_obj %s count_ims_to_mov %s fixed_numbers %s mobile_numbers %s"/>
+            <Param name="queue" value="variable:WORKFLOW_NAME"/>
+            <Param name="param0" value="ims_to_mov_obj#"/>
+            <Param name="param1" value="count_ims_to_mov"/>
+            <Param name="param2" value="fixed_numbers"/>
+            <Param name="param3" value="mobile_numbers"/>
+         </Action>
+         <Next-Node>Equal</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>PutMessage3</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="fixed_numbers %s mobile_numbers %s"/>
+            <Param name="queue" value="variable:WORKFLOW_NAME"/>
+            <Param name="param0" value="fixed_numbers"/>
+            <Param name="param1" value="mobile_numbers"/>
+         </Action>
+         <Next-Node>xmlImsToMov1</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>PutMessage4</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="ims_to_mov_obj %s count_ims_to_mov %s fixed_numbers %s mobile_numbers %s"/>
+            <Param name="queue" value="variable:WORKFLOW_NAME"/>
+            <Param name="param0" value="ims_to_mov_obj[count_ims_to_mov].fixedNumber"/>
+            <Param name="param1" value="count_ims_to_mov"/>
+            <Param name="param2" value="fixed_numbers"/>
+            <Param name="param3" value="mobile_numbers"/>
+         </Action>
+         <Next-Node>Map number´s</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>PutMessage5</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="-activation_major_code[%s] -activation_description[%s]"/>
+            <Param name="queue" value="variable:WORKFLOW_NAME"/>
+            <Param name="param0" value="activation_major_code"/>
+            <Param name="param1" value="activation_description"/>
+         </Action>
+      </Process-Node>
+      <Process-Node>
+         <Name>addLine</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.CreateInventory</Class-Name>
+            <Param name="bean" value="constant:com.hpe.ov.activator.inventory.IMStoMov"/>
+            <Param name="bean_variable" value="ims_to_mov_obj"/>
+            <Param name="strict_create" value="constant:true"/>
+            <Param name="throw_excep" value="constant:false"/>
+            <Param name="key_field0" value="constant:requestDate"/>
+            <Param name="key_value0" value="create_date"/>
+            <Param name="key_field1" value="constant:fixedNumber"/>
+            <Param name="key_value1" value="fixed_number"/>
+            <Param name="key_field2" value="constant:mobileNumber"/>
+            <Param name="key_value2" value="mobile_number"/>
+            <Param name="key_field3" value="constant:aux1"/>
+            <Param name="key_value3" value="constant:0"/>
+         </Action>
+         <Next-Node>findImsToMov</Next-Node>
+      </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>addOK?</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.WasPreviousNodeOK</Class-Name>
+         </Action>
+         <True-Next-Node>findImsToMov</True-Next-Node>
+         <False-Next-Node>Error</False-Next-Node>
+      </Rule-Node>
+      <Process-Node disablePersistence="true">
+         <Name>countImsToMov++</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Add</Class-Name>
+            <Param name="op0" value="count_ims_to_mov"/>
+         </Action>
+         <Next-Node>Equal</Next-Node>
+      </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>deleteOK?</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.WasPreviousNodeOK</Class-Name>
+         </Action>
+         <True-Next-Node>findImsToMov</True-Next-Node>
+         <False-Next-Node>Error</False-Next-Node>
+      </Rule-Node>
+      <Process-Node>
+         <Name>findImsToMov</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.QueryInventory</Class-Name>
+            <Param name="bean" value="constant:com.hpe.ov.activator.inventory.IMStoMov"/>
+            <Param name="find_by_method" value="constant:findAll"/>
+            <Param name="variable" value="ims_to_mov_obj"/>
+         </Action>
+         <Next-Node>notImsToMov?</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>getDate</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.JavaNode</Class-Name>
+            <Param name="javacode" value="constant:public String formatoFecha(){         Date date = new Date();         String fecha=&quot;&quot;;         DateFormat dateFormat = new SimpleDateFormat(&quot;EEE MMM dd HH:mm:ss Z yyyy&quot;);         fecha = dateFormat.format(date);     return fecha;     }"/>
+            <Param name="method" value="constant:formatoFecha"/>
+            <Param name="output_var" value="create_date"/>
+            <Param name="throw_excep" value="constant:false"/>
+         </Action>
+         <Next-Node>addLine</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>mapError</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+         </Action>
+         <Next-Node>Error</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>mapError2</Name>
+         <Description>action invalid</Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+         </Action>
+         <Next-Node>Error</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>mapSftp</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="action_sftp" value="put"/>
+            <Param name="host_sftp" value="172.22.21.239"/>
+            <Param name="pass_sftp" value="Colombia123"/>
+            <Param name="port" value="22"/>
+            <Param name="user_sftp" value="root"/>
+         </Action>
+         <Next-Node>mapUrl</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>mapUrl</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="url_sftp" value="%host_sftp%:%port%"/>
+         </Action>
+         <Next-Node>sftp</Next-Node>
+      </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>notImsToMov?</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
+            <Param name="op1" value="ims_to_mov_obj#"/>
+            <Param name="op2" value="constant:0"/>
+         </Action>
+         <True-Next-Node>mapError</True-Next-Node>
+         <False-Next-Node>startingNumbers</False-Next-Node>
+      </Rule-Node>
+      <Process-Node disablePersistence="true">
+         <Name>sftp</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.TransformXML</Class-Name>
+            <Param name="output_url" value="path_xml_sftp"/>
+            <Param name="xsl_url" value="path_xsl_sftp"/>
+         </Action>
+         <Next-Node>Activate</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>startingNumbers</Name>
+         <Description>inicializan variables</Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="count_ims_to_mov" value="1"/>
+            <Param name="fixed_numbers" value="%ims_to_mov_obj[0].fixedNumber%"/>
+            <Param name="mobile_numbers" value="%ims_to_mov_obj[0].mobileNumber%"/>
+         </Action>
+         <Next-Node>PutMessage2</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>xmlImsToMov1</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.TransformXML</Class-Name>
+            <Param name="output_url" value="path_xml_ims_to_mov"/>
+            <Param name="xsl_url" value="path_xsl_ims_to_mov"/>
+         </Action>
+         <Next-Node>xmlMovToIms</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>xmlMovToIms</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.TransformXML</Class-Name>
+            <Param name="output_url" value="path_xml_mov_to_ims"/>
+            <Param name="xsl_url" value="path_xsl_mov_to_ims"/>
+         </Action>
+         <Next-Node>mapSftp</Next-Node>
+      </Process-Node>
+   </Nodes>
+   <Case-Packet>
+      <Variable name="ANNOTATION" type="String"/>
+      <Variable name="BREAK_POINT" type="String"/>
+      <Variable name="DEFAULT_ROLE" type="String"/>
+      <Variable name="EMPTY_STRING" type="String"/>
+      <Variable name="ETC" type="String"/>
+      <Variable name="EX_STEP_NAME" type="String"/>
+      <Variable name="FILE_URL_PREFIX" type="String"/>
+      <Variable name="HOST_NAME" type="String"/>
+      <Variable name="JOB_ID" type="Integer"/>
+      <Variable name="KILLED" type="Boolean"/>
+      <Variable name="KILL_ROLE" type="String"/>
+      <Variable name="MACRO_OUTPUT" type="Object"/>
+      <Variable name="MASTER_CHILD_JOBS" type="Object"/>
+      <Variable name="MUTEX" type="Boolean"/>
+      <Variable name="NULL" type="Object"/>
+      <Variable name="PRIORITY" type="Integer"/>
+      <Variable name="RESERVATIONS" type="Object"/>
+      <Variable name="RET_TEXT" type="String"/>
+      <Variable name="RET_VALUE" type="Integer"/>
+      <Variable name="RUNTIME" type="Object"/>
+      <Variable name="SCHEDULED_INFO" type="Object"/>
+      <Variable name="SERVICE_ID" type="String"/>
+      <Variable name="SOLUTION_ETC" type="String"/>
+      <Variable name="SOLUTION_NAME" type="String"/>
+      <Variable name="SOLUTION_VAR" type="String"/>
+      <Variable name="SOR_ID" type="Integer"/>
+      <Variable name="START_ROLE" type="String"/>
+      <Variable name="START_TIME" type="Integer"/>
+      <Variable name="STATUS" type="String"/>
+      <Variable name="STEP_NAME" type="String"/>
+      <Variable name="SUBSTEP" type="String"/>
+      <Variable name="THROW_EXCEP" type="Boolean"/>
+      <Variable name="TIMEOUT" type="Boolean"/>
+      <Variable name="TRACE_ROLE" type="String"/>
+      <Variable name="UNIQUE_WORKFLOW" type="Integer"/>
+      <Variable name="VAR" type="String"/>
+      <Variable name="WORKFLOW_EXCEPTION" type="Object"/>
+      <Variable name="WORKFLOW_EXECUTION_STATUS" type="String"/>
+      <Variable name="WORKFLOW_NAME" type="String"/>
+      <Variable name="WORKFLOW_ORDER_ID" type="String"/>
+      <Variable name="WORKFLOW_STATE" type="String"/>
+      <Variable name="WORKFLOW_TYPE" type="String"/>
+      <Variable name="WORKFLOW_VERSION" type="Integer"/>
+      <Variable name="action" type="String"/>
+      <Variable name="action_sftp" type="String"/>
+      <Variable name="activation_description" type="String"/>
+      <Variable name="activation_major_code" type="Integer"/>
+      <Variable name="activation_minor_code" type="Integer"/>
+      <Variable name="count_ims_to_mov" type="Integer"/>
+      <Variable name="count_mov_to_ims" type="Integer"/>
+      <Variable name="create_date" type="String"/>
+      <Variable name="current_date" type="String"/>
+      <Variable name="fixed_number" type="String"/>
+      <Variable name="fixed_number_array" type="String"/>
+      <Variable name="fixed_numbers" type="String"/>
+      <Variable name="host_sftp" type="String"/>
+      <Variable name="ims_to_mov_obj" type="Object"/>
+      <Variable name="message_url" type="String"/>
+      <Variable name="mobile_number" type="String"/>
+      <Variable name="mobile_numbers" type="String"/>
+      <Variable name="module_name" type="String"/>
+      <Variable name="mov_to_ims_obj" type="Object"/>
+      <Variable name="pass_sftp" type="String"/>
+      <Variable name="path_xml_ims_to_mov" type="String"/>
+      <Variable name="path_xml_mov_to_ims" type="String"/>
+      <Variable name="path_xml_sftp" type="String"/>
+      <Variable name="path_xsl_ims_to_mov" type="String"/>
+      <Variable name="path_xsl_ims_to_mov_tmp" type="String"/>
+      <Variable name="path_xsl_mov_to_ims" type="String"/>
+      <Variable name="path_xsl_mov_to_ims_tmp" type="String"/>
+      <Variable name="path_xsl_sftp" type="String"/>
+      <Variable name="port" type="String"/>
+      <Variable name="route" type="String"/>
+      <Variable name="route_concat" type="String"/>
+      <Variable name="route_concat_ims_to_mov" type="String"/>
+      <Variable name="route_concat_mov_to_ims" type="String"/>
+      <Variable name="route_ims_to_mov" type="String"/>
+      <Variable name="route_mov_to_ims" type="String"/>
+      <Variable name="separator" type="String"/>
+      <Variable name="skip_activation" type="Boolean"/>
+      <Variable name="url_sftp" type="String"/>
+      <Variable name="user_sftp" type="String"/>
+      <Variable name="xml_ims_to_mov" type="String"/>
+      <Variable name="xml_ims_to_mov_tmp" type="String"/>
+      <Variable name="xml_mov_to_ims" type="String"/>
+      <Variable name="xml_mov_to_ims_tmp" type="String"/>
+   </Case-Packet>
+   <Initial-Case-Packet>
+      <Variable-Value name="FILE_URL_PREFIX" value="file:///"/>
+      <Variable-Value name="SOLUTION_NAME" value="WTTH"/>
+      <Variable-Value name="WORKFLOW_NAME" value="WTTH_SR"/>
+      <Variable-Value name="WORKFLOW_VERSION" value="-1"/>
+      <Variable-Value name="separator" value=","/>
+   </Initial-Case-Packet>
+   <Coordinates>
+      <Position>
+         <Name>Activate</Name>
+         <X>1585</X>
+         <Y>282</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>DeleteLine</Name>
+         <X>438</X>
+         <Y>208</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Equal</Name>
+         <X>1119</X>
+         <Y>213</Y>
+         <Width>56</Width>
+         <Height>24</Height>
+      </Position>
+      <Position>
+         <Name>Error</Name>
+         <X>794</X>
+         <Y>378</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Log</Name>
+         <X>109</X>
+         <Y>208</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Map number´s</Name>
+         <X>1208</X>
+         <Y>126</Y>
+         <Width>80</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>MapPaths</Name>
+         <X>186</X>
+         <Y>208</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>PrintStart</Name>
+         <X>29</X>
+         <Y>208</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>PutMessage</Name>
+         <X>790</X>
+         <Y>466</Y>
+         <Width>68</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>PutMessage2</Name>
+         <X>1017</X>
+         <Y>202</Y>
+         <Width>74</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>PutMessage3</Name>
+         <X>1110</X>
+         <Y>281</Y>
+         <Width>74</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>PutMessage4</Name>
+         <X>1110</X>
+         <Y>126</Y>
+         <Width>74</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>PutMessage5</Name>
+         <X>1656</X>
+         <Y>281</Y>
+         <Width>74</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Switch</Name>
+         <X>277</X>
+         <Y>220</Y>
+         <Width>57</Width>
+         <Height>24</Height>
+      </Position>
+      <Position>
+         <Name>VariableMapper</Name>
+         <X>61</X>
+         <Y>303</Y>
+         <Width>84</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>addLine</Name>
+         <X>434</X>
+         <Y>282</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>addOK?</Name>
+         <X>522</X>
+         <Y>294</Y>
+         <Width>67</Width>
+         <Height>24</Height>
+      </Position>
+      <Position>
+         <Name>countImsToMov++</Name>
+         <X>1197</X>
+         <Y>201</Y>
+         <Width>102</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>deleteOK?</Name>
+         <X>575</X>
+         <Y>220</Y>
+         <Width>79</Width>
+         <Height>24</Height>
+      </Position>
+      <Position>
+         <Name>findImsToMov</Name>
+         <X>679</X>
+         <Y>208</Y>
+         <Width>77</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>getDate</Name>
+         <X>327</X>
+         <Y>282</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>mapError</Name>
+         <X>794</X>
+         <Y>305</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>mapError2</Name>
+         <X>275</X>
+         <Y>378</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>mapSftp</Name>
+         <X>1420</X>
+         <Y>281</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>mapUrl</Name>
+         <X>1455</X>
+         <Y>360</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>notImsToMov?</Name>
+         <X>774</X>
+         <Y>214</Y>
+         <Width>100</Width>
+         <Height>24</Height>
+      </Position>
+      <Position>
+         <Name>sftp</Name>
+         <X>1512</X>
+         <Y>281</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>startingNumbers</Name>
+         <X>908</X>
+         <Y>202</Y>
+         <Width>89</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>xmlImsToMov1</Name>
+         <X>1213</X>
+         <Y>281</Y>
+         <Width>81</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>xmlMovToIms</Name>
+         <X>1325</X>
+         <Y>281</Y>
+         <Width>75</Width>
+         <Height>48</Height>
+      </Position>
+      <Arrows>
+         <Name>Activate</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>DeleteLine</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Equal</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Error</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Log</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Map number´s</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>MapPaths</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>PrintStart</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>PutMessage</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>PutMessage2</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>PutMessage3</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>PutMessage4</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>PutMessage5</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Switch</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+         <Switch-Arrow>
+            <Default-Arrow>
+               <Type>0</Type>
+               <DeltaX>0</DeltaX>
+               <DeltaY>0</DeltaY>
+            </Default-Arrow>
+            <Case-Arrow>
+               <Name>case0</Name>
+               <Type>0</Type>
+               <DeltaX>0</DeltaX>
+               <DeltaY>0</DeltaY>
+            </Case-Arrow>
+            <Case-Arrow>
+               <Name>case1</Name>
+               <Type>3</Type>
+               <DeltaX>0</DeltaX>
+               <DeltaY>0</DeltaY>
+            </Case-Arrow>
+         </Switch-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>VariableMapper</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>addLine</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>addOK?</Name>
+         <True-Arrow>
+            <Type>2</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>3</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>countImsToMov++</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>deleteOK?</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>3</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>findImsToMov</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>getDate</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>mapError</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>mapError2</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>mapSftp</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>mapUrl</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>notImsToMov?</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>sftp</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>startingNumbers</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>xmlImsToMov1</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>xmlMovToIms</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+   </Coordinates>
+</Workflow>
