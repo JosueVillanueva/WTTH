@@ -2,23 +2,24 @@
 	<xsl:output method="xml" omit-xml-declaration="yes" indent="no"/>
 	<!--xsl:param name= "impi_value"/-->	
 	<!--xsl:param name= "husername"/-->
-	<xsl:param name= "pwd_value"/>
+	<!--xsl:param name= "husername"/-->
+	<xsl:param name="telephone_WO_c"/>
+	<xsl:param name="pwd_value"/>
 	<!--xsl:param name= "sub_id"/-->
-	<xsl:param name= "telephone_full"/>
-	<xsl:param name= "LP_value"/>
-	<xsl:param name= "CSC_value"/>
+	<xsl:param name="telephone_full"/>
+	<xsl:param name="LP_value"/>
+	<xsl:param name="CSC_value"/>
 	<!--xsl:param name= "UNAME_value"/-->
-	<xsl:param name= "LCT_value"/>
-	<xsl:param name= "NTT_value"/>
-	<xsl:param name= "ITT_value"/>
-	<xsl:param name= "CCO1_value"/>
-	<xsl:param name= "CCO5_value"/>
-	<xsl:param name= "COP_value"/>
-	<xsl:param name= "telephone_WO_c"/>
-	<xsl:param name= "authurl"/>
-	<xsl:param name= "telephone"/>
-	<xsl:param name= "ciy_code"/>
-	<xsl:param name= "country_code"/>
+	<xsl:param name="LCT_value"/>
+	<xsl:param name="NTT_value"/>
+	<xsl:param name="ITT_value"/>
+	<xsl:param name="CCO1_value"/>
+	<xsl:param name="CCO5_value"/>
+	<xsl:param name="COP_value"/>
+	<xsl:param name="authurl"/>
+	<xsl:param name="telephone"/>
+	<xsl:param name="ciy_code"/>
+	<xsl:param name="country_code"/>
 
 
 	<xsl:template match="/" name="add_naptrrecord">
@@ -271,12 +272,12 @@
 		</spg:REG_COMSS>
 	</xsl:template-->
 	
-	<xsl:template match="/" name="rmv_dnaptrrec">
-		<ens:RMV_DNAPTRREC>
+	<!--xsl:template match="/" name="rmv_dnaptrrec">
+		<ens:RMV_DNAPTRREC-->
 		 <!--Optional:-->
-		 <ens:E164NUM><xsl:value-of select="$telephone_WO_c"/></ens:E164NUM>
+		 <!--ens:E164NUM><xsl:value-of select="$telephone_WO_c"/></ens:E164NUM-->
 		 <!--Optional:-->
-		 <ens:ZONENAME>e164.arpa</ens:ZONENAME>
+		 <!--ens:ZONENAME>e164.arpa</ens:ZONENAME>
 		</ens:RMV_DNAPTRREC>
 	</xsl:template>
 	
@@ -302,5 +303,5 @@
 		<hss:RMV_HHDAINF>
 		 <hss:IMPI><xsl:value-of select="$telephone_full"/><xsl:value-of select="$authurl"/></hss:IMPI>
 		</hss:RMV_HHDAINF>
-	</xsl:template>
+	</xsl:template-->
 </xsl:stylesheet>

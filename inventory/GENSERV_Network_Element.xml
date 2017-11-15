@@ -51,14 +51,14 @@
 	</Fields>
 	<Keys>
 		<Key pk="true">
-			<KeyField>url</KeyField>
+			<KeyField>networkElementId</KeyField>
 		</Key>
 	</Keys>
 	<Operations>
 		<Store/>
 		<Update/>
 		<Remove/>
-		<FindBy>
+		<FindBy key="url">
 			<OrderField>url</OrderField>
 		</FindBy>
 	</Operations>
