@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><localRoutes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<route>
+<user type="E164">+5751803461</user>
+<next type="regex">!+573108128162+(^.*$)!sip:\1@sbcims!</next>
+</route>
+</localRoutes>
