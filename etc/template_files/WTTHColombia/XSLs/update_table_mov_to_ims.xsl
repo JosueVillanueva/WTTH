@@ -23,7 +23,7 @@
 	         <Action description="Processing add command for file">
 	            <Do>
 	               <Command send_newline="yes">
-	                   notify lrtd refresh <xsl:value-of select="table_ims_to_mov" />
+	                   notify lrtd refresh <xsl:value-of select="table_mov_to_ims" />
 	                   
 	               </Command>
 	               

@@ -53,6 +53,9 @@
 		<Key pk="true">
 			<KeyField>networkElementId</KeyField>
 		</Key>
+		<Key pk="false">
+			<KeyField>url</KeyField>
+		</Key>
 	</Keys>
 	<Operations>
 		<Store/>
