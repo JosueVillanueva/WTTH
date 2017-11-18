@@ -47,9 +47,9 @@
          <Name>MapPaths</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="path_xml_ims_to_mov" value="%FILE_URL_PREFIX%C:\Users\HectorS5\Documents\Proyects\WTTH-colombia\WTTH\etc\template_files\WTTHColombia\XMLs\%table_ims_to_mov%.xml"/>
-            <Param name="path_xml_mov_to_ims" value="%FILE_URL_PREFIX%C:\Users\HectorS5\Documents\Proyects\WTTH-colombia\WTTH\etc\template_files\WTTHColombia\XMLs\%table_mov_to_ims%.xml"/>
-            <Param name="path_xml_update_tables" value="%FILE_URL_PREFIX%C:\Users\HectorS5\Documents\Proyects\WTTH-colombia\WTTH\etc\template_files\WTTHColombia\XMLs\WTTH_update_tables.xml"/>
+            <Param name="path_xml_ims_to_mov" value="%FILE_URL_PREFIX%C:\Users\HectorS5\Documents\Proyects\WTTH-colombia\WTTH\etc\template_files\WTTHColombia\SALIDAS\%table_ims_to_mov%.xml"/>
+            <Param name="path_xml_mov_to_ims" value="%FILE_URL_PREFIX%C:\Users\HectorS5\Documents\Proyects\WTTH-colombia\WTTH\etc\template_files\WTTHColombia\SALIDAS\%table_mov_to_ims%.xml"/>
+            <Param name="path_xml_update_tables" value="%FILE_URL_PREFIX%C:\Users\HectorS5\Documents\Proyects\WTTH-colombia\WTTH\etc\template_files\WTTHColombia\SALIDAS\WTTH_update_tables.xml"/>
             <Param name="path_xsl_ims_to_mov" value="%FILE_URL_PREFIX%C:\Users\HectorS5\Documents\Proyects\WTTH-colombia\WTTH\etc\template_files\WTTHColombia\XSLs\WTTH_ims_to_mov_b.xsl"/>
             <Param name="path_xsl_mov_to_ims" value="%FILE_URL_PREFIX%C:\Users\HectorS5\Documents\Proyects\WTTH-colombia\WTTH\etc\template_files\WTTHColombia\XSLs\WTTH_mov_to_ims_b.xsl"/>
             <Param name="path_xsl_update_tables" value="%FILE_URL_PREFIX%C:\Users\HectorS5\Documents\Proyects\WTTH-colombia\WTTH\etc\template_files\WTTHColombia\XSLs\WTTH_update_tables.xsl"/>
@@ -131,8 +131,6 @@
       </Rule-Node>
       <Rule-Node disablePersistence="true">
          <Name>Equal2</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
             <Param name="op1" value="ims_to_mov_obj#"/>
@@ -310,8 +308,6 @@
       </Process-Node>
       <Process-Node>
          <Name>PutMessage9</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
             <Param name="message" value="fixed_numbers %s mobile_numbers %s"/>
@@ -621,8 +617,6 @@
       </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>startVar</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="count_ims_to_mov" value="1"/>
