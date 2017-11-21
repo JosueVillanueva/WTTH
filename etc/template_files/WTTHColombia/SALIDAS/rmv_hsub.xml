@@ -1,0 +1,15 @@
+<S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/">
+	<S:Header>
+		<Authentication xmlns="http://www.huawei.com/SPG">
+			<ResendFlag>?</ResendFlag>
+			<Username>AprovisionadorHP</Username>
+			<Password>7B0EE3D3EE920448675FB4B8746611C4</Password>
+			<MessageID>?</MessageID>
+		</Authentication>
+	</S:Header>
+	<S:Body>
+		<hss:RMV_HSUB xmlns:spg="http://www.huawei.com/SPG" xmlns:ens="http://www.huawei.com/ENS">
+			<hss:SUBID>+5717423662</hss:SUBID>
+		</hss:RMV_HSUB>
+	</S:Body>
+</S:Envelope>

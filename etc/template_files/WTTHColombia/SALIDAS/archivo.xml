@@ -1,0 +1,41 @@
+<soapenv:Envelope xmlns:spg="http://www.huawei.com/SPG" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+	<soapenv:Header>
+		<ResendFlag>?</ResendFlag>
+		<Authentication>
+			<Username>activator</Username>
+			<Password>manager</Password>
+		</Authentication>
+		<MessageID/>
+	</soapenv:Header>
+	<soapenv:Body>
+		<ADD_SBR xmlns:hss="http://www.huawei.com/HSS" xmlns:ens="http://www.huawei.com/ENS" xmlns="http://www.huawei.com/SPG">
+			<IMPU>sip:+524431236410@claro.com.co</IMPU>
+			<TEMPLATEIDX>65535</TEMPLATEIDX>
+			<DSPIDX>1</DSPIDX>
+			<LP>1</LP>
+			<CSC>10</CSC>
+			<NSCFU>1</NSCFU>
+			<NSCLIP>1</NSCLIP>
+			<NSCW>1</NSCW>
+			<NSWAKE_UP>1</NSWAKE_UP>
+			<NS3PTY>1</NS3PTY>
+			<NSCBA>1</NSCBA>
+			<NSHOLD>1</NSHOLD>
+			<NSECT>1</NSECT>
+			<NSSD1D>1</NSSD1D>
+			<NSSD2D>1</NSSD2D>
+			<LCO>1</LCO>
+			<LC>1</LC>
+			<LCT>20</LCT>
+			<NTT>30</NTT>
+			<ITT>40</ITT>
+			<ICTX>1</ICTX>
+			<OCTX>1</OCTX>
+			<CCO1>11</CCO1>
+			<CCO5>366</CCO5>
+			<TIDCW>2</TIDCW>
+			<COP>236410</COP>
+			<MAXPARACALL>1</MAXPARACALL>
+		</ADD_SBR>
+	</soapenv:Body>
+</soapenv:Envelope>

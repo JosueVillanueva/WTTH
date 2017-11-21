@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE Bean SYSTEM "bean.dtd">
+<Bean>
+	<Name>Methods</Name>
+	<Solution>WTTH</Solution>
+	<Package>com.hpe.ov.activator.inventory</Package>
+	<DBTable>GENSERV_Methods</DBTable>
+	<Fields>
+		<Field mandatory="true" update="false">
+			<Name>MethodId</Name>
+			<Column>MethodId</Column>
+			<Type>String</Type>
+			<Description>method primary key</Description>
+		</Field>
+		<Field mandatory="true" update="false">
+			<Name>Service</Name>
+			<Column>Service</Column>
+			<Type>String</Type>
+			<Description>service id</Description>
+		</Field>
+		<Field mandatory="false">
+			<Name>Method_Name</Name>
+			<Column>METHOD_NAME</Column>
+			<Type>String</Type>
+			<Description>customer id</Description>
+		</Field>
+		<Field mandatory="false">
+			<Name>OrderMethod</Name>
+			<Column>ORDER_METHOD</Column>
+			<Type>String</Type>
+			<Description>service type</Description>
+		</Field>
+	</Fields>
+	<Keys>
+		<Key pk="true">
+			<KeyField>MethodId</KeyField>
+		</Key>
+	</Keys>
+	<Operations>
+		<Store/>
+		<Update/>
+		<Remove/>
+		<FindBy key="Service">
+			<OrderField>OrderMethod</OrderField>
+		</FindBy>
+	</Operations>
+</Bean>
