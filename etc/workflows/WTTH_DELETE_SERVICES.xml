@@ -4,6 +4,7 @@
 <Workflow Init-On-Startup="false" Unique="false" auditEnabled="false" auditStateChangeEvent="false" autoAuditEnabled="true" disablePersistence="true" statEnabled="false">
    <Name>WTTH_DELETE_SERVICES</Name>
    <Solution>WTTH</Solution>
+   <Description>DeleteNNC</Description>
    <Start-Node>PutMessage</Start-Node>
    <Nodes>
       <Process-Node>
@@ -23,7 +24,7 @@
             <Param name="queue" value="controller_queue"/>
             <Param name="workflow_name" value="constant:WTTH_IMS_CREATE"/>
             <Param name="destination0" value="services_JOB_ID"/>
-            <Param name="outputvar0" value="docsis_result_code"/>
+            <Param name="outputvar0" value="wtth_result_code"/>
             <Param name="variable0" value="JOB_ID"/>
             <Param name="variable1" value="fixed_telephone_number_new"/>
             <Param name="variable2" value="password_customer"/>
@@ -37,7 +38,7 @@
          <Name>imsOK?</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
-            <Param name="op1" value="docsis_result_code"/>
+            <Param name="op1" value="wtth_result_code"/>
             <Param name="op2" value="constant:0"/>
          </Action>
          <True-Next-Node>NNC</True-Next-Node>
@@ -50,7 +51,7 @@
             <Param name="queue" value="controller_queue"/>
             <Param name="workflow_name" value="constant:WTTH_NNC_CREATE"/>
             <Param name="destination0" value="services_JOB_ID"/>
-            <Param name="outputvar0" value="docsis_result_code"/>
+            <Param name="outputvar0" value="wtth_result_code"/>
             <Param name="variable0" value="JOB_ID"/>
             <Param name="variable1" value="fixed_telephone_number_new"/>
             <Param name="variable2" value="password_customer"/>
@@ -64,7 +65,7 @@
          <Name>NNCOK?</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
-            <Param name="op1" value="docsis_result_code"/>
+            <Param name="op1" value="wtth_result_code"/>
             <Param name="op2" value="constant:0"/>
          </Action>
          <True-Next-Node>SR</True-Next-Node>
@@ -77,7 +78,7 @@
             <Param name="queue" value="controller_queue"/>
             <Param name="workflow_name" value="constant:WTTH_SR"/>
             <Param name="destination0" value="services_JOB_ID"/>
-            <Param name="outputvar0" value="docsis_result_code"/>
+            <Param name="outputvar0" value="wtth_result_code"/>
             <Param name="variable0" value="JOB_ID"/>
             <Param name="variable1" value="fixed_telephone_number_new"/>
             <Param name="variable2" value="mobile_telephone_number_new"/>
@@ -90,7 +91,7 @@
          <Name>SROK?</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
-            <Param name="op1" value="docsis_result_code"/>
+            <Param name="op1" value="wtth_result_code"/>
             <Param name="op2" value="constant:0"/>
          </Action>
          <True-Next-Node>mapError00</True-Next-Node>
@@ -100,7 +101,7 @@
          <Name>mapError00</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="docsis_result_code" value="0"/>
+            <Param name="wtth_result_code" value="0"/>
          </Action>
          <Next-Node>PutMessage2</Next-Node>
       </Process-Node>
@@ -108,9 +109,9 @@
          <Name>PutMessage2</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
-            <Param name="message" value="docsis_result_code %s"/>
+            <Param name="message" value="wtth_result_code %s"/>
             <Param name="queue" value="variable:WORKFLOW_NAME"/>
-            <Param name="param0" value="docsis_result_code"/>
+            <Param name="param0" value="wtth_result_code"/>
          </Action>
       </Process-Node>
       <Process-Node disablePersistence="true">
@@ -129,20 +130,20 @@
             <Param name="queue" value="controller_queue"/>
             <Param name="workflow_name" value="constant:WTTH_NNC_CREATE"/>
             <Param name="destination0" value="services_JOB_ID"/>
-            <Param name="outputvar0" value="docsis_result_code"/>
+            <Param name="outputvar0" value="wtth_result_code"/>
             <Param name="variable0" value="JOB_ID"/>
             <Param name="variable1" value="fixed_telephone_number_new"/>
             <Param name="variable2" value="password_customer"/>
             <Param name="variable3" value="action_name"/>
             <Param name="variable4" value="account_number"/>
          </Action>
-         <Next-Node>Equal</Next-Node>
+         <Next-Node>NNCDelOK?</Next-Node>
       </Process-Node>
       <Rule-Node disablePersistence="true">
-         <Name>Equal</Name>
+         <Name>NNCDelOK?</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
-            <Param name="op1" value="docsis_result_code"/>
+            <Param name="op1" value="wtth_result_code"/>
             <Param name="op2" value="constant:0"/>
          </Action>
          <True-Next-Node>IMS1</True-Next-Node>
@@ -155,20 +156,20 @@
             <Param name="queue" value="controller_queue"/>
             <Param name="workflow_name" value="constant:WTTH_IMS_CREATE"/>
             <Param name="destination0" value="services_JOB_ID"/>
-            <Param name="outputvar0" value="docsis_result_code"/>
+            <Param name="outputvar0" value="wtth_result_code"/>
             <Param name="variable0" value="JOB_ID"/>
             <Param name="variable1" value="fixed_telephone_number_new"/>
             <Param name="variable2" value="password_customer"/>
             <Param name="variable3" value="action_name"/>
             <Param name="variable4" value="account_number"/>
          </Action>
-         <Next-Node>Equal2</Next-Node>
+         <Next-Node>IMSDelOK?_</Next-Node>
       </Process-Node>
       <Rule-Node disablePersistence="true">
-         <Name>Equal2</Name>
+         <Name>IMSDelOK?_</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
-            <Param name="op1" value="docsis_result_code"/>
+            <Param name="op1" value="wtth_result_code"/>
             <Param name="op2" value="constant:0"/>
          </Action>
          <True-Next-Node>mapError03</True-Next-Node>
@@ -178,7 +179,7 @@
          <Name>mapError03</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="docsis_result_code" value="3"/>
+            <Param name="wtth_result_code" value="3"/>
          </Action>
          <Next-Node>Error</Next-Node>
       </Process-Node>
@@ -195,14 +196,14 @@
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
             <Param name="message" value="error %s"/>
             <Param name="queue" value="variable:WORKFLOW_NAME"/>
-            <Param name="param0" value="docsis_result_code"/>
+            <Param name="param0" value="wtth_result_code"/>
          </Action>
       </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>mapError06</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="docsis_result_code" value="6"/>
+            <Param name="wtth_result_code" value="6"/>
          </Action>
          <Next-Node>Error</Next-Node>
       </Process-Node>
@@ -210,7 +211,7 @@
          <Name>mapError05</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="docsis_result_code" value="5"/>
+            <Param name="wtth_result_code" value="5"/>
          </Action>
          <Next-Node>Error</Next-Node>
       </Process-Node>
@@ -229,20 +230,20 @@
             <Param name="queue" value="controller_queue"/>
             <Param name="workflow_name" value="constant:WTTH_IMS_CREATE"/>
             <Param name="destination0" value="services_JOB_ID"/>
-            <Param name="outputvar0" value="docsis_result_code"/>
+            <Param name="outputvar0" value="wtth_result_code"/>
             <Param name="variable0" value="JOB_ID"/>
             <Param name="variable1" value="fixed_telephone_number_new"/>
             <Param name="variable2" value="password_customer"/>
             <Param name="variable3" value="action_name"/>
             <Param name="variable4" value="account_number"/>
          </Action>
-         <Next-Node>Equal1</Next-Node>
+         <Next-Node>IMSDelOK?</Next-Node>
       </Process-Node>
       <Rule-Node disablePersistence="true">
-         <Name>Equal1</Name>
+         <Name>IMSDelOK?</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
-            <Param name="op1" value="docsis_result_code"/>
+            <Param name="op1" value="wtth_result_code"/>
             <Param name="op2" value="constant:0"/>
          </Action>
          <True-Next-Node>mapError02</True-Next-Node>
@@ -252,7 +253,7 @@
          <Name>mapError02</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="docsis_result_code" value="2"/>
+            <Param name="wtth_result_code" value="2"/>
          </Action>
          <Next-Node>Error</Next-Node>
       </Process-Node>
@@ -267,7 +268,7 @@
          <Name>mapError01</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="docsis_result_code" value="1"/>
+            <Param name="wtth_result_code" value="1"/>
          </Action>
          <Next-Node>Error</Next-Node>
       </Process-Node>
@@ -283,14 +284,14 @@
       <Class-Name>com.hp.ov.activator.mwfm.component.builtin.SyncHandler</Class-Name>
       <Param name="job_id" value="controller_JOB_ID"/>
       <Param name="queue" value="constant:controller_queue"/>
-      <Param name="variable0" value="docsis_result_code"/>
+      <Param name="variable0" value="wtth_result_code"/>
    </Error-Handler>
    <End-Handler>
       <Name>SyncHandler1</Name>
       <Class-Name>com.hp.ov.activator.mwfm.component.builtin.SyncHandler</Class-Name>
       <Param name="job_id" value="controller_JOB_ID"/>
       <Param name="queue" value="constant:controller_queue"/>
-      <Param name="variable0" value="docsis_result_code"/>
+      <Param name="variable0" value="wtth_result_code"/>
    </End-Handler>
    <Case-Packet>
       <Variable name="ANNOTATION" type="String"/>
@@ -342,13 +343,13 @@
       <Variable name="activation_major_code" type="Integer"/>
       <Variable name="activation_minor_code" type="Integer"/>
       <Variable name="controller_JOB_ID" type="Integer"/>
-      <Variable name="docsis_result_code" type="String"/>
       <Variable name="fixed_telephone_number_new" type="String"/>
       <Variable name="message_url" type="String"/>
       <Variable name="mobile_telephone_number_new" type="String"/>
       <Variable name="module_name" type="String"/>
       <Variable name="password_customer" type="String"/>
       <Variable name="skip_activation" type="Boolean"/>
+      <Variable name="wtth_result_code" type="Integer"/>
    </Case-Packet>
    <Initial-Case-Packet>
       <Variable-Value name="FILE_URL_PREFIX" value="file:///"/>
@@ -357,27 +358,6 @@
       <Variable-Value name="WORKFLOW_VERSION" value="-1"/>
    </Initial-Case-Packet>
    <Coordinates>
-      <Position>
-         <Name>Equal</Name>
-         <X>732</X>
-         <Y>445</Y>
-         <Width>56</Width>
-         <Height>24</Height>
-      </Position>
-      <Position>
-         <Name>Equal1</Name>
-         <X>532</X>
-         <Y>314</Y>
-         <Width>62</Width>
-         <Height>24</Height>
-      </Position>
-      <Position>
-         <Name>Equal2</Name>
-         <X>729</X>
-         <Y>565</Y>
-         <Width>62</Width>
-         <Height>24</Height>
-      </Position>
       <Position>
          <Name>Error</Name>
          <X>322</X>
@@ -407,6 +387,20 @@
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>IMSDelOK?</Name>
+         <X>524</X>
+         <Y>314</Y>
+         <Width>82</Width>
+         <Height>24</Height>
+      </Position>
+      <Position>
+         <Name>IMSDelOK?_</Name>
+         <X>716</X>
+         <Y>565</Y>
+         <Width>88</Width>
+         <Height>24</Height>
+      </Position>
+      <Position>
          <Name>NNC</Name>
          <X>420</X>
          <Y>128</Y>
@@ -419,6 +413,13 @@
          <Y>287</Y>
          <Width>61</Width>
          <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>NNCDelOK?</Name>
+         <X>718</X>
+         <Y>445</Y>
+         <Width>85</Width>
+         <Height>24</Height>
       </Position>
       <Position>
          <Name>NNCOK?</Name>
@@ -533,45 +534,6 @@
          <Height>48</Height>
       </Position>
       <Arrows>
-         <Name>Equal</Name>
-         <True-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </True-Arrow>
-         <False-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </False-Arrow>
-      </Arrows>
-      <Arrows>
-         <Name>Equal1</Name>
-         <True-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </True-Arrow>
-         <False-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </False-Arrow>
-      </Arrows>
-      <Arrows>
-         <Name>Equal2</Name>
-         <True-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </True-Arrow>
-         <False-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </False-Arrow>
-      </Arrows>
-      <Arrows>
          <Name>Error</Name>
          <True-Arrow>
             <Type>0</Type>
@@ -624,6 +586,32 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>IMSDelOK?</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>IMSDelOK?_</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>NNC</Name>
          <True-Arrow>
             <Type>0</Type>
@@ -638,6 +626,19 @@
       </Arrows>
       <Arrows>
          <Name>NNCDel1</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>NNCDelOK?</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>

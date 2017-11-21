@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Workflow SYSTEM "workflow.dtd">
+
+<Workflow Init-On-Startup="false" Unique="false" auditEnabled="false" auditStateChangeEvent="false" autoAuditEnabled="true" disablePersistence="true" statEnabled="false">
+   <Name>LOCK_FILE_TABLE</Name>
+   <Solution>WTTH</Solution>
+   <Start-Node>PrintStart</Start-Node>
+   <Nodes>
+      <Process-Node inactive="true">
+         <Name>PrintStart</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="START %s"/>
+            <Param name="queue" value="variable:WORKFLOW_NAME"/>
+            <Param name="param0" value="WORKFLOW_NAME"/>
+         </Action>
+         <Next-Node>insertData</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>insertData</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.ExecSQLStatement</Class-Name>
+            <Param name="statement" value="insert into LOCK_FILE_TABLE_TMP values(&apos;lrt_ims_to_mov&apos;,?)"/>
+            <Param name="throw_excep" value="constant:false"/>
+            <Param name="param0" value="services_JOB_ID"/>
+         </Action>
+         <Next-Node>WasPreviousNodeOK</Next-Node>
+      </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>WasPreviousNodeOK</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.WasPreviousNodeOK</Class-Name>
+         </Action>
+         <True-Next-Node>setError0</True-Next-Node>
+         <False-Next-Node>Sleep</False-Next-Node>
+      </Rule-Node>
+      <Process-Node disablePersistence="true">
+         <Name>setError0</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="0"/>
+         </Action>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>Sleep</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Sleep</Class-Name>
+            <Param name="time" value="constant:500"/>
+         </Action>
+         <Next-Node>insertData</Next-Node>
+      </Process-Node>
+   </Nodes>
+   <Error-Handler>
+      <Name>PutMessageHandler</Name>
+      <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessageHandler</Class-Name>
+      <Param name="message" value="RET_TEXT "/>
+      <Param name="queue" value="Errors"/>
+   </Error-Handler>
+   <Error-Handler>
+      <Name>SyncHandler</Name>
+      <Class-Name>com.hp.ov.activator.mwfm.component.builtin.SyncHandler</Class-Name>
+      <Param name="job_id" value="services_JOB_ID"/>
+      <Param name="queue" value="constant:sync"/>
+      <Param name="destination0" value="wtth_result_code"/>
+      <Param name="variable0" value="wtth_result_code"/>
+   </Error-Handler>
+   <End-Handler>
+      <Name>SyncHandler1</Name>
+      <Class-Name>com.hp.ov.activator.mwfm.component.builtin.SyncHandler</Class-Name>
+      <Param name="job_id" value="services_JOB_ID"/>
+      <Param name="queue" value="constant:sync"/>
+      <Param name="destination0" value="wtth_result_code"/>
+      <Param name="variable0" value="wtth_result_code"/>
+   </End-Handler>
+   <Case-Packet>
+      <Variable name="BREAK_POINT" type="String"/>
+      <Variable name="DEFAULT_ROLE" type="String"/>
+      <Variable name="EMPTY_STRING" type="String"/>
+      <Variable name="EX_STEP_NAME" type="String"/>
+      <Variable name="FILE_URL_PREFIX" type="String"/>
+      <Variable name="HOST_NAME" type="String"/>
+      <Variable name="JOB_ID" type="Integer"/>
+      <Variable name="KILL_ROLE" type="String"/>
+      <Variable name="MASTER_CHILD_JOBS" type="Object"/>
+      <Variable name="NULL" type="Object"/>
+      <Variable name="PRIORITY" type="Integer"/>
+      <Variable name="RESERVATIONS" type="Object"/>
+      <Variable name="RET_TEXT" type="String"/>
+      <Variable name="RET_VALUE" type="Integer"/>
+      <Variable name="RUNTIME" type="Object"/>
+      <Variable name="SCHEDULED_INFO" type="Object"/>
+      <Variable name="SERVICE_ID" type="String"/>
+      <Variable name="SOLUTION_ETC" type="String"/>
+      <Variable name="SOLUTION_NAME" type="String"/>
+      <Variable name="SOLUTION_VAR" type="String"/>
+      <Variable name="SOR_ID" type="Integer"/>
+      <Variable name="START_ROLE" type="String"/>
+      <Variable name="START_TIME" type="Integer"/>
+      <Variable name="STATUS" type="String"/>
+      <Variable name="STEP_NAME" type="String"/>
+      <Variable name="SUBSTEP" type="String"/>
+      <Variable name="THROW_EXCEP" type="Boolean"/>
+      <Variable name="TIMEOUT" type="Boolean"/>
+      <Variable name="TRACE_ROLE" type="String"/>
+      <Variable name="UNIQUE_WORKFLOW" type="Integer"/>
+      <Variable name="WORKFLOW_EXCEPTION" type="Object"/>
+      <Variable name="WORKFLOW_EXECUTION_STATUS" type="String"/>
+      <Variable name="WORKFLOW_NAME" type="String"/>
+      <Variable name="WORKFLOW_ORDER_ID" type="String"/>
+      <Variable name="WORKFLOW_STATE" type="String"/>
+      <Variable name="WORKFLOW_TYPE" type="String"/>
+      <Variable name="WORKFLOW_VERSION" type="Integer"/>
+      <Variable name="activation_description" type="String"/>
+      <Variable name="activation_major_code" type="Integer"/>
+      <Variable name="activation_minor_code" type="Integer"/>
+      <Variable name="message_url" type="String"/>
+      <Variable name="module_name" type="String"/>
+      <Variable name="services_JOB_ID" type="Integer"/>
+      <Variable name="skip_activation" type="Boolean"/>
+      <Variable name="wtth_error_code" type="Integer"/>
+      <Variable name="wtth_result_code" type="Integer"/>
+   </Case-Packet>
+   <Initial-Case-Packet/>
+   <Coordinates>
+      <Position>
+         <Name>PrintStart</Name>
+         <X>190</X>
+         <Y>102</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Sleep</Name>
+         <X>509</X>
+         <Y>191</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>WasPreviousNodeOK</Name>
+         <X>474</X>
+         <Y>114</Y>
+         <Width>131</Width>
+         <Height>24</Height>
+      </Position>
+      <Position>
+         <Name>insertData</Name>
+         <X>286</X>
+         <Y>102</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>setError0</Name>
+         <X>663</X>
+         <Y>102</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Arrows>
+         <Name>PrintStart</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Sleep</Name>
+         <True-Arrow>
+            <Type>2</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>WasPreviousNodeOK</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>insertData</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>setError0</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <State-Circle>
+         <Name>UNDEFINED</Name>
+         <X>80</X>
+         <Y>80</Y>
+         <Radius>40</Radius>
+         <Color>-16776961</Color>
+      </State-Circle>
+   </Coordinates>
+</Workflow>
