@@ -5,7 +5,7 @@
 	<!--xsl:param name= "husername"/-->
 	<xsl:param name="telephone_WO_c"/>
 	<xsl:param name="pwd_value"/>
-	<!--xsl:param name= "sub_id"/-->
+	<xsl:param name= "sub_id"/>
 	<xsl:param name="telephone_full"/>
 	<xsl:param name="LP_value"/>
 	<xsl:param name="CSC_value"/>
@@ -21,9 +21,9 @@
 	<xsl:param name="ciy_code"/>
 	<xsl:param name="country_code"/>
 
-
+	<!-- esta se la quite xmlns="http://www.huawei.com/SPG"-->
 	<xsl:template match="/" name="add_naptrrecord">
-		<AddNAPTRRecord xmlns="http://www.huawei.com/SPG">
+		<AddNAPTRRecord xsl:exclude-result-prefixes="hss spg ens">
 			<E164NUM><xsl:value-of select="$telephone_WO_c"/></E164NUM>
 			<ZONENAME>e164.arpa</ZONENAME>
 			<ORDER>10</ORDER>
@@ -35,7 +35,7 @@
 	</xsl:template>
 	
 	<xsl:template match="/" name="add_sbr">
-		<ADD_SBR xmlns="http://www.huawei.com/SPG">
+		<ADD_SBR xsl:exclude-result-prefixes="hss spg ens">
 			<IMPU>sip:<xsl:value-of select="$telephone_full"/><xsl:value-of select="$authurl"/></IMPU>
 			<TEMPLATEIDX>65535</TEMPLATEIDX>
 			<DSPIDX>1</DSPIDX>
@@ -67,7 +67,7 @@
 	</xsl:template>
 	
 	<xsl:template match="/" name="add_imssub">
-		<AddIMSSub xmlns="http://www.huawei.com/SPG">
+		<AddIMSSub xsl:exclude-result-prefixes="hss spg ens">
 			<DN><xsl:value-of select="$telephone"/></DN>
 			<AC><xsl:value-of select="$ciy_code"/></AC>
 			<NC><xsl:value-of select="$country_code"/></NC>
@@ -272,36 +272,39 @@
 		</spg:REG_COMSS>
 	</xsl:template-->
 	
-	<!--xsl:template match="/" name="rmv_dnaptrrec">
-		<ens:RMV_DNAPTRREC-->
-		 <!--Optional:-->
-		 <!--ens:E164NUM><xsl:value-of select="$telephone_WO_c"/></ens:E164NUM-->
-		 <!--Optional:-->
-		 <!--ens:ZONENAME>e164.arpa</ens:ZONENAME>
-		</ens:RMV_DNAPTRREC>
+	<xsl:template match="/" name="rmv_dnaptrrec">
+		<RmvNAPTRRecord xsl:exclude-result-prefixes="hss spg ens">
+			<E164NUM><xsl:value-of select="$telephone_WO_c"/></E164NUM>
+			<ZONENAME>e164.arpa</ZONENAME>
+			<ORDER>10</ORDER>
+			<PREFERENCE>20</PREFERENCE>
+			<FLAGS>U</FLAGS>
+			<SERVICE>E2U+sip</SERVICE>
+			<REGEXP>!(^.*)$!sip:+\1<xsl:value-of select="$authurl"/>!</REGEXP>
+		</RmvNAPTRRecord>
 	</xsl:template>
 	
 	<xsl:template match="/" name="rmv_sbr">
-		<spg:RMV_SBR>
-		 <spg:IMPU>sip:<xsl:value-of select="$telephone_full"/><xsl:value-of select="$authurl"/></spg:IMPU>
-		</spg:RMV_SBR>
+		<RMV_SBR xsl:exclude-result-prefixes="hss spg ens">
+			<IMPU>sip:<xsl:value-of select="$telephone_full"/><xsl:value-of select="$authurl"/></IMPU>
+			<TEMPLATEIDX>65535</TEMPLATEIDX>
+		</RMV_SBR>
 	</xsl:template>
 	
-	<xsl:template match="/" name="rmv_himpu">
-		<hss:RMV_HIMPU>
-           <hss:IMPU>tel:<xsl:value-of select="$telephone_full"/></hss:IMPU>
-        </hss:RMV_HIMPU>
+	<xsl:template match="/" name="rmv_imssub">
+		<RmvIMSSub xsl:exclude-result-prefixes="hss spg ens">
+			<DN><xsl:value-of select="$telephone"/></DN>
+			<AC><xsl:value-of select="$ciy_code"/></AC>
+			<NC><xsl:value-of select="$country_code"/></NC>
+			<DOMAIN><xsl:value-of select="$authurl"/></DOMAIN>
+			<PASSWORD><xsl:value-of select="$pwd_value"/></PASSWORD>
+			<HUSERNAME><xsl:value-of select="$telephone_full"/><xsl:value-of select="$authurl"/></HUSERNAME>
+			<USERTYPE>0</USERTYPE>
+			<IMPUTPLID>0</IMPUTPLID>
+			<SPTPLID>1</SPTPLID>
+			<CHARGTPLID>1</CHARGTPLID>
+			<IMPI><xsl:value-of select="$telephone_full"/><xsl:value-of select="$authurl"/></IMPI>
+		</RmvIMSSub>
 	</xsl:template>
 	
-	<xsl:template match="/" name="rmv_hsub">
-		<hss:RMV_HSUB>
-		 <hss:SUBID><xsl:value-of select="$sub_id"/><xsl:value-of select="$authurl"/></hss:SUBID>
-		</hss:RMV_HSUB>
-	</xsl:template>
-	
-	<xsl:template match="/" name="rmv_hhdainf">
-		<hss:RMV_HHDAINF>
-		 <hss:IMPI><xsl:value-of select="$telephone_full"/><xsl:value-of select="$authurl"/></hss:IMPI>
-		</hss:RMV_HHDAINF>
-	</xsl:template-->
 </xsl:stylesheet>

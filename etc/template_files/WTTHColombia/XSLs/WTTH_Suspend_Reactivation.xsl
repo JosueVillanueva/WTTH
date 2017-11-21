@@ -2,6 +2,7 @@
 	<xsl:param name= "username"/>
 	<xsl:param name= "password"/>
 	<xsl:param name= "telephone_full"/>
+	<xsl:param name= "authurl"/>
 	<xsl:param name= "OUTRST_value"/>
 
 
@@ -17,7 +18,7 @@
 			</soapenv:Header>
 			<soapenv:Body>
 			 <spg:MOD_SBR>
-			  <spg:IMPU>sip:<xsl:value-of select="$impu_value"/>@ims.claro.com.co</spg:IMPU>
+			  <spg:IMPU>sip:<xsl:value-of select="$telephone_full"/>@<xsl:value-of select="$authurl"/></spg:IMPU>
 			  <spg:OUTRST><xsl:value-of select="$OUTRST_value"/></spg:OUTRST>
 			 </spg:MOD_SBR>
 			</soapenv:Body>
