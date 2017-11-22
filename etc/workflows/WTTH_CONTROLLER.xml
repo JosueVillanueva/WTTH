@@ -16,10 +16,10 @@
             <Param name="param0" value="WORKFLOW_NAME"/>
             <Param name="param1" value="xml_message"/>
          </Action>
-         <Next-Node>VariableMapper</Next-Node>
+         <Next-Node>mapPath</Next-Node>
       </Process-Node>
       <Process-Node disablePersistence="true">
-         <Name>VariableMapper</Name>
+         <Name>mapPath</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="path_xsl" value="%FILE_URL_PREFIX%C:\Users\HectorS5\Documents\Proyects\WTTH-colombia\WTTH\etc\template_files\WTTHColombia\XSLs\TransformXmlParams.xsl"/>
@@ -74,13 +74,94 @@
             <Param name="param1" value="fixed_telephone_number_new"/>
             <Param name="param2" value="wtth_result_code"/>
          </Action>
+         <Next-Node>xmlValid?</Next-Node>
+      </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>xmlValid?</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
+            <Param name="op1" value="wtth_result_code"/>
+            <Param name="op2" value="constant:0"/>
+         </Action>
+         <True-Next-Node>Upper Action</True-Next-Node>
+         <False-Next-Node>Error</False-Next-Node>
+      </Rule-Node>
+      <Process-Node>
+         <Name>Upper Action</Name>
+         <Description>upper mac_address_cm</Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.JavaNode</Class-Name>
+            <Param name="javacode" value="constant:public String strUpper(String str1){return str1.toUpperCase();}"/>
+            <Param name="method" value="constant:strUpper"/>
+            <Param name="output_var" value="action_name"/>
+            <Param name="arg0" value="action_name"/>
+         </Action>
+         <Next-Node>MapVar</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true" inactive="true">
+         <Name>MapVar</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="fixed_number" value="0444432547101"/>
+            <Param name="mobile_number" value="3423531"/>
+            <Param name="request_date" value="03/11/2017"/>
+         </Action>
+         <Next-Node>PutMessage3</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>PutMessage3</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="action %s"/>
+            <Param name="queue" value="variable:WORKFLOW_NAME"/>
+            <Param name="param0" value="action_name"/>
+         </Action>
+         <Next-Node>action_name?</Next-Node>
+      </Process-Node>
+      <Switch-Node disablePersistence="true">
+         <Name>action_name?</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.SwitchCase</Class-Name>
+            <Param name="key" value="action_name"/>
+            <Param name="case0" value="constant:CHECKSERVICE"/>
+            <Param name="case1" value="constant:MODIFYLINE"/>
+            <Param name="case2" value="constant:REACTIVATE"/>
+            <Param name="case3" value="constant:SUSPEND"/>
+            <Param name="case4" value="constant:CREATE"/>
+            <Param name="case5" value="constant:MODIFYCALLFEATURES"/>
+            <Param name="case6" value="constant:DELETE"/>
+         </Action>
+         <Switch name="case0">printCheck</Switch>
+         <Switch name="case1">printModify</Switch>
+         <Switch name="case2">printReactivate</Switch>
+         <Switch name="case3">printSuspend</Switch>
+         <Switch name="case4">printCreate</Switch>
+         <Switch name="case5">printModifyCF</Switch>
+         <Switch name="case6">Delete</Switch>
+         <Default>Default</Default>
+      </Switch-Node>
+      <Process-Node disablePersistence="true">
+         <Name>Error</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.DoNothing</Class-Name>
+         </Action>
+         <Next-Node>PutMessage4</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>PutMessage4</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="wtth_result_code %s"/>
+            <Param name="queue" value="variable:WORKFLOW_NAME"/>
+            <Param name="param0" value="wtth_result_code"/>
+         </Action>
       </Process-Node>
       <Process-Node>
          <Name>CreateService</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.StartJobAndWait</Class-Name>
             <Param name="queue" value="controller_queue"/>
-            <Param name="workflow_name" value="constant:WTTH_MODIFY_SERVICES"/>
+            <Param name="workflow_name" value="constant:WTTH_CREATE_SERVICES"/>
             <Param name="destination0" value="controller_JOB_ID"/>
             <Param name="outputvar0" value="wtth_result_code"/>
             <Param name="variable0" value="JOB_ID"/>
@@ -113,7 +194,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.StartJobAndWait</Class-Name>
             <Param name="queue" value="controller_queue"/>
-            <Param name="workflow_name" value="constant:WTTH_DELETE_SERVICES"/>
+            <Param name="workflow_name" value="constant:WTTH_MODIFY_SERVICES"/>
             <Param name="destination0" value="controller_JOB_ID"/>
             <Param name="outputvar0" value="wtth_result_code"/>
             <Param name="variable0" value="JOB_ID"/>
@@ -135,13 +216,6 @@
          <True-Next-Node>XMLMapper1</True-Next-Node>
          <False-Next-Node>MapVar</False-Next-Node>
       </Rule-Node>
-      <Process-Node disablePersistence="true">
-         <Name>Error</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.DoNothing</Class-Name>
-         </Action>
-         <Next-Node>PutMessage4</Next-Node>
-      </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>MapError00</Name>
          <Action>
@@ -174,16 +248,6 @@
          </Action>
          <Next-Node>ModifOK?</Next-Node>
       </Process-Node>
-      <Process-Node disablePersistence="true" inactive="true">
-         <Name>MapVar</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="fixed_number" value="0444432547101"/>
-            <Param name="mobile_number" value="3423531"/>
-            <Param name="request_date" value="03/11/2017"/>
-         </Action>
-         <Next-Node>PutMessage3</Next-Node>
-      </Process-Node>
       <Rule-Node disablePersistence="true">
          <Name>ModifOK?</Name>
          <Action>
@@ -204,25 +268,15 @@
          </Action>
       </Process-Node>
       <Process-Node>
-         <Name>PutMessage3</Name>
+         <Name>PutMessage5</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
-            <Param name="message" value="action %s"/>
+            <Param name="message" value="-xml_message[%s]"/>
             <Param name="queue" value="variable:WORKFLOW_NAME"/>
-            <Param name="param0" value="action_name"/>
-         </Action>
-         <Next-Node>action_name?</Next-Node>
-      </Process-Node>
-      <Process-Node>
-         <Name>PutMessage4</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
-            <Param name="message" value="wtth_result_code %s"/>
-            <Param name="queue" value="variable:WORKFLOW_NAME"/>
-            <Param name="param0" value="wtth_result_code"/>
+            <Param name="param0" value="xml_message"/>
          </Action>
       </Process-Node>
-      <Process-Node>
+      <Process-Node inactive="true">
          <Name>PutMessage6</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
@@ -242,19 +296,26 @@
          </Action>
          <Next-Node>PutMessage6</Next-Node>
       </Process-Node>
-      <Process-Node>
-         <Name>Upper Action</Name>
-         <Description>upper mac_address_cm</Description>
+      <Process-Node disablePersistence="true">
+         <Name>TransformXML1</Name>
          <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.JavaNode</Class-Name>
-            <Param name="javacode" value="constant:public String strUpper(String str1){return str1.toUpperCase();}"/>
-            <Param name="method" value="constant:strUpper"/>
-            <Param name="output_var" value="action_name"/>
-            <Param name="arg0" value="action_name"/>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.TransformXML</Class-Name>
+            <Param name="output_url" value="path_xml_test"/>
+            <Param name="xml_var" value="xml_message"/>
+            <Param name="xsl_url" value="path_xsl"/>
          </Action>
-         <Next-Node>Equal2</Next-Node>
+         <Next-Node>PutMessage5</Next-Node>
       </Process-Node>
       <Process-Node disablePersistence="true">
+         <Name>VariableMapper1</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="path_xml_test" value="%FILE_URL_PREFIX%C:\Users\HectorS5\Documents\Proyects\WTTH-colombia\WTTH\etc\template_files\WTTHColombia\XSLs\test\TransformXmlParamsCF.xml"/>
+            <Param name="path_xsl" value="%FILE_URL_PREFIX%C:\Users\HectorS5\Documents\Proyects\WTTH-colombia\WTTH\etc\template_files\WTTHColombia\XSLs\TransformXmlParamsCF.xsl"/>
+         </Action>
+         <Next-Node>TransformXML1</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true" inactive="true">
          <Name>XMLMapper</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.XMLMapper</Class-Name>
@@ -321,28 +382,6 @@
             <Param name="xml_var" value="xml_message"/>
          </Action>
       </Process-Node>
-      <Switch-Node disablePersistence="true">
-         <Name>action_name?</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.SwitchCase</Class-Name>
-            <Param name="key" value="action_name"/>
-            <Param name="case0" value="constant:CHECKSERVICE"/>
-            <Param name="case1" value="constant:MODIFYLINE"/>
-            <Param name="case2" value="constant:REACTIVATE"/>
-            <Param name="case3" value="constant:SUSPEND"/>
-            <Param name="case4" value="constant:CREATE"/>
-            <Param name="case5" value="constant:MODIFYCALLFEATURES"/>
-            <Param name="case6" value="constant:DELETE"/>
-         </Action>
-         <Switch name="case0">printCheck</Switch>
-         <Switch name="case1">printModify</Switch>
-         <Switch name="case2">printReactivate</Switch>
-         <Switch name="case3">printSuspend</Switch>
-         <Switch name="case4">printCreate</Switch>
-         <Switch name="case5">printModifyCF</Switch>
-         <Switch name="case6">Delete</Switch>
-         <Default>Default</Default>
-      </Switch-Node>
       <Process-Node>
          <Name>checkService</Name>
          <Action>
@@ -559,6 +598,7 @@
       <Variable name="origin_id" type="String"/>
       <Variable name="parent_account" type="String"/>
       <Variable name="password_customer" type="String"/>
+      <Variable name="path_xml_test" type="String"/>
       <Variable name="path_xsl" type="String"/>
       <Variable name="request_date" type="String"/>
       <Variable name="scope" type="String"/>
@@ -611,8 +651,8 @@
       </Position>
       <Position>
          <Name>Equal2</Name>
-         <X>658</X>
-         <Y>64</Y>
+         <X>678</X>
+         <Y>28</Y>
          <Width>62</Width>
          <Height>24</Height>
       </Position>
@@ -694,6 +734,13 @@
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>PutMessage5</Name>
+         <X>260</X>
+         <Y>233</Y>
+         <Width>74</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>PutMessage6</Name>
          <X>377</X>
          <Y>52</Y>
@@ -702,7 +749,7 @@
       </Position>
       <Position>
          <Name>PutMessage61</Name>
-         <X>353</X>
+         <X>287</X>
          <Y>123</Y>
          <Width>80</Width>
          <Height>48</Height>
@@ -715,6 +762,13 @@
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>TransformXML1</Name>
+         <X>161</X>
+         <Y>233</Y>
+         <Width>84</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>Upper Action</Name>
          <X>570</X>
          <Y>52</Y>
@@ -722,10 +776,10 @@
          <Height>48</Height>
       </Position>
       <Position>
-         <Name>VariableMapper</Name>
-         <X>171</X>
-         <Y>52</Y>
-         <Width>84</Width>
+         <Name>VariableMapper1</Name>
+         <X>55</X>
+         <Y>233</Y>
+         <Width>90</Width>
          <Height>48</Height>
       </Position>
       <Position>
@@ -737,8 +791,8 @@
       </Position>
       <Position>
          <Name>XMLMapper1</Name>
-         <X>654</X>
-         <Y>126</Y>
+         <X>732</X>
+         <Y>5</Y>
          <Width>71</Width>
          <Height>48</Height>
       </Position>
@@ -762,6 +816,13 @@
          <Y>581</Y>
          <Width>79</Width>
          <Height>24</Height>
+      </Position>
+      <Position>
+         <Name>mapPath</Name>
+         <X>183</X>
+         <Y>52</Y>
+         <Width>61</Width>
+         <Height>48</Height>
       </Position>
       <Position>
          <Name>modifyService</Name>
@@ -839,6 +900,13 @@
          <Y>123</Y>
          <Width>88</Width>
          <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>xmlValid?</Name>
+         <X>383</X>
+         <Y>135</Y>
+         <Width>73</Width>
+         <Height>24</Height>
       </Position>
       <Arrows>
          <Name>CreateService</Name>
@@ -1049,6 +1117,19 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>PutMessage5</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>PutMessage6</Name>
          <True-Arrow>
             <Type>0</Type>
@@ -1088,6 +1169,19 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>TransformXML1</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>Upper Action</Name>
          <True-Arrow>
             <Type>0</Type>
@@ -1101,7 +1195,7 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
-         <Name>VariableMapper</Name>
+         <Name>VariableMapper1</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
@@ -1228,6 +1322,19 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>mapPath</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>modifyService</Name>
          <True-Arrow>
             <Type>3</Type>
@@ -1366,6 +1473,19 @@
          </True-Arrow>
          <False-Arrow>
             <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>xmlValid?</Name>
+         <True-Arrow>
+            <Type>2</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>3</Type>
             <DeltaX>0</DeltaX>
             <DeltaY>0</DeltaY>
          </False-Arrow>
