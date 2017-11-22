@@ -18,8 +18,6 @@
       </Process-Node>
       <Process-Node>
          <Name>LockTable</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.StartJobAndWait</Class-Name>
             <Param name="throw_excep" value="constant:true"/>
@@ -79,7 +77,7 @@
             <Param name="op2" value="constant:0"/>
          </Action>
          <True-Next-Node>SR</True-Next-Node>
-         <False-Next-Node>mapActionName</False-Next-Node>
+         <False-Next-Node>Equal</False-Next-Node>
       </Rule-Node>
       <Process-Node>
          <Name>SR</Name>
@@ -105,12 +103,10 @@
             <Param name="op2" value="constant:0"/>
          </Action>
          <True-Next-Node>UnlockTable</True-Next-Node>
-         <False-Next-Node>mapActionName1</False-Next-Node>
+         <False-Next-Node>Equal1</False-Next-Node>
       </Rule-Node>
       <Process-Node>
          <Name>UnlockTable</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.ExecSQLStatement</Class-Name>
             <Param name="statement" value="delete from LOCK_FILE_TABLE_TMP"/>
@@ -133,6 +129,28 @@
             <Param name="queue" value="variable:WORKFLOW_NAME"/>
             <Param name="param0" value="wtth_result_code"/>
          </Action>
+      </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>Equal1</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
+            <Param name="op1" value="action_name"/>
+            <Param name="op2" value="constant:CREATE"/>
+         </Action>
+         <True-Next-Node>SetDelete2</True-Next-Node>
+         <False-Next-Node>SetCreate2</False-Next-Node>
+      </Rule-Node>
+      <Process-Node disablePersistence="true">
+         <Name>SetDelete2</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="action_name" value="DELETE"/>
+         </Action>
+         <Next-Node>mapActionName1</Next-Node>
       </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>mapActionName1</Name>
@@ -212,8 +230,6 @@
       </Process-Node>
       <Process-Node>
          <Name>UnlockTable1</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.ExecSQLStatement</Class-Name>
             <Param name="statement" value="delete from LOCK_FILE_TABLE_TMP"/>
@@ -244,6 +260,38 @@
             <Param name="wtth_result_code" value="5"/>
          </Action>
          <Next-Node>Error</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>SetCreate2</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="action_name" value="CREATE"/>
+         </Action>
+         <Next-Node>mapActionName1</Next-Node>
+      </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>Equal</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
+            <Param name="op1" value="action_name"/>
+            <Param name="op2" value="constant:CREATE"/>
+         </Action>
+         <True-Next-Node>SetDelete</True-Next-Node>
+         <False-Next-Node>SetCreate</False-Next-Node>
+      </Rule-Node>
+      <Process-Node disablePersistence="true">
+         <Name>SetDelete</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="action_name" value="DELETE"/>
+         </Action>
+         <Next-Node>mapActionName</Next-Node>
       </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>mapActionName</Name>
@@ -287,12 +335,22 @@
          </Action>
          <Next-Node>Error</Next-Node>
       </Process-Node>
-      <Process-Node disablePersistence="true">
+      <Process-Node disablePersistence="true" inactive="true">
          <Name>mapError04</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
          </Action>
          <Next-Node>Error</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>SetCreate</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="action_name" value="CREATE"/>
+         </Action>
+         <Next-Node>mapActionName</Next-Node>
       </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>mapError01</Name>
@@ -389,9 +447,23 @@
    </Initial-Case-Packet>
    <Coordinates>
       <Position>
+         <Name>Equal</Name>
+         <X>537</X>
+         <Y>208</Y>
+         <Width>56</Width>
+         <Height>24</Height>
+      </Position>
+      <Position>
+         <Name>Equal1</Name>
+         <X>748</X>
+         <Y>210</Y>
+         <Width>62</Width>
+         <Height>24</Height>
+      </Position>
+      <Position>
          <Name>Error</Name>
-         <X>322</X>
-         <Y>553</Y>
+         <X>323</X>
+         <Y>772</Y>
          <Width>61</Width>
          <Height>48</Height>
       </Position>
@@ -404,29 +476,29 @@
       </Position>
       <Position>
          <Name>IMS1</Name>
-         <X>730</X>
-         <Y>493</Y>
+         <X>760</X>
+         <Y>712</Y>
          <Width>61</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>IMSDel</Name>
          <X>535</X>
-         <Y>250</Y>
+         <Y>469</Y>
          <Width>61</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>ImsDeleteOK?</Name>
-         <X>515</X>
-         <Y>314</Y>
+         <X>517</X>
+         <Y>533</Y>
          <Width>97</Width>
          <Height>24</Height>
       </Position>
       <Position>
          <Name>ImsDeleteOK?_</Name>
-         <X>709</X>
-         <Y>565</Y>
+         <X>739</X>
+         <Y>784</Y>
          <Width>103</Width>
          <Height>24</Height>
       </Position>
@@ -446,15 +518,15 @@
       </Position>
       <Position>
          <Name>NNCDel1</Name>
-         <X>730</X>
-         <Y>287</Y>
+         <X>760</X>
+         <Y>506</Y>
          <Width>61</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>NNCDeleteOK?</Name>
-         <X>710</X>
-         <Y>445</Y>
+         <X>740</X>
+         <Y>664</Y>
          <Width>101</Width>
          <Height>24</Height>
       </Position>
@@ -488,14 +560,42 @@
       </Position>
       <Position>
          <Name>SROK?</Name>
-         <X>729</X>
+         <X>748</X>
          <Y>140</Y>
          <Width>62</Width>
          <Height>24</Height>
       </Position>
       <Position>
+         <Name>SetCreate</Name>
+         <X>603</X>
+         <Y>196</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>SetCreate2</Name>
+         <X>837</X>
+         <Y>198</Y>
+         <Width>65</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>SetDelete</Name>
+         <X>458</X>
+         <Y>196</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>SetDelete2</Name>
+         <X>672</X>
+         <Y>198</Y>
+         <Width>63</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>UnlockTable</Name>
-         <X>824</X>
+         <X>832</X>
          <Y>128</Y>
          <Width>67</Width>
          <Height>48</Height>
@@ -503,7 +603,7 @@
       <Position>
          <Name>UnlockTable1</Name>
          <X>196</X>
-         <Y>553</Y>
+         <Y>772</Y>
          <Width>73</Width>
          <Height>48</Height>
       </Position>
@@ -517,14 +617,14 @@
       <Position>
          <Name>mapActionName</Name>
          <X>522</X>
-         <Y>184</Y>
+         <Y>403</Y>
          <Width>87</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>mapActionName1</Name>
-         <X>714</X>
-         <Y>209</Y>
+         <X>744</X>
+         <Y>428</Y>
          <Width>93</Width>
          <Height>48</Height>
       </Position>
@@ -537,53 +637,79 @@
       </Position>
       <Position>
          <Name>mapError01</Name>
-         <X>319</X>
-         <Y>226</Y>
+         <X>320</X>
+         <Y>450</Y>
          <Width>66</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>mapError02</Name>
-         <X>530</X>
-         <Y>369</Y>
+         <X>532</X>
+         <Y>588</Y>
          <Width>66</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>mapError03</Name>
-         <X>727</X>
-         <Y>612</Y>
+         <X>757</X>
+         <Y>831</Y>
          <Width>66</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>mapError04</Name>
          <X>399</X>
-         <Y>302</Y>
+         <Y>521</Y>
          <Width>66</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>mapError05</Name>
          <X>530</X>
-         <Y>433</Y>
+         <Y>652</Y>
          <Width>66</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>mapError06</Name>
          <X>535</X>
-         <Y>553</Y>
+         <Y>772</Y>
          <Width>66</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>printError</Name>
          <X>93</X>
-         <Y>553</Y>
+         <Y>772</Y>
          <Width>61</Width>
          <Height>48</Height>
       </Position>
+      <Arrows>
+         <Name>Equal</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Equal1</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
       <Arrows>
          <Name>Error</Name>
          <True-Arrow>
@@ -770,6 +896,58 @@
          <Name>SROK?</Name>
          <True-Arrow>
             <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>SetCreate</Name>
+         <True-Arrow>
+            <Type>3</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>SetCreate2</Name>
+         <True-Arrow>
+            <Type>3</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>SetDelete</Name>
+         <True-Arrow>
+            <Type>3</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>SetDelete2</Name>
+         <True-Arrow>
+            <Type>3</Type>
             <DeltaX>0</DeltaX>
             <DeltaY>0</DeltaY>
          </True-Arrow>

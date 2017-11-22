@@ -198,18 +198,6 @@
          <False-Next-Node>mapSftp1</False-Next-Node>
       </Rule-Node>
       <Process-Node>
-         <Name>PrintRetriesNum</Name>
-         <Description></Description>
-         <State></State>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
-            <Param name="message" value="count_retry_sftp %s"/>
-            <Param name="queue" value="variable:WORKFLOW_NAME"/>
-            <Param name="param0" value="count_retry_sftp"/>
-         </Action>
-         <Next-Node>sendFileSftp</Next-Node>
-      </Process-Node>
-      <Process-Node>
          <Name>PutMessage</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
@@ -221,7 +209,7 @@
             <Param name="param3" value="activation_description"/>
          </Action>
       </Process-Node>
-      <Process-Node>
+      <Process-Node inactive="true">
          <Name>PutMessage2</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
@@ -309,7 +297,7 @@
          </Action>
          <Next-Node>start count_retries_sftp</Next-Node>
       </Process-Node>
-      <Process-Node>
+      <Process-Node inactive="true">
          <Name>PutMessage7</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
@@ -460,7 +448,7 @@
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Add</Class-Name>
             <Param name="op0" value="count_retry_sftp"/>
          </Action>
-         <Next-Node>PrintRetriesNum</Next-Node>
+         <Next-Node>sendFileSftp</Next-Node>
       </Process-Node>
       <Rule-Node disablePersistence="true">
          <Name>deleteOK?</Name>
@@ -1049,13 +1037,6 @@
          <Height>24</Height>
       </Position>
       <Position>
-         <Name>PrintRetriesNum</Name>
-         <X>2032</X>
-         <Y>356</Y>
-         <Width>87</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
          <Name>PrintStart</Name>
          <X>27</X>
          <Y>282</Y>
@@ -1121,13 +1102,13 @@
       <Position>
          <Name>PutMessage7</Name>
          <X>680</X>
-         <Y>281</Y>
+         <Y>282</Y>
          <Width>74</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>PutMessage8</Name>
-         <X>2619</X>
+         <X>2617</X>
          <Y>275</Y>
          <Width>74</Width>
          <Height>48</Height>
@@ -1652,19 +1633,6 @@
       </Arrows>
       <Arrows>
          <Name>NE?</Name>
-         <True-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </True-Arrow>
-         <False-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </False-Arrow>
-      </Arrows>
-      <Arrows>
-         <Name>PrintRetriesNum</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
