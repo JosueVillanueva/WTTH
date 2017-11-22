@@ -2,97 +2,54 @@
 	<xsl:param name= "username"/>
 	<xsl:param name= "password"/>
 	<xsl:param name= "MEName_value"/>
+	<!--xsl:param name= "husername"/-->
 	<xsl:param name= "telephone_WO_c"/>
-	<xsl:param name= "sub_id"/>
+	<!--xsl:param name= "sub_id"/-->
 	<xsl:param name= "telephone_full"/>
 	<xsl:param name= "which_xml"/>
-	<xsl:param name= "E164NUM_value"/>
+	<!--xsl:param name= "UNAME_value"/-->
+	<xsl:param name= "authurl"/>
+	<xsl:param name= "telephone"/>
+	<xsl:param name= "ciy_code"/>
+	<xsl:param name= "country_code"/>
 
 
 	<xsl:template match="/">
 		<xsl:import href="create_body.xsl"/>
-		<xsl:choose>
-			<xsl:when test="$which_xml='RMV_SBR'">
-				<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:spg="http://www.huawei.com/SPG">
-					<soapenv:Header>
-						<spg:ResendFlag>?</spg:ResendFlag>
-						<spg:Authentication>
-							<spg:Username>
-								<xsl:value-of select="$username"/>
-							</spg:Username>
-							<spg:Password>
-								<xsl:value-of select="$password"/>
-							</spg:Password>
-						</spg:Authentication>
-						<spg:MessageID/>
-					</soapenv:Header>
-					<soapenv:Body>
+		<S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/">
+			<S:Header>
+				<Authentication xmlns="http://www.huawei.com/SPG">
+					<ResendFlag>?</ResendFlag>
+					<Username><xsl:value-of select="username" /></Username>
+					<Password><xsl:value-of select="password" /></Password>
+					<MessageID>?</MessageID>
+				</Authentication>
+			</S:Header>
+			<S:Body>
+				<xsl:choose>
+					<xsl:when test="$which_xml='RMV_SBR'">
 						<xsl:call-template name="rmv_sbr">
 							<xsl:with-param name="telephone_full" select="$telephone_full"/>
 						</xsl:call-template>
-					</soapenv:Body>
-				</soapenv:Envelope>
-			</xsl:when>
-			<xsl:when test="$which_xml='RMW_DNAPTRREC'">
-				<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ens="http://www.huawei.com/ENS">
-					<soapenv:Header>
-						<ens:MessageID>?</ens:MessageID>
-						<ens:MEName>
-							<xsl:value-of select="$MEName_value"/>
-						</ens:MEName>
-						<ens:Authentication>
-							<ens:Username>
-								<xsl:value-of select="$username"/>
-							</ens:Username>
-							<ens:Password>
-								<xsl:value-of select="$password"/>
-							</ens:Password>
-						</ens:Authentication>
-					</soapenv:Header>
-					<soapenv:Body>
+					</xsl:when>
+					<xsl:when test="$which_xml='RmvNAPTRRecord'">
 						<xsl:call-template name="rmv_dnaptrrec">
 							<xsl:with-param name="telephone_WO_c" select="$telephone_WO_c"/>
+							<xsl:with-param name="authurl" select="$authurl"/>
 						</xsl:call-template>
-					</soapenv:Body>
-				</soapenv:Envelope>
-			</xsl:when>
-			<xsl:otherwise>
-				<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:hss="http://www.huawei.com/HSS">
-					<soapenv:Header>
-						<hss:MessageID>?</hss:MessageID>
-						<hss:MEName>
-							<xsl:value-of select="$MEName_value"/>
-						</hss:MEName>
-						<hss:Authentication>
-							<hss:Username>
-								<xsl:value-of select="$username"/>
-							</hss:Username>
-							<hss:Password>
-								<xsl:value-of select="$password"/>
-							</hss:Password>
-						</hss:Authentication>
-					</soapenv:Header>
-					<soapenv:Body>
-						<xsl:choose>
-							<xsl:when test="$which_xml='RMV_HHDAINF'">
-								<xsl:call-template name="rmv_hhdainf">
-									<xsl:with-param name="telephone_full" select="$telephone_full"/>
-								</xsl:call-template>
-							</xsl:when>
-							<xsl:when test="$which_xml='RMV_HSUB'">
-								<xsl:call-template name="rmv_hsub">
-									<xsl:with-param name="sub_id" select="$sub_id"/>
-								</xsl:call-template>
-							</xsl:when>
-							<xsl:when test="$which_xml='RMV_HIMPU'">
-								<xsl:call-template name="rmv_himpu">
-									<xsl:with-param name="telephone_full" select="$telephone_full"/>
-								</xsl:call-template>
-							</xsl:when>
-						</xsl:choose>
-					</soapenv:Body>
-				</soapenv:Envelope>
-			</xsl:otherwise>
-		</xsl:choose>
+					</xsl:when>
+					<xsl:when test="$which_xml='RmvIMSSub'">
+						<xsl:call-template name="rmv_imssub">
+							<xsl:with-param name="telephone" select="$telephone"/>
+							<xsl:with-param name="ciy_code" select="$ciy_code"/>
+							<xsl:with-param name="country_code" select="$country_code"/>
+							<xsl:with-param name="authurl" select="$authurl"/>
+							<xsl:with-param name="pwd_value" select="$pwd_value"/>
+							<xsl:with-param name="telephone_full" select="$telephone_full"/>
+						</xsl:call-template>
+					</xsl:when>
+				</xsl:choose>
+			</S:Body>
+		</S:Envelope>
 	</xsl:template>
 </xsl:stylesheet>

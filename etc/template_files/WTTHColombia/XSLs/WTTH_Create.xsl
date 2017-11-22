@@ -25,16 +25,16 @@
 
 	<xsl:template match="/">
 		<xsl:import href="create_body.xsl"/>
-		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:spg="http://www.huawei.com/SPG">
-			<soapenv:Header>
-				<ResendFlag>?</ResendFlag>
-				<Authentication>
-					<Username><xsl:value-of select="$username"/></Username>
-					<Password><xsl:value-of select="$password"/></Password>
+		<S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/">
+			<S:Header>
+				<Authentication xmlns="http://www.huawei.com/SPG">
+					<ResendFlag>?</ResendFlag>
+					<Username><xsl:value-of select="username" /></Username>
+					<Password><xsl:value-of select="password" /></Password>
+					<MessageID>?</MessageID>
 				</Authentication>
-				<MessageID/>
-			</soapenv:Header>
-			<soapenv:Body>
+			</S:Header>
+			<S:Body>
 				<xsl:choose>
 					<xsl:when test="$which_xml='ADD_SBR'">
 						<xsl:call-template name="add_sbr">
@@ -67,8 +67,8 @@
 						</xsl:call-template>
 					</xsl:when>
 				</xsl:choose>
-			</soapenv:Body>
-		</soapenv:Envelope>
+			</S:Body>
+		</S:Envelope>
 		<!--xsl:choose>
 			<xsl:when test="$which_xml='ADD_SBR'">
 				<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:spg="http://www.huawei.com/SPG">
