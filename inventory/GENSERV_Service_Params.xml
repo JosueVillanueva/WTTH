@@ -12,12 +12,6 @@
 			<Type>String</Type>
 			<Description>service primary key</Description>
 		</Field>
-		<Field mandatory="true">
-			<Name>customerId</Name>
-			<Column>CUSTOMER_ID</Column>
-			<Type>String</Type>
-			<Description>customer id</Description>
-		</Field>
 		<Field mandatory="false">
 			<Name>paramName</Name>
 			<Column>PARAM_NAME</Column>
@@ -46,9 +40,6 @@
 	<Keys>
 		<Key pk="true">
 			<KeyField>serviceId</KeyField>
-		</Key>
-		<Key unique="false" makeIndex="true">
-			<KeyField>customerId</KeyField>
 		</Key>
 		<Key unique="false" makeIndex="true">
 			<KeyField>paramName</KeyField>
