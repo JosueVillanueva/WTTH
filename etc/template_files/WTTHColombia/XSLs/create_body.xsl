@@ -41,28 +41,32 @@
 			<DSPIDX>1</DSPIDX>
 			<LP><xsl:value-of select="$LP_value"/></LP>
 			<CSC><xsl:value-of select="$CSC_value"/></CSC>
-			<NSCFU>1</NSCFU>
-			<NSCLIP>1</NSCLIP>
-			<NSCW>1</NSCW>
-			<NSWAKE_UP>1</NSWAKE_UP>
-			<NS3PTY>1</NS3PTY>
-			<NSCBA>1</NSCBA>
-			<NSHOLD>1</NSHOLD>
-			<NSECT>1</NSECT>
-			<NSSD1D>1</NSSD1D>
-			<NSSD2D>1</NSSD2D>
-			<LCO>1</LCO>
-			<LC>1</LC>
 			<LCT><xsl:value-of select="$LCT_value"/></LCT>
 			<NTT><xsl:value-of select="$NTT_value"/></NTT>
 			<ITT><xsl:value-of select="$ITT_value"/></ITT>
+			<LCO>1</LCO>
+			<LC>1</LC>
 			<ICTX>1</ICTX>
 			<OCTX>1</OCTX>
+			<TIDCW>2</TIDCW>
+			<NSCBA>1</NSCBA>
+			<NSACRM>0</NSACRM>
+			<NSCFU>1</NSCFU>
+			<NSCLIP>1</NSCLIP>
+			<NSCW>1</NSCW>
+			<NSDND>1</NSDND>
+			<NSMWI>1</NSMWI>
+			<NSSIC>0</NSSIC>
+			<NSSD1D>1</NSSD1D>
+			<NS3PTY>1</NS3PTY>
+			<NSCIDCW>1</NSCIDCW>
+			<NSWAKE_UP>1</NSWAKE_UP>
+			<NSSD2D>1</NSSD2D>
+			<NSCNIP>1</NSCNIP>
+			<NSCLIR>1</NSCLIR>
 			<CCO1><xsl:value-of select="$CCO1_value"/></CCO1>
 			<CCO5><xsl:value-of select="$CCO5_value"/></CCO5>
-			<TIDCW>2</TIDCW>
 			<COP><xsl:value-of select="$COP_value"/></COP>
-			<MAXPARACALL>1</MAXPARACALL>
 		</ADD_SBR>
 	</xsl:template>
 	

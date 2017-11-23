@@ -29,8 +29,8 @@
 			<S:Header>
 				<Authentication xmlns="http://www.huawei.com/SPG">
 					<ResendFlag>?</ResendFlag>
-					<Username><xsl:value-of select="username" /></Username>
-					<Password><xsl:value-of select="password" /></Password>
+					<Username><xsl:value-of select="$username"/></Username>
+					<Password><xsl:value-of select="$password"/></Password>
 					<MessageID>?</MessageID>
 				</Authentication>
 			</S:Header>
