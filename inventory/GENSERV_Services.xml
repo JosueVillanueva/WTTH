@@ -14,7 +14,7 @@
 		</Field>
 		<Field mandatory="false">
 			<Name>customerId</Name>
-			<Column>COSTUMER_ID</Column>
+			<Column>CUSTOMER_ID</Column>
 			<Type>String</Type>
 			<Description>customer id</Description>
 		</Field>
