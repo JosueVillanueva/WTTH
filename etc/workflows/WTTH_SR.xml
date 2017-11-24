@@ -49,9 +49,11 @@
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="path_xml_ims_to_mov" value="%FILE_URL_PREFIX%C:\Users\HectorS5\Documents\Proyects\WTTH-colombia\WTTH\etc\template_files\WTTHColombia\SALIDAS\%table_ims_to_mov%.xml"/>
             <Param name="path_xml_mov_to_ims" value="%FILE_URL_PREFIX%C:\Users\HectorS5\Documents\Proyects\WTTH-colombia\WTTH\etc\template_files\WTTHColombia\SALIDAS\%table_mov_to_ims%.xml"/>
+            <Param name="path_xml_sftp" value="C:\Users\HectorS5\Documents\Proyects\WTTH-colombia\WTTH\etc\template_files\WTTHColombia\SALIDAS\"/>
             <Param name="path_xml_update_tables" value="%FILE_URL_PREFIX%C:\Users\HectorS5\Documents\Proyects\WTTH-colombia\WTTH\etc\template_files\WTTHColombia\SALIDAS\WTTH_update_tables.xml"/>
             <Param name="path_xsl_ims_to_mov" value="%FILE_URL_PREFIX%C:\Users\HectorS5\Documents\Proyects\WTTH-colombia\WTTH\etc\template_files\WTTHColombia\XSLs\WTTH_ims_to_mov_b.xsl"/>
             <Param name="path_xsl_mov_to_ims" value="%FILE_URL_PREFIX%C:\Users\HectorS5\Documents\Proyects\WTTH-colombia\WTTH\etc\template_files\WTTHColombia\XSLs\WTTH_mov_to_ims_b.xsl"/>
+            <Param name="path_xsl_sftp" value="%FILE_URL_PREFIX%C:\Users\HectorS5\Documents\Proyects\WTTH-colombia\WTTH\etc\template_files\WTTHColombia\XSLs\sftp.xsl"/>
             <Param name="path_xsl_update_tables" value="%FILE_URL_PREFIX%C:\Users\HectorS5\Documents\Proyects\WTTH-colombia\WTTH\etc\template_files\WTTHColombia\XSLs\WTTH_update_tables.xsl"/>
          </Action>
          <Next-Node>Switch</Next-Node>
@@ -61,11 +63,11 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.SwitchCase</Class-Name>
             <Param name="key" value="action_name"/>
-            <Param name="case0" value="constant:delete"/>
+            <Param name="case0" value="constant:DELETE"/>
             <Param name="case1" value="constant:CREATE"/>
          </Action>
-         <Switch name="case0">DeleteLine</Switch>
          <Switch name="case1">getDate</Switch>
+         <Switch name="case0">DeleteLine</Switch>
          <Default>mapError02</Default>
       </Switch-Node>
       <Rule-Node disablePersistence="true">
@@ -76,7 +78,17 @@
             <Param name="op2" value="constant:0"/>
          </Action>
          <True-Next-Node>Add</True-Next-Node>
-         <False-Next-Node>number_retries valid?_</False-Next-Node>
+         <False-Next-Node>mapError06_</False-Next-Node>
+      </Rule-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>!error?1</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
+            <Param name="op1" value="activation_major_code"/>
+            <Param name="op2" value="constant:0"/>
+         </Action>
+         <True-Next-Node>cleanSftpPath</True-Next-Node>
+         <False-Next-Node>mapError06_</False-Next-Node>
       </Rule-Node>
       <Process-Node disablePersistence="true">
          <Name>Add</Name>
@@ -209,6 +221,25 @@
             <Param name="param3" value="activation_description"/>
          </Action>
       </Process-Node>
+      <Process-Node>
+         <Name>PutMessage10</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="user_sftp %s pass_sftp %s path_xml_sftp %s host_sftp %s  port %s number_retries %s pause_between_retries %s timeout %s"/>
+            <Param name="queue" value="variable:WORKFLOW_NAME"/>
+            <Param name="param0" value="user_sftp"/>
+            <Param name="param1" value="pass_sftp"/>
+            <Param name="param2" value="path_xml_sftp"/>
+            <Param name="param3" value="host_sftp"/>
+            <Param name="param4" value="port"/>
+            <Param name="param5" value="number_retries"/>
+            <Param name="param6" value="pause_between_retries"/>
+            <Param name="param7" value="timeout"/>
+         </Action>
+         <Next-Node>sendFileSftp</Next-Node>
+      </Process-Node>
       <Process-Node inactive="true">
          <Name>PutMessage2</Name>
          <Action>
@@ -285,7 +316,7 @@
          <Name>PutMessage6</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
-            <Param name="message" value="sshpass -p %s scp -P %s %s %s %s@%s:/home commands %s"/>
+            <Param name="message" value="sshpass -p %s scp -P %s %s %s %s@%s:/home commands %s path_xml_sftp %s"/>
             <Param name="queue" value="variable:WORKFLOW_NAME"/>
             <Param name="param0" value="pass_sftp"/>
             <Param name="param1" value="port"/>
@@ -294,6 +325,7 @@
             <Param name="param4" value="user_sftp"/>
             <Param name="param5" value="host_sftp"/>
             <Param name="param6" value="commands_sftp"/>
+            <Param name="param7" value="path_xml_sftp"/>
          </Action>
          <Next-Node>start count_retries_sftp</Next-Node>
       </Process-Node>
@@ -308,8 +340,6 @@
       </Process-Node>
       <Process-Node>
          <Name>PutMessage8</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
             <Param name="message" value="count_retry_upd %s"/>
@@ -348,6 +378,24 @@
          <Switch name="case1">addLineRb</Switch>
          <Default>mapError04</Default>
       </Switch-Node>
+      <Process-Node disablePersistence="true">
+         <Name>TransformXML</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.TransformXML</Class-Name>
+            <Param name="output_url" value="path_xml_sftp"/>
+            <Param name="xsl_url" value="path_xsl_sftp"/>
+         </Action>
+         <Next-Node>PutMessage10</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>TransformXML1</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.TransformXML</Class-Name>
+            <Param name="output_url" value="path_xml_sftp"/>
+            <Param name="xsl_url" value="path_xsl_sftp"/>
+         </Action>
+         <Next-Node>sendFileSftp1</Next-Node>
+      </Process-Node>
       <Process-Node>
          <Name>addLine</Name>
          <Action>
@@ -396,6 +444,16 @@
          <False-Next-Node>mapError01</False-Next-Node>
       </Rule-Node>
       <Process-Node disablePersistence="true">
+         <Name>cleanSftpPath</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="path_xml_sftp" value="C:\Users\HectorS5\Documents\Proyects\WTTH-colombia\WTTH\etc\template_files\WTTHColombia\SALIDAS\"/>
+         </Action>
+         <Next-Node>mapSftpParams11</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
          <Name>cleanVars</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
@@ -406,8 +464,6 @@
       </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>coun_retry ++</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Add</Class-Name>
             <Param name="op0" value="count_retry_upd"/>
@@ -432,23 +488,11 @@
       </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>countRetry</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="count_retry_upd" value="0"/>
          </Action>
          <Next-Node>updateImsToMov</Next-Node>
-      </Process-Node>
-      <Process-Node disablePersistence="true">
-         <Name>count_retries_sftp++</Name>
-         <Description></Description>
-         <State></State>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Add</Class-Name>
-            <Param name="op0" value="count_retry_sftp"/>
-         </Action>
-         <Next-Node>sendFileSftp</Next-Node>
       </Process-Node>
       <Rule-Node disablePersistence="true">
          <Name>deleteOK?</Name>
@@ -563,8 +607,6 @@
       </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>mapError08</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="wtth_result_code" value="1"/>
@@ -584,7 +626,7 @@
             <Param name="timeout" value="30"/>
             <Param name="user_sftp" value="HectorS5"/>
          </Action>
-         <Next-Node>mapUrl</Next-Node>
+         <Next-Node>mapSftpParams1</Next-Node>
       </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>mapSftp1</Name>
@@ -594,20 +636,47 @@
             <Param name="host_sftp" value="%network_element_obj[count_ne].url%"/>
             <Param name="number_retries" value="3"/>
             <Param name="pass_sftp" value="%network_element_obj[count_ne].password%"/>
-            <Param name="pause_between_retries" value="500"/>
+            <Param name="pause_between_retries" value="300"/>
             <Param name="port" value="%network_element_obj[count_ne].portNumber%"/>
-            <Param name="timeout" value="30"/>
+            <Param name="timeout" value="5000"/>
             <Param name="user_sftp" value="%network_element_obj[count_ne].userName%"/>
          </Action>
          <Next-Node>mapSftp</Next-Node>
       </Process-Node>
-      <Process-Node disablePersistence="true">
-         <Name>mapUrl</Name>
+      <Process-Node disablePersistence="true" inactive="true">
+         <Name>mapSftpParams</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="sftp_operation" value="put"/>
+         </Action>
+         <Next-Node>TransformXML</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>mapSftpParams1</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="local_file_name_sftp" value="%table_ims_to_mov%.xml"/>
+            <Param name="local_file_path_sftp" value="C:\Users\HectorS5\Documents\Proyects\WTTH-colombia\WTTH\etc\template_files\WTTHColombia\SALIDAS\"/>
+            <Param name="path_xml_sftp" value="%FILE_URL_PREFIX%%path_xml_sftp%sftp_%table_ims_to_mov%.xml"/>
+            <Param name="remote_file_name_sftp" value="%table_ims_to_mov%_1.xml"/>
+            <Param name="remote_file_path_sftp" value="/"/>
+            <Param name="sftp_operation" value="put"/>
             <Param name="url_sftp" value="%host_sftp%:%port%"/>
          </Action>
          <Next-Node>PutMessage6</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>mapSftpParams11</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="local_file_name_sftp" value="%table_mov_to_ims%.xml"/>
+            <Param name="local_file_path_sftp" value="C:\Users\HectorS5\Documents\Proyects\WTTH-colombia\WTTH\etc\template_files\WTTHColombia\SALIDAS\"/>
+            <Param name="path_xml_sftp" value="%FILE_URL_PREFIX%%path_xml_sftp%sftp_%table_mov_to_ims%.xml"/>
+            <Param name="remote_file_name_sftp" value="%table_mov_to_ims%.xml"/>
+            <Param name="remote_file_path_sftp" value="/home"/>
+            <Param name="sftp_operation" value="put"/>
+         </Action>
+         <Next-Node>TransformXML1</Next-Node>
       </Process-Node>
       <Rule-Node disablePersistence="true">
          <Name>notImsToMov?</Name>
@@ -622,7 +691,6 @@
       <Rule-Node disablePersistence="true">
          <Name>number_retries valid?</Name>
          <Description>number_retries</Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.LessThan</Class-Name>
             <Param name="op1" value="count_retry_upd"/>
@@ -630,18 +698,6 @@
          </Action>
          <True-Next-Node>coun_retry ++</True-Next-Node>
          <False-Next-Node>mapError08</False-Next-Node>
-      </Rule-Node>
-      <Rule-Node disablePersistence="true">
-         <Name>number_retries valid?_</Name>
-         <Description></Description>
-         <State></State>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.LessThan</Class-Name>
-            <Param name="op1" value="count_retry_sftp"/>
-            <Param name="op2" value="number_retries"/>
-         </Action>
-         <True-Next-Node>count_retries_sftp++</True-Next-Node>
-         <False-Next-Node>mapError06_</False-Next-Node>
       </Rule-Node>
       <Rule-Node disablePersistence="true">
          <Name>queryOK?</Name>
@@ -653,7 +709,7 @@
       </Rule-Node>
       <Process-Node>
          <Name>sendFileSftp</Name>
-         <Description>executeSftp</Description>
+         <Description>commands_sftp</Description>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Activate</Class-Name>
             <Param name="ignore_lock_argument" value="constant:true"/>
@@ -665,25 +721,27 @@
             <Param name="param4" value="number_retries"/>
             <Param name="param5" value="pause_between_retries"/>
             <Param name="param6" value="timeout"/>
-            <Param name="param7" value="commands_sftp"/>
+            <Param name="param7" value="path_xml_sftp"/>
+         </Action>
+         <Next-Node>!error?1</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>sendFileSftp1</Name>
+         <Description>commands_sftp</Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Activate</Class-Name>
+            <Param name="ignore_lock_argument" value="constant:true"/>
+            <Param name="task" value="executeSftp"/>
+            <Param name="param0" value="user_sftp"/>
+            <Param name="param1" value="pass_sftp"/>
+            <Param name="param2" value="host_sftp"/>
+            <Param name="param3" value="port"/>
+            <Param name="param4" value="number_retries"/>
+            <Param name="param5" value="pause_between_retries"/>
+            <Param name="param6" value="timeout"/>
+            <Param name="param7" value="path_xml_sftp"/>
          </Action>
          <Next-Node>!error?</Next-Node>
-      </Process-Node>
-      <Process-Node inactive="true">
-         <Name>sendSftp</Name>
-         <State></State>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.ExecuteExternal</Class-Name>
-            <Param name="cmd_line" value="sshpass -p %s scp -P %s %s %s %s@%s:/home"/>
-            <Param name="throw_excep" value="constant:false"/>
-            <Param name="param0" value="pass_sftp"/>
-            <Param name="param1" value="port"/>
-            <Param name="param2" value="path_xml_ims_to_mov"/>
-            <Param name="param3" value="path_xml_mov_to_ims"/>
-            <Param name="param4" value="user_sftp"/>
-            <Param name="param5" value="host_sftp"/>
-         </Action>
-         <Next-Node>updateIms2MovComm</Next-Node>
       </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>start count ne</Name>
@@ -695,13 +753,11 @@
       </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>start count_retries_sftp</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="count_retry_sftp" value="0"/>
          </Action>
-         <Next-Node>sendFileSftp</Next-Node>
+         <Next-Node>mapSftpParams</Next-Node>
       </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>startVar</Name>
@@ -733,7 +789,7 @@
          </Action>
          <Next-Node>countRetry</Next-Node>
       </Process-Node>
-      <Process-Node>
+      <Process-Node inactive="true">
          <Name>updateImsToMov</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Activate</Class-Name>
@@ -746,8 +802,6 @@
       </Process-Node>
       <Rule-Node disablePersistence="true">
          <Name>updateOK?</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
             <Param name="op1" value="activation_major_code"/>
@@ -882,6 +936,9 @@
       <Variable name="host_sftp" type="String"/>
       <Variable name="ims_to_mov_obj" type="Object"/>
       <Variable name="ims_to_mov_obj_rb" type="Object"/>
+      <Variable name="local_file_name_sftp" type="String"/>
+      <Variable name="local_file_path" type="String"/>
+      <Variable name="local_file_path_sftp" type="String"/>
       <Variable name="message_url" type="String"/>
       <Variable name="mobile_number" type="String"/>
       <Variable name="mobile_numbers" type="String"/>
@@ -903,6 +960,9 @@
       <Variable name="path_xsl_update_tables" type="String"/>
       <Variable name="pause_between_retries" type="String"/>
       <Variable name="port" type="String"/>
+      <Variable name="remote_file_name_sftp" type="String"/>
+      <Variable name="remote_file_path" type="String"/>
+      <Variable name="remote_file_path_sftp" type="String"/>
       <Variable name="route" type="String"/>
       <Variable name="route_concat" type="String"/>
       <Variable name="route_concat_ims_to_mov" type="String"/>
@@ -911,6 +971,8 @@
       <Variable name="route_mov_to_ims" type="String"/>
       <Variable name="separator" type="String"/>
       <Variable name="services_JOB_ID" type="Integer"/>
+      <Variable name="sftp_commands" type="String"/>
+      <Variable name="sftp_operation" type="String"/>
       <Variable name="skip_activation" type="Boolean"/>
       <Variable name="table_ims_to_mov" type="String"/>
       <Variable name="table_mov_to_ims" type="String"/>
@@ -933,14 +995,21 @@
    <Coordinates>
       <Position>
          <Name>!error?</Name>
-         <X>2312</X>
+         <X>2962</X>
          <Y>293</Y>
          <Width>63</Width>
          <Height>24</Height>
       </Position>
       <Position>
+         <Name>!error?1</Name>
+         <X>2482</X>
+         <Y>293</Y>
+         <Width>69</Width>
+         <Height>24</Height>
+      </Position>
+      <Position>
          <Name>Add</Name>
-         <X>2313</X>
+         <X>2963</X>
          <Y>205</Y>
          <Width>61</Width>
          <Height>48</Height>
@@ -982,7 +1051,7 @@
       </Position>
       <Position>
          <Name>Equal3</Name>
-         <X>2312</X>
+         <X>2962</X>
          <Y>171</Y>
          <Width>62</Width>
          <Height>24</Height>
@@ -990,7 +1059,7 @@
       <Position>
          <Name>Error</Name>
          <X>794</X>
-         <Y>816</Y>
+         <Y>1010</Y>
          <Width>61</Width>
          <Height>48</Height>
       </Position>
@@ -1045,9 +1114,16 @@
       </Position>
       <Position>
          <Name>PutMessage</Name>
-         <X>662</X>
-         <Y>959</Y>
+         <X>790</X>
+         <Y>1139</Y>
          <Width>68</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>PutMessage10</Name>
+         <X>2342</X>
+         <Y>351</Y>
+         <Width>80</Width>
          <Height>48</Height>
       </Position>
       <Position>
@@ -1087,14 +1163,14 @@
       </Position>
       <Position>
          <Name>PutMessage5</Name>
-         <X>2882</X>
+         <X>3532</X>
          <Y>159</Y>
          <Width>74</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>PutMessage6</Name>
-         <X>1919</X>
+         <X>1957</X>
          <Y>281</Y>
          <Width>74</Width>
          <Height>48</Height>
@@ -1108,7 +1184,7 @@
       </Position>
       <Position>
          <Name>PutMessage8</Name>
-         <X>2617</X>
+         <X>3267</X>
          <Y>275</Y>
          <Width>74</Width>
          <Height>48</Height>
@@ -1122,7 +1198,7 @@
       </Position>
       <Position>
          <Name>Rollback</Name>
-         <X>2313</X>
+         <X>2963</X>
          <Y>505</Y>
          <Width>61</Width>
          <Height>48</Height>
@@ -1140,6 +1216,20 @@
          <Y>517</Y>
          <Width>63</Width>
          <Height>24</Height>
+      </Position>
+      <Position>
+         <Name>TransformXML</Name>
+         <X>2289</X>
+         <Y>281</Y>
+         <Width>78</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>TransformXML1</Name>
+         <X>2764</X>
+         <Y>281</Y>
+         <Width>84</Width>
+         <Height>48</Height>
       </Position>
       <Position>
          <Name>addLine</Name>
@@ -1163,6 +1253,13 @@
          <Height>24</Height>
       </Position>
       <Position>
+         <Name>cleanSftpPath</Name>
+         <X>2572</X>
+         <Y>281</Y>
+         <Width>77</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>cleanVars</Name>
          <X>1728</X>
          <Y>699</Y>
@@ -1171,7 +1268,7 @@
       </Position>
       <Position>
          <Name>coun_retry ++</Name>
-         <X>2613</X>
+         <X>3263</X>
          <Y>380</Y>
          <Width>82</Width>
          <Height>48</Height>
@@ -1192,16 +1289,9 @@
       </Position>
       <Position>
          <Name>countRetry</Name>
-         <X>2530</X>
+         <X>3180</X>
          <Y>159</Y>
          <Width>64</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>count_retries_sftp++</Name>
-         <X>2126</X>
-         <Y>346</Y>
-         <Width>115</Width>
          <Height>48</Height>
       </Position>
       <Position>
@@ -1234,7 +1324,7 @@
       </Position>
       <Position>
          <Name>mapError00</Name>
-         <X>2980</X>
+         <X>3630</X>
          <Y>159</Y>
          <Width>66</Width>
          <Height>48</Height>
@@ -1249,7 +1339,7 @@
       <Position>
          <Name>mapError02</Name>
          <X>272</X>
-         <Y>816</Y>
+         <Y>1010</Y>
          <Width>66</Width>
          <Height>48</Height>
       </Position>
@@ -1283,7 +1373,7 @@
       </Position>
       <Position>
          <Name>mapError06_</Name>
-         <X>2307</X>
+         <X>2957</X>
          <Y>423</Y>
          <Width>72</Width>
          <Height>48</Height>
@@ -1297,7 +1387,7 @@
       </Position>
       <Position>
          <Name>mapError08</Name>
-         <X>2444</X>
+         <X>3094</X>
          <Y>505</Y>
          <Width>66</Width>
          <Height>48</Height>
@@ -1317,16 +1407,30 @@
          <Height>48</Height>
       </Position>
       <Position>
-         <Name>mapTables</Name>
-         <X>107</X>
-         <Y>208</Y>
-         <Width>61</Width>
+         <Name>mapSftpParams</Name>
+         <X>2193</X>
+         <Y>281</Y>
+         <Width>85</Width>
          <Height>48</Height>
       </Position>
       <Position>
-         <Name>mapUrl</Name>
+         <Name>mapSftpParams1</Name>
          <X>1844</X>
          <Y>281</Y>
+         <Width>91</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>mapSftpParams11</Name>
+         <X>2657</X>
+         <Y>281</Y>
+         <Width>97</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>mapTables</Name>
+         <X>107</X>
+         <Y>208</Y>
          <Width>61</Width>
          <Height>48</Height>
       </Position>
@@ -1339,16 +1443,9 @@
       </Position>
       <Position>
          <Name>number_retries valid?</Name>
-         <X>2588</X>
+         <X>3238</X>
          <Y>517</Y>
          <Width>133</Width>
-         <Height>24</Height>
-      </Position>
-      <Position>
-         <Name>number_retries valid?_</Name>
-         <X>2274</X>
-         <Y>358</Y>
-         <Width>139</Width>
          <Height>24</Height>
       </Position>
       <Position>
@@ -1360,16 +1457,16 @@
       </Position>
       <Position>
          <Name>sendFileSftp</Name>
-         <X>2149</X>
+         <X>2379</X>
          <Y>281</Y>
          <Width>69</Width>
          <Height>48</Height>
       </Position>
       <Position>
-         <Name>sendSftp</Name>
-         <X>2430</X>
-         <Y>379</Y>
-         <Width>61</Width>
+         <Name>sendFileSftp1</Name>
+         <X>2867</X>
+         <Y>281</Y>
+         <Width>75</Width>
          <Height>48</Height>
       </Position>
       <Position>
@@ -1381,7 +1478,7 @@
       </Position>
       <Position>
          <Name>start count_retries_sftp</Name>
-         <X>2009</X>
+         <X>2059</X>
          <Y>281</Y>
          <Width>125</Width>
          <Height>48</Height>
@@ -1402,21 +1499,21 @@
       </Position>
       <Position>
          <Name>updateIms2MovComm</Name>
-         <X>2402</X>
+         <X>3052</X>
          <Y>159</Y>
          <Width>116</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>updateImsToMov</Name>
-         <X>2608</X>
+         <X>3258</X>
          <Y>159</Y>
          <Width>93</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>updateOK?</Name>
-         <X>2786</X>
+         <X>3436</X>
          <Y>171</Y>
          <Width>83</Width>
          <Height>24</Height>
@@ -1458,6 +1555,19 @@
          </True-Arrow>
          <False-Arrow>
             <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>!error?1</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>3</Type>
             <DeltaX>0</DeltaX>
             <DeltaY>0</DeltaY>
          </False-Arrow>
@@ -1659,6 +1769,19 @@
       </Arrows>
       <Arrows>
          <Name>PutMessage</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>PutMessage10</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
@@ -1878,6 +2001,32 @@
          </Switch-Arrow>
       </Arrows>
       <Arrows>
+         <Name>TransformXML</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>TransformXML1</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>addLine</Name>
          <True-Arrow>
             <Type>0</Type>
@@ -1905,6 +2054,19 @@
       </Arrows>
       <Arrows>
          <Name>addOK?</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>cleanSftpPath</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
@@ -1970,19 +2132,6 @@
       </Arrows>
       <Arrows>
          <Name>countRetry</Name>
-         <True-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </True-Arrow>
-         <False-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </False-Arrow>
-      </Arrows>
-      <Arrows>
-         <Name>count_retries_sftp++</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
@@ -2203,7 +2352,7 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
-         <Name>mapTables</Name>
+         <Name>mapSftpParams</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
@@ -2216,7 +2365,33 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
-         <Name>mapUrl</Name>
+         <Name>mapSftpParams1</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>mapSftpParams11</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>mapTables</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
@@ -2255,19 +2430,6 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
-         <Name>number_retries valid?_</Name>
-         <True-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </True-Arrow>
-         <False-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </False-Arrow>
-      </Arrows>
-      <Arrows>
          <Name>queryOK?</Name>
          <True-Arrow>
             <Type>0</Type>
@@ -2294,7 +2456,7 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
-         <Name>sendSftp</Name>
+         <Name>sendFileSftp1</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>

@@ -151,9 +151,10 @@
          <Name>PutMessage4</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
-            <Param name="message" value="wtth_result_code %s"/>
+            <Param name="message" value="wtth_result_code %s wtth_result_desc %s"/>
             <Param name="queue" value="variable:WORKFLOW_NAME"/>
             <Param name="param0" value="wtth_result_code"/>
+            <Param name="param1" value="wtth_result_desc"/>
          </Action>
       </Process-Node>
       <Process-Node>
@@ -165,11 +166,15 @@
             <Param name="destination0" value="controller_JOB_ID"/>
             <Param name="outputvar0" value="wtth_result_code"/>
             <Param name="variable0" value="JOB_ID"/>
+            <Param name="outputvar1" value="wtth_result_desc"/>
             <Param name="variable1" value="fixed_telephone_number_new"/>
             <Param name="variable2" value="password_customer"/>
             <Param name="variable3" value="action_name"/>
             <Param name="variable4" value="account_number"/>
             <Param name="variable5" value="mobile_telephone_number_new"/>
+            <Param name="variable6" value="service_id_new"/>
+            <Param name="variable7" value="account_number"/>
+            <Param name="variable8" value="service_type"/>
          </Action>
          <Next-Node>ModifOK?</Next-Node>
       </Process-Node>
@@ -194,17 +199,19 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.StartJobAndWait</Class-Name>
             <Param name="queue" value="controller_queue"/>
-            <Param name="workflow_name" value="constant:WTTH_MODIFY_SERVICES"/>
+            <Param name="workflow_name" value="constant:WTTH_DELETE_SERVICES"/>
             <Param name="destination0" value="controller_JOB_ID"/>
             <Param name="outputvar0" value="wtth_result_code"/>
             <Param name="variable0" value="JOB_ID"/>
+            <Param name="outputvar1" value="wtth_result_desc"/>
             <Param name="variable1" value="fixed_telephone_number_new"/>
             <Param name="variable2" value="password_customer"/>
             <Param name="variable3" value="action_name"/>
             <Param name="variable4" value="account_number"/>
             <Param name="variable5" value="mobile_telephone_number_new"/>
+            <Param name="variable6" value="service_id_new"/>
          </Action>
-         <Next-Node>deleteOK?</Next-Node>
+         <Next-Node>ModifOK?</Next-Node>
       </Process-Node>
       <Rule-Node disablePersistence="true">
          <Name>Equal2</Name>
@@ -216,7 +223,7 @@
          <True-Next-Node>XMLMapper1</True-Next-Node>
          <False-Next-Node>MapVar</False-Next-Node>
       </Rule-Node>
-      <Process-Node disablePersistence="true">
+      <Process-Node disablePersistence="true" inactive="true">
          <Name>MapError00</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
@@ -262,9 +269,10 @@
          <Name>PutMessage2</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
-            <Param name="message" value="wtth_result_code %s"/>
+            <Param name="message" value="wtth_result_code %s wtth_result_desc %s"/>
             <Param name="queue" value="variable:WORKFLOW_NAME"/>
             <Param name="param0" value="wtth_result_code"/>
+            <Param name="param1" value="wtth_result_desc"/>
          </Action>
       </Process-Node>
       <Process-Node>
@@ -387,10 +395,11 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.StartJobAndWait</Class-Name>
             <Param name="queue" value="controller_queue"/>
-            <Param name="workflow_name" value="constant:WTTH_MODIFY_SERVICES"/>
+            <Param name="workflow_name" value="constant:WTTH_IMS_CREATE"/>
             <Param name="destination0" value="controller_JOB_ID"/>
             <Param name="outputvar0" value="wtth_result_code"/>
             <Param name="variable0" value="JOB_ID"/>
+            <Param name="outputvar1" value="wtth_result_desc"/>
             <Param name="variable1" value="fixed_telephone_number_new"/>
             <Param name="variable2" value="password_customer"/>
             <Param name="variable3" value="action_name"/>
@@ -414,10 +423,11 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.StartJobAndWait</Class-Name>
             <Param name="queue" value="controller_queue"/>
-            <Param name="workflow_name" value="constant:WTTH_MODIFY_SERVICES"/>
+            <Param name="workflow_name" value="constant:WTTH_IMS_CREATE"/>
             <Param name="destination0" value="controller_JOB_ID"/>
             <Param name="outputvar0" value="wtth_result_code"/>
             <Param name="variable0" value="JOB_ID"/>
+            <Param name="outputvar1" value="wtth_result_desc"/>
             <Param name="variable1" value="fixed_telephone_number_new"/>
             <Param name="variable2" value="password_customer"/>
             <Param name="variable3" value="action_name"/>
@@ -427,14 +437,15 @@
          <Next-Node>ModifOK?</Next-Node>
       </Process-Node>
       <Process-Node>
-         <Name>modifyService5</Name>
+         <Name>modifyServiceCF</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.StartJobAndWait</Class-Name>
             <Param name="queue" value="controller_queue"/>
-            <Param name="workflow_name" value="constant:WTTH_MODIFY_SERVICES"/>
+            <Param name="workflow_name" value="constant:WTTH_IMS_CREATE"/>
             <Param name="destination0" value="controller_JOB_ID"/>
             <Param name="outputvar0" value="wtth_result_code"/>
             <Param name="variable0" value="JOB_ID"/>
+            <Param name="outputvar1" value="wtth_result_desc"/>
             <Param name="variable1" value="fixed_telephone_number_new"/>
             <Param name="variable2" value="password_customer"/>
             <Param name="variable3" value="action_name"/>
@@ -478,7 +489,7 @@
             <Param name="message" value="Option ModifyCF"/>
             <Param name="queue" value="variable:WORKFLOW_NAME"/>
          </Action>
-         <Next-Node>modifyService5</Next-Node>
+         <Next-Node>modifyServiceCF</Next-Node>
       </Process-Node>
       <Process-Node>
          <Name>printReactivate</Name>
@@ -503,10 +514,11 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.StartJobAndWait</Class-Name>
             <Param name="queue" value="controller_queue"/>
-            <Param name="workflow_name" value="constant:WTTH_MODIFY_SERVICES"/>
+            <Param name="workflow_name" value="constant:WTTH_IMS_CREATE"/>
             <Param name="destination0" value="controller_JOB_ID"/>
             <Param name="outputvar0" value="wtth_result_code"/>
             <Param name="variable0" value="JOB_ID"/>
+            <Param name="outputvar1" value="wtth_result_desc"/>
             <Param name="variable1" value="fixed_telephone_number_new"/>
             <Param name="variable2" value="password_customer"/>
             <Param name="variable3" value="action_name"/>
@@ -520,10 +532,11 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.StartJobAndWait</Class-Name>
             <Param name="queue" value="controller_queue"/>
-            <Param name="workflow_name" value="constant:WTTH_MODIFY_SERVICES"/>
+            <Param name="workflow_name" value="constant:WTTH_IMS_CREATE"/>
             <Param name="destination0" value="controller_JOB_ID"/>
             <Param name="outputvar0" value="wtth_result_code"/>
             <Param name="variable0" value="JOB_ID"/>
+            <Param name="outputvar1" value="wtth_result_desc"/>
             <Param name="variable1" value="fixed_telephone_number_new"/>
             <Param name="variable2" value="password_customer"/>
             <Param name="variable3" value="action_name"/>
@@ -612,6 +625,7 @@
       <Variable name="transaction_id_new" type="String"/>
       <Variable name="transaction_id_old" type="String"/>
       <Variable name="wtth_result_code" type="Integer"/>
+      <Variable name="wtth_result_desc" type="String"/>
       <Variable name="xml_message" type="String"/>
    </Case-Packet>
    <Initial-Case-Packet>
@@ -623,7 +637,7 @@
    <Coordinates>
       <Position>
          <Name>CreateService</Name>
-         <X>1118</X>
+         <X>1258</X>
          <Y>318</Y>
          <Width>78</Width>
          <Height>48</Height>
@@ -832,10 +846,10 @@
          <Height>48</Height>
       </Position>
       <Position>
-         <Name>modifyService5</Name>
-         <X>1220</X>
+         <Name>modifyServiceCF</Name>
+         <X>1112</X>
          <Y>318</Y>
-         <Width>83</Width>
+         <Width>90</Width>
          <Height>48</Height>
       </Position>
       <Position>
@@ -847,7 +861,7 @@
       </Position>
       <Position>
          <Name>printCreate</Name>
-         <X>1125</X>
+         <X>1265</X>
          <Y>242</Y>
          <Width>65</Width>
          <Height>48</Height>
@@ -861,7 +875,7 @@
       </Position>
       <Position>
          <Name>printModifyCF</Name>
-         <X>1223</X>
+         <X>1119</X>
          <Y>242</Y>
          <Width>77</Width>
          <Height>48</Height>
@@ -911,7 +925,7 @@
       <Arrows>
          <Name>CreateService</Name>
          <True-Arrow>
-            <Type>0</Type>
+            <Type>3</Type>
             <DeltaX>0</DeltaX>
             <DeltaY>0</DeltaY>
          </True-Arrow>
@@ -950,7 +964,7 @@
       <Arrows>
          <Name>DeleteService</Name>
          <True-Arrow>
-            <Type>0</Type>
+            <Type>3</Type>
             <DeltaX>0</DeltaX>
             <DeltaY>0</DeltaY>
          </True-Arrow>
@@ -1348,9 +1362,9 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
-         <Name>modifyService5</Name>
+         <Name>modifyServiceCF</Name>
          <True-Arrow>
-            <Type>3</Type>
+            <Type>0</Type>
             <DeltaX>0</DeltaX>
             <DeltaY>0</DeltaY>
          </True-Arrow>
