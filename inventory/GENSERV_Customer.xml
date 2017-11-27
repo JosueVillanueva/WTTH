@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE Bean SYSTEM "bean.dtd">
+<Bean>
+	<Name>Customer</Name>
+	<Solution>WTTH</Solution>
+	<Package>com.hpe.ov.activator.inventory</Package>
+	<DBTable>GENSERV_Customer</DBTable>
+	<Fields>
+		<Field mandatory="true" update="false">
+			<Name>customerId</Name>
+			<Column>CUSTOMER_ID</Column>
+			<Type>String</Type>
+			<Description>customer primary key</Description>
+		</Field>
+		<Field mandatory="false">
+			<Name>accountNumber</Name>
+			<Column>ACCOUNT_NUMBER</Column>
+			<Type>String</Type>
+			<Description>account number</Description>
+		</Field>
+		<Field mandatory="false">
+			<Name>customer_name</Name>
+			<Column>CUSTOMER</Column>
+			<Type>String</Type>
+			<Description>customer</Description>
+		</Field>
+		<Field mandatory="false">
+			<Name>emailCustomer</Name>
+			<Column>EMAIL_CUSTOMER</Column>
+			<Type>String</Type>
+			<Description>Email customer</Description>
+		</Field>
+		<Field mandatory="false">
+			<Name>passwordCustomer</Name>
+			<Column>PASSWORD_CUSTOMER</Column>
+			<Type>String</Type>
+			<Description>Password Customer</Description>
+		</Field>
+		<Field mandatory="false">
+			<Name>aux1</Name>
+			<Column>AUX1</Column>
+			<Type>long</Type>
+			<Description>auxiliar field</Description>
+		</Field>
+		<Field mandatory="false">
+			<Name>metada</Name>
+			<Column>METADATA</Column>
+			<Type>long</Type>
+			<Description>additional info</Description>
+		</Field>
+	</Fields>
+	<Keys>
+		<Key pk="true">
+			<KeyField>customerId</KeyField>
+		</Key>
+		<Key unique="false" makeIndex="true">
+			<KeyField>accountNumber</KeyField>
+		</Key>
+	</Keys>
+	<Operations>
+		<Store/>
+		<Update/>
+		<Remove/>
+		<FindBy>
+			<OrderField>customerId</OrderField>
+		</FindBy>
+		<FindBy key="accountNumber">
+			<OrderField>customerId</OrderField>
+		</FindBy>
+	</Operations>
+</Bean>
