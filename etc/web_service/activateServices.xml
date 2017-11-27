@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<WebService login="true" soapBindingStyle="RPC">
+   <Name>Services</Name>
+   <Package>com.hpe.ov.activator.Services</Package>
+   <Method mwfmMethod="startJob" returnType="none" workflowName="WTTH_CONTROLLER">
+      <Name>activateServices</Name>
+      <Description>WebServices to receive the XML file</Description>
+      <InputParam casePacketName="xml_message">
+         <Name>xml_message</Name>
+         <Description>xml_message with information about services to be processed</Description>
+         <Type>String</Type>
+      </InputParam>
+   </Method>
+</WebService>
