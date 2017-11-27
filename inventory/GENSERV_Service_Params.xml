@@ -38,7 +38,7 @@
 		</Field>
 	</Fields>
 	<Keys>
-		<Key pk="true">
+		<Key pk="false">
 			<KeyField>serviceId</KeyField>
 		</Key>
 		<Key unique="false" makeIndex="true">
