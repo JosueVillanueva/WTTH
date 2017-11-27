@@ -6,6 +6,12 @@
 	<Package>com.hpe.ov.activator.inventory</Package>
 	<DBTable>GENSERV_Service_Params</DBTable>
 	<Fields>
+		<Field sequence="true" hiddenCreate="true" hiddenUpdate="true" create="true" update="false" sequenceName="WTTH_SERVICE_PARAMS_SEQ">
+			<Name>serviceParamsId</Name>
+			<Column>SERVICE_PARAMS_ID</Column>
+			<Type>long</Type>
+			<Description>service primary key</Description>
+		</Field>
 		<Field mandatory="true" update="false">
 			<Name>serviceId</Name>
 			<Column>SERVICE_ID</Column>
@@ -45,7 +51,7 @@
 	</Fields>
 	<Keys>
 		<Key pk="true">
-			<KeyField>serviceId</KeyField>
+			<KeyField>serviceParamsId</KeyField>
 		</Key>
 		<Key unique="false" makeIndex="true">
 			<KeyField>customerId</KeyField>
