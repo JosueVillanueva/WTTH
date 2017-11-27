@@ -18,6 +18,12 @@
 			<Type>String</Type>
 			<Description>service id</Description>
 		</Field>
+		<Field mandatory="true" update="false">
+			<Name>Action</Name>
+			<Column>Action</Column>
+			<Type>String</Type>
+			<Description>action type</Description>
+		</Field>
 		<Field mandatory="false">
 			<Name>Method_Name</Name>
 			<Column>METHOD_NAME</Column>
@@ -35,12 +41,15 @@
 		<Key pk="true">
 			<KeyField>MethodId</KeyField>
 		</Key>
+		<Key>
+			<KeyField>Service</KeyField>
+		</Key>
 	</Keys>
 	<Operations>
 		<Store/>
 		<Update/>
 		<Remove/>
-		<FindBy key="Service">
+		<FindBy>
 			<OrderField>OrderMethod</OrderField>
 		</FindBy>
 	</Operations>
