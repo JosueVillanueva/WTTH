@@ -1,0 +1,913 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Solution SYSTEM "deploy.dtd" >
+
+<!--
+  =============================================================================
+    Sample configuration file for HPE Service Activator Solution deployment
+  =============================================================================
+-->
+
+<!-- (c) Copyright 2008-2016 Hewlett Packard Enterprise Development LP -->
+
+<!-- 
+  INTRODUCTION
+  =============================================================================
+    This sample file demonstrates how write a "deploy.xml" file that is used
+    to specify how a solution, a patch, or a customization is to be deployed
+    in the HPE Service Activator runtime system.
+    
+    The <File> element is used in several places throughout this file.  For
+    convenience the <File> element allows the use of simple wild-cards (*) as
+    well as recursive wild-cards (**).  For example, the **/*.class pattern
+    matches all files with the "class" extension in all sub-directories.
+
+    In all cases the "deploy" operation will fail if a file in the runtime
+    system is subject to be overwritten, unless the <File> element's
+    'overwrite' attribute is set to 'true'.
+    
+    The <File> element also has an optional attribute called 'solution' with
+    the default value 'false'.  The 'solution' attribute is only applicable
+    for patches and customizations.  If the 'solution' attribute is set to
+    'true' the Deployment Manager will copy the file from the patch or
+    customization directory to the solution directory and NOT to the HP
+    Service Activator runtime system when the patch or customization is'
+    deployed.  If set to 'false', the file will be copied to the solution
+    directory AND to the HPE Service Activator runtime system.
+    
+    The <File> element can be used to delete files by setting the value of the
+    optional attribute 'delete' to 'true'.  The 'delete' attribute is only
+    supported for patches and customizations.  (I.e. solutions can not use the
+    'delete' attribute.)
+    
+    Finally, the <File> element has an optional attribute called 'executable'
+    with the default value 'false'.  Setting this attribute to 'true' will
+    cause the Deployment Manager to set the 'execute' bit after the file has
+    been copied to the desired location.  The 'executable' attribute will not
+    have an effect on Microsoft Windows systems.    
+    
+  THE SOLUTION DIRECTORY
+  =============================================================================
+    In order to use HPE Service Activator's built-in mechanisms for managing
+    solution separation, all solutions must be located in the directory
+    $ACTIVATOR_OPT/solutions/<SolutionName>.  The HPE Service Activator solution
+    directory is structured as follows:
+    
+      <SolutionName>/
+                    |-3rd-party/
+                    |          |-classes/
+                    |          |-lib/
+                    |-bin/
+                    |-CT/
+                    |-docs/
+                    |-etc/
+                    |    |-config/
+                    |    |       |-inventoryTree
+                    |    |-data/
+                    |    |-dc_tasks/
+                    |    |-designer/
+                    |    |         |-handlers/
+                    |    |         |-nodes/
+                    |    |-nls/
+                    |    |-scripts/
+                    |    |-queue/
+                    |    |-sql/
+                    |    |-template_files/
+                    |    |-tests/
+                    |    |      |-messages/
+                    |    |-umm/
+                    |    |-web_services/
+                    |    |-workflows/
+                    |    |-xmaps/
+                    |-install/
+                    |-inventory/
+                    |-lib/
+                    |-plugins/
+                    |-UI/
+                    |-var/
+                    |    |-dc/
+                    |    |-log/
+                    |    |-tmp/
+    
+    The recommended use of the directories is described in the following:
+      
+      <SolutionName>/3rd-party/
+        This directory is typically used for Java classes and Java archives
+        implementing custom workflow nodes and modules.  There are, however,
+        no restrictions to the usage of this directory.
+        
+      <SolutionName>/bin/
+        This directory can be used as a place holder for executable files 
+        (binary files as well as shell scripts) that are used as part of the
+        solution.  The files in this directory will *not* be deployed into the
+        HPE Service Activator runtime system.
+        
+      <SolutionName>/CT/
+        This directory is used for solution specific compound tasks.
+      
+      <SolutionName>/docs/
+        This directory can be used for containing documentation for the
+        solution.  Files in this directory will *not* be deployed into the HP
+        Service Activator runtime system.
+        
+      <SolutionName>/etc/config/
+        This directory should contain configuration files, DTD files, etc.
+        that are specific for the solution.
+        
+      <SolutionName>/etc/config/inventoryTree/
+        This directory is used for Inventory Tree definition files.
+        
+      <SolutionName>/etc/data/
+        This directory is used for load data files.
+        
+      <SolutionName>/etc/dc_tasks/
+        HPE Service Activator's Data Collector utility can be extended with
+        custom tasks.  Solution specific data collection tasks can be added to
+        this directory.  Custom data collection tasks are *not* deployed to the
+        HPE Service Activator runtime system.
+      
+      <SolutionName>/etc/designer/
+        If the solution uses custom workflow nodes and/or custom error/end
+        handlers their XML specification can be added to this directory. Note
+        that the Java implementation of custom nodes and handler need to be
+        added to the 3rd-party directory.  Custom handlers must be added to the
+        "handlers" directory whereas the custom handlers must be added to the
+        "nodes/<SolutionName>" directory.  Custom nodes should never be added
+        to the "nodes/builtin" directory.
+        
+      <SolutionName>/etc/nls/
+        This directory can be used as a place holder for localized version of HP
+        Service Activator resource bundles.
+      
+      <SolutionName>/etc/queues/
+	This directory can contain XML files that can be used to create queues
+        used in the Queuing Sub-system.
+
+      <SolutionName>/etc/sql/
+        This directory can be used for solution specific SQL files - for
+        instance if a solution needs custom database tables, sequences, etc.
+        Files located in this directory will *not* be deployed into the HP
+        Service Activator runtime system.
+      
+      <SolutionName>/etc/scripts/
+        Scripts that are to be executed by the Deployment Manager during a
+        deploy or an undeploy operation must be located in this directory.
+      
+      <SolutionName>/etc/template_files/
+        This directory typically contains Java template files (used by the Java
+        node or the JavaRule node in the Workflow Manager), XML templates, XSL
+        templates, etc.
+      
+      <SolutionName>/etc/tests/messages/
+        This directory can be used for test messages that can be injected into
+        the SocketListener module from the HPE Service Activator User Interface.
+      
+      <SolutionName>/etc/umm/
+        This directory can contain XML files that can be used to create roles
+        in HPE Service Activator and assign inventory trees, operation types,
+        and branch types to roles.
+      
+      <SolutionName>/etc/web_services/
+        This directory may contain XML files that define a web service
+        interface to HPE Service Activator as well as WAR files (Web Archives)
+        implementing web service interfaces.
+      
+      <SolutionName>/etc/workflows/
+        All workflows in a solution should be located in this directory.
+      
+      <SolutionName>/etc/xmaps/
+        All xmaps in a solution should be located in this directory.
+      
+      <SolutionName>/install/
+        This directory is used internally by the Deployment Manager to keep
+        track of the deployment state of a solution.  User's should not change
+        anything in this directory.
+      
+      <SolutionName>/inventory/
+        This directory is used for all inventory resource definition files in a
+        solution and (if manual inventory deployment is used) for
+        customizations to the inventory subsystem.
+      
+      <SolutionName>/lib/
+        This directory can be used for Java classes, Java achieve files, etc.
+        that are used by scripts located in the <SolutionName>/bin directory.
+        Files located in this directory will *not* be deployed into the HP
+        Service Activator runtime system.
+      
+      <SolutionName>/plugins/
+        All plug-ins in a solution should be located in this directory.
+      
+      <SolutionName>/UI/
+        All custom user interface components (HTML, JSPs, JavaScripts, etc.)
+        should be located in this directory.
+      
+      <SolutionName>/var/
+        This directory can be used for solution specific log files, temporary
+        files etc.  Files located in this directory will *not* be deployed into
+        the HPE Service Activator runtime system.
+      
+  THE PATCH / CUSTOMIZATION DIRECTORY
+  =============================================================================
+    The directory structure for patches and customizations is identical to that
+    of a solution, except that the home directory is different.
+    
+    Patches must be located in the directory:
+      $ACTIVATOR_OPT/solutions/<SolutionName>/patches/<PatchName>
+    
+    Customizations must be located in the directory:
+      $ACTIVATOR_OPT/solutions/<CustomizationName>
+  
+  <PatchName> and <CustomizationName> should consist of alphanumeric characters
+  and underscores.  
+
+  <BaseDir>
+  =============================================================================
+    In the remaining part of the this file, <BaseDir> is used to refer to the
+    home directory for solutions, patches, and customizations, respectively.
+    I.e. the value of <BaseDir> is:
+    
+      For solutions:  $ACTIVATOR_OPT/solutions/<SolutionName>
+      
+      For patches:  $ACTIVATOR_OPT/solutions/<SolutionName>/patches/<PatchName>
+      
+      For customizations:  $ACTIVATOR_OPT/solutions/<CustomizationName>
+
+  =============================================================================
+-->
+
+<Solution>
+<!--
+  SOLUTION NAME
+  =============================================================================
+    The <Name> element is used to uniquely identify an HPE Service Activator
+    solution.  The solution name must be identical to the directory in which
+    the solution files reside.  For patches and customizations, the solution
+    name must match the name of the solution onto which the patch or
+    customization can be deployed.
+    
+    The solution name must follow these rules:
+      - It must begin with a letter; i.e. a-z or A-Z
+      - It must only contain alphanumeric characters and underscores
+      - The length must not exceed 8 characters
+    
+    The solution name should also be defined in the following components:
+
+      - Workflows
+      - Inventory Resource Definition Files
+      - Inventory Trees
+
+    In addition, it is highly recommended to prefix all solution specific
+    database tables, sequences, views, etc. with the solution name (or with
+    an abbreviated version of the solution name to avoid running into Oracle
+    restrictions).
+
+    Finally, it is highly recommended that solution specific plug-ins and 
+    compound tasks use private name-spaces - for instance, by using the name of
+    the solution.  The global name-space should only be used by plug-ins and
+    compound tasks that are shipped with the HPE Service Activator product.
+  =============================================================================
+-->
+  <Name>WTTH</Name>
+
+<!--
+  BACKUP
+  =============================================================================
+    During a deploy operation the Deployment Manager will create a backup
+    directory called "backup" where it will store backups of all (with no
+    exceptions) files, plug-ins, workflows, inventory trees, etc. that would
+    otherwise be overwritten by the Deployment Manager.
+
+    If a backup directory already exists, the Deployment Manager will append a
+    sequence number and then create a new backup directory.  This means that
+    if a solution has been deployed followed by deploying one or more patches
+    or customizations, multiple backup directories will be created with
+    ascending sequence number - see the following example:
+    
+      <SolutionName>/
+                    |-backup/
+                    |          ...
+                    |-backup_1/
+                    |          ...
+                    |-backup_2/
+                    |          ...
+                    |-backup_3/
+                    |          ...
+                    | ...         
+
+    NOTE:
+      In HPE Service Activator 5.0 it was possible to specify the name of the
+      backup directory using the <Backup> element. However, in Service
+      Activator 5.1 the <Backup> element is no longer supported. If it is
+      specified in the deployment descriptor the Deployment Manager will
+      silently ignore it.
+    
+    When deploying a solution, the Deployment Manager will record all files,
+    plug-ins, workflows, inventory trees, etc. in a file called:
+      <SolutionName>/install/checksums_N.xml
+      (N is a sequence number)
+    
+    If, during the deploy operation, the Deployment Manager overwrites a file
+    or database component, the Deployment Manager will save a backup of the
+    original file or database component in the specified backup directory and
+    record the exact location of the backup using the 'backup' attribute in
+    the "checksums_N.xml" file.
+
+    If third-parties need access to a backup file or database component, they
+    must use the information stored in the "checksums_N.xml" file instead of
+    relying on a specific location in the backup directory.
+
+    During the "undeploy" process the Deployment Manager will first remove all
+    solution components, patch components, or customization components from the
+    runtime system and then restore the previous versions of all overwritten
+    components using the files stored in the directory specified by the
+    <Backup> element.  Hence, the HPE Service Activator runtime system will be
+    left in same state as it was before.
+  =============================================================================
+-->
+
+<!--
+  PLUGINS
+  =============================================================================
+    The <Plugins> element specifies which plug-ins should be deployed during the
+    "deploy" operation.  Plug-in archives (PARs) can be referenced using the
+    <File> element or the <Core-File> element.
+
+    Plug-ins that are referenced using the <File> element must be stored in the
+    <BaseDir>/plugins directory.  Deployment of these plug-ins will fail if a
+    plug-in of the same name and name-space is already deployed, unless the
+    'overwrite' attribute is set to 'true'.
+
+    Plug-ins that are referenced using the <Core-File> element must are read
+    from the $ACTIVATOR_OPT/SPI directory.  When using the <Core-File> element,
+    the Deployment Manager overwrite identically named plug-ins during
+    deployment.  (I.e. it will act as if the 'overwrite' attribute was set to
+    'true'.)
+    
+    If an already deployed plug-in is subject to be overwritten during the
+    "deploy" operation, the Deployment Manager will store a backup of the
+    previously deployed version of plug-in in the directory
+    <SolutionName>/<Backup> and add a record to the "checksums_N.xml" file.
+    
+    The <File> as well as the <Core-File> elements support an attribute called
+    'delete'.  Setting this attribute to 'true' causes the Deployment Manager
+    to delete the plug-in (i.e. undeploy it).  This functionality is only
+    supported for patches and customizations; e.g. if a patch replaces an
+    existing plug-in with a new plug-in with a different name.
+    
+    Source:      <BaseDir>/plugins     (when using the <File> element)
+    Source:      $ACTIVATOR_OPT/SPI    (when using the <Core-File> element)
+    Destination: System Database
+  =============================================================================
+-->
+  <!--Plugins>
+    <File overwrite="true">*.par</File>
+    <Core-File>GenericCLI.par</Core-File>
+    <Core-File>GenericHTTP.par</Core-File>
+  </Plugins-->
+
+<!--
+  COMPOUND TASKS
+  =============================================================================
+    The <CT> element specifies which compound tasks should be deployed during
+    the "deploy" operation.  The compound tasks must be stored in the
+    <BaseDir>/CT directory.
+
+    The "deploy" operation will fail if a compound task of the same name is
+    already deployed (i.e. with the same name and name-space), unless the
+    'overwrite' attribute is set to 'true'.
+    
+    If an already deployed compound task is subject to be overwritten during
+    the "deploy" operation the Deployment Manager will save a backup of the
+    previously deployed version of compound tasks in the directory
+    <SolutionName>/<Backup> and add a record to the "checksums_N.xml" file.
+    
+    Source:      <BaseDir>/CT
+    Destination: System Database
+  =============================================================================
+-->
+  <!--CT>
+    <File>*.xml</File>
+  </CT-->
+
+<!--
+  3RD-PARTY COMPONENTS
+  =============================================================================
+    The <Third-Party-Lib> element is used to specify which files in the
+    <BaseDir>/3rd-party/lib directory are to be deployed (copied) into the
+    $JBOSS_EAR_LIB directory during the "deploy" operation.
+    
+    Java archives (JARs) in the 3rd-party libarby directory are
+    typically used for custom workflow nodes and modules, but there are no
+    restrictions on their usage.
+
+    If a jar file in the runtime system is subject to be overwritten, the
+    Deployment Manager will save a backup of the old file in the directory
+    <SolutionName>/<Backup> and add a record to the "checksums_N.xml" file.
+
+    Source:      <BaseDir>/3rd-party/lib
+    Destination: $JBOSS_EAR_LIB
+  =============================================================================
+-->
+  <Third-Party-Lib>
+    <File>*.jar</File>
+  </Third-Party-Lib>
+
+
+<!--
+  USER INTERFACE
+  =============================================================================
+    The <UI> element is used to specify which files in the <BaseDir>/UI
+    directory are to be deployed (copied) into the
+    $JBOSS_DEPLOY/hpsa.ear/activator.war directory during the "deploy"
+    operation.
+    
+    UI customizations typically consists of JSPs, Java classes (Servlets),
+    image files, and JavaScript files.
+    
+    If a file in the runtime system is subject to be overwritten, the
+    Deployment Manager will save a backup of the old file in the directory
+    <SolutionName>/<Backup> and add a record to the "checksums_N.xml" file.
+    
+    NOTE:
+      The Deployment Manager will set the time stamp of UI components to the
+      current time after deployment as well as undeployment.  This is necessary
+      in order to ensure that JSPs recompiled correctly.
+
+    Source:      <BaseDir>/UI
+    Destination: $JBOSS_DEPLOY/hpsa.ear/activator.war
+  =============================================================================
+-->
+  <!--UI>
+    <File>**/*.jsp</File>
+    <File>**/*.class</File>
+    <File overwrite="true">**/*.gif</File>
+    <File>**/*.js</File>
+  </UI-->
+
+<!--
+  INVENTORY
+  =============================================================================
+    The <Inventory> element is used to specify how to deploy a solution's
+    inventory component.
+    
+    The <Inventory> element supports an attribute called 'db'.  If the 'db'
+    attribute is not set, the inventory subsystem will be deployed to the
+    system database.  Otherwise, if the 'db' attribute is set, the inventory
+    subsystem will be deployed to the database identified by the value of the
+    'db' attribute.  
+    
+    There are two ways to deploy the inventory component - only one of them can
+    be specified at a time.
+    
+    1) Automatic
+    
+    The automatic mode is enabled by using the <Resources> element to list all
+    inventory resource definition files (or use an asterisk to select all XML
+    files in the "inventory" directory).  In this mode the Deployment Manager
+    will invoke the Inventory Builder which in turn processes the inventory
+    resource definition files and generates Java beans, JSPs, SQL, and struts
+    configuration and Java files.  In addition, the Inventory Builder will
+    compile all Java beans, and deploy the Java beans as well as the JSPs into
+    the runtime system.
+    
+    It is possible to disable JSP deployment by setting the 'deployJSP' to
+    'false' (if 'deployJSP' is not specified the JSPs will be deployed into the
+    runtime system).
+    
+    In addition, if is possible to refer to inventory resource definition files
+    in another location by using the 'xmlpath' attribute and external Java
+    classes can be included in the CLASSPATH (used when the beans are compiled
+    by the Inventory Builder) by specifying the 'classpath' attribute.
+    
+    2) Manual
+    
+    This mode is enabled by using the <Output> element instead of the
+    <Resources> element.  When using the manual mode it is assumed that the
+    solution developer has manually used Inventory Builder to generate all
+    relevant files and (optionally) made customizations to the inventory
+    component (for instance, by modifying JSPs, adding new JSPs, adding extra
+    statements to the SQL files, etc.).
+    
+    The <Output> element supports an attribute called 'depend' for patches and
+    customizations.  The value of the 'depend' attribute, together with the
+    version of the deployed solution, determines whether the <Output> element
+    will be ignored or processed during a deploy operation.  It is possible to
+    specify multiple <Output> elements in a deployment descriptor.  
+    
+    In the manual mode it is necessary to explicitly specify which parts of the
+    inventory component will be deployed into the runtime system.
+
+    Source:      <BaseDir>/inventory
+      JAR:            <BaseDir>/inventory/lib/bean
+    Destination:
+      JAR:            $JBOSS_EAR_LIB
+      JSP:            $JBOSS_DEPLOY/hpsa.ear/activator.war/jsp/inventory
+      SQL:            System Database
+      Struts-Config:  $JBOSS_DEPLOY/hpsa.ear/activator.war/WEB-INF/struts-config
+      Struts-Classes: $JBOSS_DEPLOY/hpsa.ear/activator.war/WEB-INF/classes
+
+    If a file in the runtime system is subject to be overwritten by any of the
+    components in the inventory subsystem, the Deployment Manager will save a
+    backup of the old file in the directory <SolutionName>/<Backup> and add a record
+    to the "checksums_N.xml" file.
+  =============================================================================
+-->
+  <Inventory>
+    <Resources deployJSP="true">
+      <File>*.xml</File>
+    </Resources>
+  </Inventory>
+  
+<!--
+  INVENTORY TREES
+  =============================================================================
+    The <Inventory-Trees> element specifies the inventory trees that belong to
+    the solution.  Unless the 'overwrite' attribute is set to 'true', the
+    "deploy" operation will fail if a user tries to deploy an inventory tree
+    with the same name and solution name as an already deployed inventory tree.
+    Also, if an inventory tree has been assigned to an HPE Service Activator
+    role the Deployment Manager will fail during the "undeploy" operation,
+    unless 'undeployForce' attribute is set to true.
+
+    The <Tree-File> element supports an attribute called 'delete'.  Setting
+    this attribute to 'true' causes the Deployment Manager to delete the
+    inventory tree (i.e. undeploy it).  This functionality is only supported
+    for patches or customization; e.g. if a patch replaces an existing
+    inventory tree with a new tree with a different name.
+
+    If an inventory tree in the runtime system is subject to be overwritten,
+    the Deployment Manager will save a backup of the old inventory tree in the
+    directory <SolutionName>/<Backup> and add a record to the "checksums_N.xml"
+    file.
+
+    Source:      <BaseDir>/etc/config/inventoryTree
+    Destination: System Database
+  =============================================================================
+-->
+  <Inventory-Trees>
+    <Tree-File overwrite="true">Claro_WTTH_Tree.xml</Tree-File>
+  </Inventory-Trees>
+
+<!--
+  UMM (User Management Module)
+  =============================================================================
+    The <UMM> element specifies the XML files containing roles and their
+    associations to inventory tree, operation types, and branch types that
+    will be imported during a deploy operation.  The Deployment Manager will
+    not delete UMM data during an undeploy operation.
+
+    Source:      <BaseDir>/etc/umm
+    Destination: System Database
+  =============================================================================
+-->
+  <!--UMM>
+    <File>*.xml</File>
+  </UMM-->
+
+<!--
+  Queue 
+  =============================================================================
+    The <Queue> element specifies the XML files containing queues to be 
+    configured for the Queuing Sub-System.
+    The Deployment Manager will not delete the queues during an undeploy operation.
+
+    Source:      <BaseDir>/etc/queues
+    Destination: System Database
+  =============================================================================
+-->
+  <!--Queue>
+    <File>*.xml</File>
+  </Queue-->
+
+<!--
+  WORKFLOWS
+  =============================================================================
+    The <Workflows> element is used to specify which workflows in the
+    <BaseDir>/etc/workflows directory are to be deployed into the HP
+    Service Activator runtime system during the "deploy" operation.
+    
+    All workflows belonging to a solution should set the 'Solution' name to the
+    same value as the global solution name.  This can be done using the
+    Workflow Designer.
+    
+    NOTE:
+      Workflow names need to be globally unique.  It is recommended that the
+      names of workflows in a solution are prefixed with the solution name or
+      an abbreviated version of the solution name.
+    
+    If a workflow in the runtime system is subject to be overwritten, the
+    Deployment Manager will save a backup of the old workflow in the directory
+    <SolutionName>/<Backup> and add a record to the "checksums_N.xml" file.
+
+    Source:      <BaseDir>/etc/workflows
+    Destination: System Database
+  =============================================================================
+-->
+  <Workflows>
+    <File>*.xml</File>
+  </Workflows>
+
+<!--
+  Web Services
+  =============================================================================
+    The <Web-Services> element is used instruct the Deployment Manager to
+    generate and deploy a Web Service interface (based on an XML file that can
+    be created using the Web Service Designer) as well as to deploy WAR files
+    that contain Web Service interfaces.
+    
+    The <WSD> element can be used to identify a file containing a Web Service
+    description (created using the Web Service Designer) as well as optional
+    JAR files that are needed in order to compile the auto-generated Java
+    sources. The XML file that describes the Web Service must be located in
+    the <BaseDir>/etc/web_services directory.
+    
+    The <war> element is used to identify WAR files containing Web Service
+    interfaces that are to be deployed. The Deployment Manager assumes that
+    WAR files are located in the <BaseDir>/etc/web_services directory (or in a
+    sub-directory).
+    
+    The <WSD> and the <war> elements support an optional attribute called
+    'overwrite' (default value is 'false').
+    
+    If a WAR file in the runtime system is subject to be overwritten, the
+    Deployment Manager will save a backup of the old WAR file in the directory
+    <SolutionName>/<Backup> and add a record to the "checksums_N.xml" file.
+
+    Source:      <BaseDir>/etc/web_services
+    Destination: $JBOSS_DEPLOY/hpsa.ear
+  =============================================================================
+-->
+  <Web-Services>
+    <WSD file="activateServices.xml" overwrite="true">
+    </WSD>
+  </Web-Services>
+
+<!--
+  XMaps
+  =============================================================================
+    The <XMaps> element is used to specify which xmaps in the
+    <BaseDir>/etc/xmaps directory are to be deployed into the HP
+    Service Activator runtime system during the "deploy" operation.
+    
+    All xmaps belonging to a solution should set the 'Solution' name to the
+    same value as the global solution name.  This can be done using the
+    XMap Designer.
+    
+    If a xmap in the runtime system is subject to be overwritten, the
+    Deployment Manager will save a backup of the old xmap in the directory
+    <SolutionName>/<Backup> and add a record to the "checksums_N.xml" file.
+
+    Source:      <BaseDir>/etc/xmaps
+    Destination: System Database
+  =============================================================================
+-->
+  <!--XMaps>
+    <File>*.xml</File>
+  </XMaps-->
+
+<!--
+  Config
+  =============================================================================
+    The <Config> element is used to specify which configuration files (as well
+    as custom document type definition files, DTDs) that are to be deployed
+    into the HPE Service Activator runtime system during the "deploy" operation.
+    
+    If a configuration file in the runtime system is subject to be overwritten,
+    the Deployment Manager will save a backup of the old configuration file in
+    the directory <SolutionName>/<Backup> and add a record to the
+    "checksums_N.xml" file.
+ 
+    Source:      <BaseDir>/etc/config
+    Destination: $ACTIVATOR_ETC/config
+  =============================================================================
+-->
+  <!--Config>
+    <File>**/*</File>
+  </Config-->
+  
+<!--
+  TEMPLATES
+  =============================================================================
+    The <Templates> element contains the template files that will be deployed
+    into the HPE Service Activator runtime system during the "deploy" operation.
+
+    Typically, Java templates (used by the Java and the JavaRule nodes), XML
+    templates, and XSL templates.
+
+    If a template file in the runtime system is subject to be overwritten, the
+    Deployment Manager will save a backup of the old template file in the
+    directory <SolutionName>/<Backup> and add a record to the "checksums_N.xml"
+    file.
+ 
+    Source:      <BaseDir>/etc/template_files
+    Destination: $ACTIVATOR_ETC/template_files
+  =============================================================================
+-->
+  <Templates>
+    <File>WTTHColombia/XMLs/*.xml</File>
+    <File>WTTHColombia/XSLs/*.xsl</File>
+	<File>WTTHColombia/XSLs/*.xsd</File>
+  </Templates>
+  
+<!--
+  WORKFLOW DESIGNER NODES & HANDLERS
+  =============================================================================
+    The <Designer> element lists the XML descriptions for all custom workflow
+    nodes and handlers that are used in a solution.  The Java implementation
+    for custom nodes and handlers are typically deployed using the
+    <Third-Party-Lib> element (described earlier in this file).
+    
+    If a workflow node or handler in the runtime system is subject to be
+    overwritten, the Deployment Manager will save a backup of the old node or
+    handler in the directory <SolutionName>/<Backup> and add a record to the
+    "checksums_N.xml" file.
+ 
+    Source:      <BaseDir>/etc/designer
+    Destination: $ACTIVATOR_ETC/designer
+  =============================================================================
+-->
+  <Designer>
+	  <File>nodes/Costum/*.xml</File>
+  </Designer>
+  
+<!--
+  NATIONAL LANGUAGE SUPPORT
+  =============================================================================
+    The <NLS> element is used to list all localized resource bundle files that
+    are to be deployed into the HPE Service Activator runtime system.
+
+    If a resource bundle file in the runtime system is subject to be
+    overwritten, the Deployment Manager will save a backup of the old resource
+    bundle file in the directory <SolutionName>/<Backup> and add a record to
+    the "checksums_N.xml" file.
+
+    Source:      <BaseDir>/etc/nls
+    Destination: $ACTIVATOR_ETC/nls
+  =============================================================================
+-->
+  <!--NLS>
+    <File>*_es.properties</File>
+  </NLS-->
+
+<!--
+  MESSAGES
+  =============================================================================
+    The <Messages> element specifies test message files that are deployed into
+    the HPE Service Activator runtime system during the "deploy" operation.
+    Test messages are typically injected into the SocketListener module from
+    the HPE Service Activator User Interface.
+
+    If a message file in the runtime system is subject to be overwritten, the
+    Deployment Manager will save a backup of the old message file in the
+    directory <SolutionName>/<Backup> and add a record to the "checksums_N.xml"
+    file.
+
+    Source:      <BaseDir>/etc/tests/messages
+    Destination: $ACTIVATOR_ETC/tests/messages
+  =============================================================================
+-->
+  <!--Messages>
+    <File>**/*.xml</File>
+  </Messages-->
+
+<!--
+  SQL
+  =============================================================================
+    The <SQL> element specifies a list of custom SQL files that will be
+    executed against the database during the "deploy" and the "undeploy"
+    operation (using the <Deploy> and <Undeploy> elements, respectively).
+
+    Common uses of this feature can be to create custom indexes, custom SQL
+    sequences etc.
+    
+    Since SQL files are not copied to anywhere, the Deployment Manager will
+    not back up anything while executing SQL files.
+
+    The <Deploy> and <Undeploy> elements support an optional attribute called
+    'db'.  If the 'db' attribute is not set, the SQL will be executed against
+    the system database.  Otherwise, if the 'db' attribute is set, the SQL
+    will be executed against the database identified by the value of the 'db'
+    attribute.
+
+    Apart from this then the <Deploy> element also supports the attributes:
+    'fromMajor', 'fromMinor', 'fromRevison', 'toMajor', 'toMinor', 'toRevision',
+    and 'numeric'.
+    If these attributes are set then the <Deploy> tag is only executed if the
+    version of the solution found in the database correspond to the "from"
+    attributes and after the excution of the sql files then the database version
+    will be updated with the information in the "to" attributes. This feature
+    should be used to migration the database to the new deployed version.
+    If these attributes are set then the <Deploy> tag NOT containing any
+    attributes would not be executed.
+    The information about which version exist in the database is saved in the
+    DM_VERSION database table (part of Service Activator itself). 
+    This feature is new in 8.0 so solutions deployed before this release will
+    not be possible to migrate by using these "from" and "to" attributes. 
+    To figure out which migration files should be executed the version in 
+    the database is compared with the attributes and the 'numeric' attribute
+    indicates if the comparison should be done 'numeric' or alphabetically. If
+    true then numeric comparison should be done.
+    After the deployment the the DM_VERSION table will contain one row which
+    correspond to the version defined in the version.xml file if a Deploy tag
+    is found and/or inventory tables are created in the database.
+    
+    Finally, the <Deploy> and <Undeploy> elements support an attribute called
+    'depend'.  This attribute is only applicable for patches and
+    customizations.  The value of the 'depend' attribute, together with the
+    version of the deployed solution, will determine whether the <Deploy> or
+    <Undeploy> elements will be ignored or processed during a deploy or an
+    undeploy operation.
+
+    Source:      <BaseDir>/etc/sql
+    Destination: System Database    
+  =============================================================================
+-->
+
+  <!--SQL>
+    <Deploy>create_table_X.sql</Deploy>
+    <Deploy>create_table_Y.sql</Deploy>
+    <Deploy>populate_tables.sql</Deploy>
+    <Undeploy>drop_tables.sql</Undeploy>
+  </SQL-->
+  
+<!--
+  CUSTOM SCRIPTS
+  =============================================================================
+    The <Scripts> element can be used to specify one or more scripts that are
+    executed before and after the "deploy" and "undeploy" operation.
+    
+    The <Script-Name> element supports an attribute called 'depend'.  This
+    attribute is only applicable for patches and customizations.  The value of
+    the 'depend' attribute, together with the version of the deployed
+    solution, will determine whether the script will be executed or not during
+    a deploy or an undeploy operation.
+    
+    If a script terminates with an exit value that is different from zero, the
+    Deployment Manager will interpret this as an error and initiate a
+    roll-back.
+
+    For a complete set of built-in arguments, see the Deployment Manager User's
+    Guide.
+    
+    Script Location: <BaseDir>/etc/scripts
+  =============================================================================
+-->
+  <!--Scripts>
+     <Before-Deploy>
+        <Script-Name>test.sh</Script-Name>
+        <Argument>#DB_USER</Argument>
+        <Argument>#DB_PASSWORD</Argument>
+     </Before-Deploy>
+     <After-Deploy>
+        <Script-Name>test2.sh</Script-Name>
+        <Argument>#DB_USER</Argument>
+        <Argument>#DB_PASSWORD</Argument>
+     </After-Deploy>
+     <Before-Undeploy>
+        <Script-Name>test3.sh</Script-Name>
+        <Argument>#DB_USER</Argument>
+        <Argument>#DB_PASSWORD</Argument>
+     </Before-Undeploy>
+     <After-Undeploy>
+        <Script-Name>test4.sh</Script-Name>
+        <Argument>#DB_USER</Argument>
+        <Argument>#DB_PASSWORD</Argument>
+     </After-Undeploy>
+  </Scripts-->
+
+<!--
+  OTHER FILES
+  =============================================================================
+    The <Other> element is used to specify additional files and directories
+    that will be copied into the HPE Service Activator runtime system during the
+    deploy operation. The Deployment Manager does not impose any restriction on
+    'src' and/or 'dest' attributes.  It is possible to copy the entire contents
+    of directories by setting the 'directory' attribute to 'true' (default
+    value is false). 
+
+    It is possible to use environment variables to specify source and
+    destination files and directories.  For a complete set supported
+    environment variables, see the Deployment Manager User's Guide.
+
+    The <Copy> element can be used to delete files by setting the value of the
+    optional attribute 'delete' to 'true'.  The 'delete' attribute is only
+    supported for patches and customizations.
+    
+    Finally, the <Copy> element has an optional attribute called 'executable'
+    with the default value 'false'.  Setting this attribute to 'true' will
+    cause the Deployment Manager to set the 'execute' bit after the file has
+    been copied to the desired location.  The 'executable' attribute will not
+    have an effect on Microsoft Windows systems.    
+
+    If a file in the runtime system is subject to be overwritten, the
+    Deployment Manager will save a backup of the old file in the directory
+    <SolutionName>/<Backup> and add a record to the "checksums_N.xml" file.
+  =============================================================================
+-->
+  <!--Other>
+    <Copy overwrite="true" src="/home/hpsa_user/sources/scripts/custom_service"
+      dest="/sbin/init.d/custom_service" executable="true" />
+    <Copy directory="true" overwrite="true" src="$SOLUTION_HOME/crmportal.sar"
+      dest="$JBOSS_DEPLOY/crmportal.sar" />
+  </Other-->
+
+</Solution>
