@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE Bean SYSTEM "bean.dtd">
+<Bean>
+	<Name>LockFileTable</Name>
+	<Solution>WTTH</Solution>
+	<Package>com.hpe.ov.activator.inventory</Package>
+	<DBTable>lock_file_table_tmp</DBTable>
+	<Fields>
+		<Field mandatory="true" >
+			<Name>lockTableName</Name>
+			<Column>lock_Table_Name</Column>
+			<Type>long</Type>
+			<Description>name of table to lock</Description>
+		</Field>
+		<Field mandatory="true">
+			<Name>jobId</Name>
+			<Column>job_id</Column>
+			<Type>String</Type>
+			<Description>number of job_id in process</Description>
+		</Field>
+		
+	</Fields>
+	<Keys>
+		<Key pk="true">
+			<KeyField>lockTableName</KeyField>
+		</Key>
+		<Key pk="false">
+			<KeyField>jobId</KeyField>
+		</Key>
+	</Keys>
+	<Operations>
+		<Store/>
+		<Update/>
+		<Remove/>
+		<FindBy key="lockTableName">
+			<OrderField>lockTableName</OrderField>
+		</FindBy>
+	</Operations>
+</Bean>
