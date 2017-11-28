@@ -21,10 +21,10 @@
          <Name>mapPaths</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="path_xsd_cf" value="%FILE_URL_PREFIX%C:\Users\HectorS5\Documents\Proyects\WTTH-colombia\WTTH\etc\template_files\WTTHColombia\XSLs\cambio_CF.xsd"/>
-            <Param name="path_xsd_services" value="%FILE_URL_PREFIX%C:\Users\HectorS5\Documents\Proyects\WTTH-colombia\WTTH\etc\template_files\WTTHColombia\XSLs\activate_wtth.xsd"/>
-            <Param name="path_xsl" value="%FILE_URL_PREFIX%C:\Users\HectorS5\Documents\Proyects\WTTH-colombia\WTTH\etc\template_files\WTTHColombia\XSLs\TransformXmlParams.xsl"/>
-            <Param name="path_xsl_cf" value="%FILE_URL_PREFIX%C:\Users\HectorS5\Documents\Proyects\WTTH-colombia\WTTH\etc\template_files\WTTHColombia\XSLs\TransformXmlParamsCF.xsl"/>
+            <Param name="path_xsd_cf" value="%FILE_URL_PREFIX%%SOLUTION_ETC%\template_files\XSLs\cambio_CF.xsd"/>
+            <Param name="path_xsd_services" value="%FILE_URL_PREFIX%%SOLUTION_ETC%\template_files\XSLs\activate_wtth.xsd"/>
+            <Param name="path_xsl" value="%FILE_URL_PREFIX%%SOLUTION_ETC%\template_files\XSLs\TransformXmlParams.xsl"/>
+            <Param name="path_xsl_cf" value="%FILE_URL_PREFIX%%SOLUTION_ETC%\template_files\XSLs\TransformXmlParamsCF.xsl"/>
          </Action>
          <Next-Node>Validate XML</Next-Node>
       </Process-Node>
@@ -432,58 +432,58 @@
       </Position>
       <Position>
          <Name>MapServices</Name>
-         <X>1025</X>
+         <X>1020</X>
          <Y>48</Y>
-         <Width>70</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>MapServices1</Name>
-         <X>787</X>
-         <Y>114</Y>
-         <Width>76</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>MapServices11</Name>
-         <X>1145</X>
-         <Y>114</Y>
          <Width>82</Width>
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>MapServices1</Name>
+         <X>781</X>
+         <Y>114</Y>
+         <Width>89</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>MapServices11</Name>
+         <X>1139</X>
+         <Y>114</Y>
+         <Width>96</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>PutMessage</Name>
-         <X>357</X>
+         <X>353</X>
          <Y>222</Y>
-         <Width>68</Width>
+         <Width>78</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>PutMessage2</Name>
-         <X>492</X>
+         <X>487</X>
          <Y>48</Y>
-         <Width>74</Width>
+         <Width>85</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>PutMessage21</Name>
-         <X>1240</X>
+         <X>1235</X>
          <Y>114</Y>
-         <Width>80</Width>
+         <Width>92</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>PutMessage3</Name>
-         <X>587</X>
+         <X>582</X>
          <Y>114</Y>
-         <Width>74</Width>
+         <Width>85</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>PutMessage31</Name>
-         <X>943</X>
+         <X>938</X>
          <Y>199</Y>
-         <Width>80</Width>
+         <Width>92</Width>
          <Height>48</Height>
       </Position>
       <Position>
@@ -502,58 +502,58 @@
       </Position>
       <Position>
          <Name>TransformXML1</Name>
-         <X>587</X>
+         <X>579</X>
          <Y>48</Y>
-         <Width>84</Width>
+         <Width>101</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>TransformXML11</Name>
-         <X>1047</X>
+         <X>1039</X>
          <Y>114</Y>
-         <Width>90</Width>
+         <Width>108</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>Validate XML</Name>
-         <X>368</X>
+         <X>362</X>
          <Y>114</Y>
-         <Width>70</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>Validate XML1</Name>
-         <X>686</X>
-         <Y>114</Y>
-         <Width>76</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>VariableMapper</Name>
-         <X>173</X>
-         <Y>217</Y>
          <Width>84</Width>
          <Height>48</Height>
       </Position>
       <Position>
-         <Name>mapErrorCode00</Name>
-         <X>1350</X>
+         <Name>Validate XML1</Name>
+         <X>679</X>
          <Y>114</Y>
          <Width>91</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>VariableMapper</Name>
+         <X>166</X>
+         <Y>217</Y>
+         <Width>100</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>mapErrorCode00</Name>
+         <X>1343</X>
+         <Y>114</Y>
+         <Width>107</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>mapErrorCode01</Name>
-         <X>938</X>
+         <X>931</X>
          <Y>304</Y>
-         <Width>91</Width>
+         <Width>107</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>mapPaths</Name>
-         <X>269</X>
+         <X>267</X>
          <Y>114</Y>
-         <Width>61</Width>
+         <Width>66</Width>
          <Height>48</Height>
       </Position>
       <Position>
@@ -565,17 +565,17 @@
       </Position>
       <Position>
          <Name>validate2OK?</Name>
-         <X>937</X>
+         <X>932</X>
          <Y>126</Y>
-         <Width>93</Width>
-         <Height>24</Height>
+         <Width>103</Width>
+         <Height>26</Height>
       </Position>
       <Position>
          <Name>validateOK?</Name>
-         <X>486</X>
+         <X>482</X>
          <Y>126</Y>
-         <Width>87</Width>
-         <Height>24</Height>
+         <Width>96</Width>
+         <Height>26</Height>
       </Position>
       <Arrows>
          <Name>Error</Name>

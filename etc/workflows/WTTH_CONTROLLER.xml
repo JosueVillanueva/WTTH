@@ -22,7 +22,7 @@
          <Name>mapPath</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="path_xsl" value="%FILE_URL_PREFIX%C:\Users\HectorS5\Documents\Proyects\WTTH-colombia\WTTH\etc\template_files\WTTHColombia\XSLs\TransformXmlParams.xsl"/>
+            <Param name="path_xsl" value="%FILE_URL_PREFIX%%SOLUTION_ETC%\template_files\XSLs\TransformXmlParams.xsl"/>
          </Action>
          <Next-Node>validateServices</Next-Node>
       </Process-Node>
@@ -637,9 +637,9 @@
    <Coordinates>
       <Position>
          <Name>CreateService</Name>
-         <X>1258</X>
+         <X>1253</X>
          <Y>318</Y>
-         <Width>78</Width>
+         <Width>90</Width>
          <Height>48</Height>
       </Position>
       <Position>
@@ -658,17 +658,17 @@
       </Position>
       <Position>
          <Name>DeleteService</Name>
-         <X>1364</X>
+         <X>1359</X>
          <Y>318</Y>
-         <Width>76</Width>
+         <Width>88</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>Equal2</Name>
-         <X>678</X>
+         <X>675</X>
          <Y>28</Y>
-         <Width>62</Width>
-         <Height>24</Height>
+         <Width>68</Width>
+         <Height>26</Height>
       </Position>
       <Position>
          <Name>Error</Name>
@@ -679,30 +679,30 @@
       </Position>
       <Position>
          <Name>MapError00</Name>
-         <X>1124</X>
+         <X>1119</X>
          <Y>684</Y>
-         <Width>66</Width>
+         <Width>77</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>MapError01</Name>
-         <X>997</X>
+         <X>992</X>
          <Y>621</Y>
-         <Width>66</Width>
+         <Width>77</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>MapError02</Name>
-         <X>922</X>
+         <X>917</X>
          <Y>569</Y>
-         <Width>66</Width>
+         <Width>77</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>MapError03</Name>
-         <X>560</X>
+         <X>555</X>
          <Y>318</Y>
-         <Width>66</Width>
+         <Width>77</Width>
          <Height>48</Height>
       </Position>
       <Position>
@@ -714,122 +714,122 @@
       </Position>
       <Position>
          <Name>ModifOK?</Name>
-         <X>1120</X>
+         <X>1116</X>
          <Y>515</Y>
-         <Width>75</Width>
-         <Height>24</Height>
+         <Width>83</Width>
+         <Height>26</Height>
       </Position>
       <Position>
          <Name>PutMessage</Name>
-         <X>82</X>
-         <Y>52</Y>
-         <Width>68</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>PutMessage2</Name>
-         <X>1120</X>
-         <Y>751</Y>
-         <Width>74</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>PutMessage3</Name>
-         <X>968</X>
-         <Y>52</Y>
-         <Width>74</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>PutMessage4</Name>
-         <X>870</X>
-         <Y>860</Y>
-         <Width>74</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>PutMessage5</Name>
-         <X>260</X>
-         <Y>233</Y>
-         <Width>74</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>PutMessage6</Name>
-         <X>377</X>
-         <Y>52</Y>
-         <Width>74</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>PutMessage61</Name>
-         <X>287</X>
-         <Y>123</Y>
-         <Width>80</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>TransformXML</Name>
-         <X>273</X>
+         <X>78</X>
          <Y>52</Y>
          <Width>78</Width>
          <Height>48</Height>
       </Position>
       <Position>
-         <Name>TransformXML1</Name>
-         <X>161</X>
+         <Name>PutMessage2</Name>
+         <X>1115</X>
+         <Y>751</Y>
+         <Width>85</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>PutMessage3</Name>
+         <X>963</X>
+         <Y>52</Y>
+         <Width>85</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>PutMessage4</Name>
+         <X>865</X>
+         <Y>860</Y>
+         <Width>85</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>PutMessage5</Name>
+         <X>255</X>
          <Y>233</Y>
-         <Width>84</Width>
+         <Width>85</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>PutMessage6</Name>
+         <X>372</X>
+         <Y>52</Y>
+         <Width>85</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>PutMessage61</Name>
+         <X>282</X>
+         <Y>123</Y>
+         <Width>92</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>TransformXML</Name>
+         <X>266</X>
+         <Y>52</Y>
+         <Width>94</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>TransformXML1</Name>
+         <X>153</X>
+         <Y>233</Y>
+         <Width>101</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>Upper Action</Name>
-         <X>570</X>
+         <X>565</X>
          <Y>52</Y>
-         <Width>72</Width>
+         <Width>83</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>VariableMapper1</Name>
-         <X>55</X>
+         <X>47</X>
          <Y>233</Y>
-         <Width>90</Width>
+         <Width>107</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>XMLMapper</Name>
-         <X>474</X>
+         <X>469</X>
          <Y>52</Y>
-         <Width>65</Width>
+         <Width>77</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>XMLMapper1</Name>
-         <X>732</X>
+         <X>726</X>
          <Y>5</Y>
-         <Width>71</Width>
+         <Width>84</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>action_name?</Name>
-         <X>947</X>
+         <X>941</X>
          <Y>171</Y>
-         <Width>92</Width>
-         <Height>24</Height>
+         <Width>105</Width>
+         <Height>26</Height>
       </Position>
       <Position>
          <Name>checkService</Name>
-         <X>678</X>
+         <X>673</X>
          <Y>318</Y>
-         <Width>72</Width>
+         <Width>84</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>deleteOK?</Name>
-         <X>1363</X>
+         <X>1359</X>
          <Y>581</Y>
-         <Width>79</Width>
-         <Height>24</Height>
+         <Width>87</Width>
+         <Height>26</Height>
       </Position>
       <Position>
          <Name>mapPath</Name>
@@ -840,87 +840,87 @@
       </Position>
       <Position>
          <Name>modifyService</Name>
-         <X>766</X>
-         <Y>318</Y>
-         <Width>77</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>modifyServiceCF</Name>
-         <X>1112</X>
+         <X>760</X>
          <Y>318</Y>
          <Width>90</Width>
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>modifyServiceCF</Name>
+         <X>1105</X>
+         <Y>318</Y>
+         <Width>105</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>printCheck</Name>
-         <X>684</X>
+         <X>680</X>
          <Y>242</Y>
-         <Width>61</Width>
+         <Width>70</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>printCreate</Name>
-         <X>1265</X>
+         <X>1261</X>
          <Y>242</Y>
-         <Width>65</Width>
+         <Width>74</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>printModify</Name>
-         <X>772</X>
+         <X>768</X>
          <Y>242</Y>
-         <Width>64</Width>
+         <Width>73</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>printModifyCF</Name>
-         <X>1119</X>
+         <X>1114</X>
          <Y>242</Y>
-         <Width>77</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>printReactivate</Name>
-         <X>886</X>
-         <Y>242</Y>
-         <Width>84</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>printSuspend</Name>
-         <X>1004</X>
-         <Y>242</Y>
-         <Width>73</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>reactivateService</Name>
-         <X>881</X>
-         <Y>318</Y>
-         <Width>94</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>suspendService</Name>
-         <X>998</X>
-         <Y>318</Y>
-         <Width>85</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>validateServices</Name>
-         <X>169</X>
-         <Y>123</Y>
          <Width>88</Width>
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>printReactivate</Name>
+         <X>881</X>
+         <Y>242</Y>
+         <Width>95</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>printSuspend</Name>
+         <X>999</X>
+         <Y>242</Y>
+         <Width>85</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>reactivateService</Name>
+         <X>875</X>
+         <Y>318</Y>
+         <Width>108</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>suspendService</Name>
+         <X>992</X>
+         <Y>318</Y>
+         <Width>99</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>validateServices</Name>
+         <X>163</X>
+         <Y>123</Y>
+         <Width>102</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>xmlValid?</Name>
-         <X>383</X>
+         <X>378</X>
          <Y>135</Y>
-         <Width>73</Width>
-         <Height>24</Height>
+         <Width>84</Width>
+         <Height>26</Height>
       </Position>
       <Arrows>
          <Name>CreateService</Name>

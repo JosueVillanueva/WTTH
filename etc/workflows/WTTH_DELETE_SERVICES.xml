@@ -15,109 +15,7 @@
             <Param name="queue" value="variable:WORKFLOW_NAME"/>
             <Param name="param0" value="WORKFLOW_NAME"/>
          </Action>
-         <Next-Node>getServices1</Next-Node>
-      </Process-Node>
-      <Process-Node>
-         <Name>getServices1</Name>
-         <Description></Description>
-         <State></State>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.QueryInventory</Class-Name>
-            <Param name="bean" value="constant:com.hpe.ov.activator.inventory.Services"/>
-            <Param name="find_by_method" value="constant:findAll"/>
-            <Param name="return_array" value="constant:true"/>
-            <Param name="variable" value="services_obj"/>
-            <Param name="where" value="constant:service_id=&apos;%s&apos;"/>
-            <Param name="param0" value="service_id_new"/>
-         </Action>
-         <Next-Node>services?1</Next-Node>
-      </Process-Node>
-      <Rule-Node disablePersistence="true">
-         <Name>services?1</Name>
-         <Description></Description>
-         <State></State>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
-            <Param name="op1" value="services_obj#"/>
-            <Param name="op2" value="constant:0"/>
-         </Action>
-         <True-Next-Node>mapError08</True-Next-Node>
-         <False-Next-Node>LockTable1</False-Next-Node>
-      </Rule-Node>
-      <Process-Node disablePersistence="true">
-         <Name>mapError08</Name>
-         <Description></Description>
-         <State></State>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="wtth_result_code" value="750"/>
-            <Param name="wtth_result_desc" value="servicio borrado anteriormente"/>
-         </Action>
-         <Next-Node>Error</Next-Node>
-      </Process-Node>
-      <Process-Node disablePersistence="true">
-         <Name>Error</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.DoNothing</Class-Name>
-         </Action>
-         <Next-Node>QueryInventory1</Next-Node>
-      </Process-Node>
-      <Process-Node>
-         <Name>QueryInventory1</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.QueryInventory</Class-Name>
-            <Param name="bean" value="constant:com.hpe.ov.activator.inventory.ErrorHandling"/>
-            <Param name="find_by_method" value="constant:findAll"/>
-            <Param name="return_array" value="constant:true"/>
-            <Param name="variable" value="error_handling_obj"/>
-            <Param name="where" value="constant:ERROR_CODE = &apos;%s&apos;"/>
-            <Param name="param0" value="wtth_result_code"/>
-         </Action>
-         <Next-Node>errorFound?1</Next-Node>
-      </Process-Node>
-      <Rule-Node disablePersistence="true">
-         <Name>errorFound?1</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
-            <Param name="op1" value="error_handling_obj#"/>
-            <Param name="op2" value="constant:0"/>
-         </Action>
-         <True-Next-Node>noMapErrorDesc1</True-Next-Node>
-         <False-Next-Node>mapErrorDesc1</False-Next-Node>
-      </Rule-Node>
-      <Process-Node disablePersistence="true">
-         <Name>noMapErrorDesc1</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="wtth_result_desc" value="Error not Found"/>
-         </Action>
-         <Next-Node>UnlockTable11</Next-Node>
-      </Process-Node>
-      <Process-Node>
-         <Name>UnlockTable11</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.ExecSQLStatement</Class-Name>
-            <Param name="statement" value="delete from LOCK_FILE_TABLE_TMP"/>
-         </Action>
-         <Next-Node>printError</Next-Node>
-      </Process-Node>
-      <Process-Node>
-         <Name>printError</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
-            <Param name="message" value="error %s wtth_result_desc %s"/>
-            <Param name="queue" value="variable:WORKFLOW_NAME"/>
-            <Param name="param0" value="wtth_result_code"/>
-            <Param name="param1" value="wtth_result_desc"/>
-         </Action>
-      </Process-Node>
-      <Process-Node disablePersistence="true">
-         <Name>mapErrorDesc1</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="wtth_result_desc" value="%error_handling_obj[0].errorDesc%"/>
-         </Action>
-         <Next-Node>UnlockTable11</Next-Node>
+         <Next-Node>LockTable1</Next-Node>
       </Process-Node>
       <Process-Node>
          <Name>LockTable1</Name>
@@ -212,8 +110,6 @@
       </Rule-Node>
       <Process-Node>
          <Name>DeleteInventory</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.DeleteInventory</Class-Name>
             <Param name="bean" value="constant:com.hpe.ov.activator.inventory.Services"/>
@@ -224,8 +120,6 @@
       </Process-Node>
       <Rule-Node disablePersistence="true">
          <Name>createOK?1</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.WasPreviousNodeOK</Class-Name>
          </Action>
@@ -299,8 +193,6 @@
       </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>mapError1</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="wtth_result_code" value="7"/>
@@ -375,6 +267,70 @@
             <Param name="wtth_result_code" value="3"/>
          </Action>
          <Next-Node>Error</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>Error</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.DoNothing</Class-Name>
+         </Action>
+         <Next-Node>QueryInventory1</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>QueryInventory1</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.QueryInventory</Class-Name>
+            <Param name="bean" value="constant:com.hpe.ov.activator.inventory.ErrorHandling"/>
+            <Param name="find_by_method" value="constant:findAll"/>
+            <Param name="return_array" value="constant:true"/>
+            <Param name="variable" value="error_handling_obj"/>
+            <Param name="where" value="constant:ERROR_CODE = &apos;%s&apos;"/>
+            <Param name="param0" value="wtth_result_code"/>
+         </Action>
+         <Next-Node>errorFound?1</Next-Node>
+      </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>errorFound?1</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
+            <Param name="op1" value="error_handling_obj#"/>
+            <Param name="op2" value="constant:0"/>
+         </Action>
+         <True-Next-Node>noMapErrorDesc1</True-Next-Node>
+         <False-Next-Node>mapErrorDesc1</False-Next-Node>
+      </Rule-Node>
+      <Process-Node disablePersistence="true">
+         <Name>noMapErrorDesc1</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_desc" value="Error not Found"/>
+         </Action>
+         <Next-Node>UnlockTable11</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>UnlockTable11</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.ExecSQLStatement</Class-Name>
+            <Param name="statement" value="delete from LOCK_FILE_TABLE_TMP"/>
+         </Action>
+         <Next-Node>printError</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>printError</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="error %s wtth_result_desc %s"/>
+            <Param name="queue" value="variable:WORKFLOW_NAME"/>
+            <Param name="param0" value="wtth_result_code"/>
+            <Param name="param1" value="wtth_result_desc"/>
+         </Action>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>mapErrorDesc1</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_desc" value="%error_handling_obj[0].errorDesc%"/>
+         </Action>
+         <Next-Node>UnlockTable11</Next-Node>
       </Process-Node>
       <Process-Node disablePersistence="true" inactive="true">
          <Name>mapError06</Name>
@@ -459,9 +415,20 @@
          </Action>
       </Process-Node>
       <Process-Node>
+         <Name>getServices1</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.QueryInventory</Class-Name>
+            <Param name="bean" value="constant:com.hpe.ov.activator.inventory.Services"/>
+            <Param name="find_by_method" value="constant:findAll"/>
+            <Param name="return_array" value="constant:true"/>
+            <Param name="variable" value="services_obj"/>
+            <Param name="where" value="constant:service_id=&apos;%s&apos;"/>
+            <Param name="param0" value="service_id_new"/>
+         </Action>
+         <Next-Node>services?1</Next-Node>
+      </Process-Node>
+      <Process-Node>
          <Name>insertServices1</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.CreateInventory</Class-Name>
             <Param name="bean" value="constant:com.hpe.ov.activator.inventory.Services"/>
@@ -490,6 +457,25 @@
          </Action>
          <Next-Node>PutMessage2</Next-Node>
       </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>mapError08</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="750"/>
+            <Param name="wtth_result_desc" value="servicio borrado anteriormente"/>
+         </Action>
+         <Next-Node>Error</Next-Node>
+      </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>services?1</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
+            <Param name="op1" value="services_obj#"/>
+            <Param name="op2" value="constant:0"/>
+         </Action>
+         <True-Next-Node>mapError08</True-Next-Node>
+         <False-Next-Node>LockTable1</False-Next-Node>
+      </Rule-Node>
    </Nodes>
    <Error-Handler>
       <Name>PutMessageHandler</Name>
@@ -584,15 +570,15 @@
    <Coordinates>
       <Position>
          <Name>DeleteInventory</Name>
-         <X>847</X>
+         <X>843</X>
          <Y>128</Y>
-         <Width>89</Width>
+         <Width>99</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>Error</Name>
-         <X>322</X>
-         <Y>666</Y>
+         <X>323</X>
+         <Y>672</Y>
          <Width>61</Width>
          <Height>48</Height>
       </Position>
@@ -619,23 +605,23 @@
       </Position>
       <Position>
          <Name>IMSDelOK?</Name>
-         <X>524</X>
+         <X>519</X>
          <Y>314</Y>
-         <Width>82</Width>
-         <Height>24</Height>
+         <Width>92</Width>
+         <Height>26</Height>
       </Position>
       <Position>
          <Name>IMSDelOK?_</Name>
-         <X>716</X>
+         <X>711</X>
          <Y>565</Y>
-         <Width>88</Width>
-         <Height>24</Height>
+         <Width>99</Width>
+         <Height>26</Height>
       </Position>
       <Position>
          <Name>LockTable1</Name>
-         <X>150</X>
+         <X>145</X>
          <Y>128</Y>
-         <Width>63</Width>
+         <Width>74</Width>
          <Height>48</Height>
       </Position>
       <Position>
@@ -654,51 +640,51 @@
       </Position>
       <Position>
          <Name>NNCDelOK?</Name>
-         <X>718</X>
+         <X>714</X>
          <Y>445</Y>
-         <Width>85</Width>
-         <Height>24</Height>
+         <Width>94</Width>
+         <Height>26</Height>
       </Position>
       <Position>
          <Name>NNCOK?</Name>
-         <X>530</X>
+         <X>527</X>
          <Y>140</Y>
-         <Width>70</Width>
-         <Height>24</Height>
+         <Width>76</Width>
+         <Height>26</Height>
       </Position>
       <Position>
          <Name>PutMessage</Name>
-         <X>55</X>
+         <X>51</X>
          <Y>128</Y>
-         <Width>68</Width>
+         <Width>78</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>PutMessage2</Name>
-         <X>819</X>
+         <X>814</X>
          <Y>39</Y>
-         <Width>74</Width>
+         <Width>85</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>PutMessage21</Name>
-         <X>1623</X>
+         <X>1618</X>
          <Y>128</Y>
-         <Width>80</Width>
+         <Width>92</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>QueryInventory1</Name>
-         <X>305</X>
+         <X>301</X>
          <Y>726</Y>
-         <Width>94</Width>
+         <Width>104</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>QueryInventory11</Name>
-         <X>1264</X>
+         <X>1259</X>
          <Y>128</Y>
-         <Width>100</Width>
+         <Width>111</Width>
          <Height>48</Height>
       </Position>
       <Position>
@@ -710,192 +696,192 @@
       </Position>
       <Position>
          <Name>SROK?</Name>
-         <X>729</X>
+         <X>726</X>
          <Y>140</Y>
-         <Width>62</Width>
-         <Height>24</Height>
+         <Width>68</Width>
+         <Height>26</Height>
       </Position>
       <Position>
          <Name>UnlockTable1</Name>
-         <X>1073</X>
+         <X>1067</X>
          <Y>128</Y>
-         <Width>73</Width>
+         <Width>86</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>UnlockTable11</Name>
-         <X>313</X>
+         <X>307</X>
          <Y>926</Y>
-         <Width>79</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>createOK?1</Name>
-         <X>963</X>
-         <Y>140</Y>
-         <Width>86</Width>
-         <Height>24</Height>
-      </Position>
-      <Position>
-         <Name>errorFound?1</Name>
-         <X>305</X>
-         <Y>804</Y>
-         <Width>95</Width>
-         <Height>24</Height>
-      </Position>
-      <Position>
-         <Name>errorFound?11</Name>
-         <X>1383</X>
-         <Y>140</Y>
-         <Width>101</Width>
-         <Height>24</Height>
-      </Position>
-      <Position>
-         <Name>getServices1</Name>
-         <X>53</X>
-         <Y>257</Y>
-         <Width>72</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>imsOK?</Name>
-         <X>320</X>
-         <Y>140</Y>
-         <Width>64</Width>
-         <Height>24</Height>
-      </Position>
-      <Position>
-         <Name>insertServices1</Name>
-         <X>989</X>
-         <Y>51</Y>
-         <Width>83</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>mapActionName</Name>
-         <X>522</X>
-         <Y>184</Y>
-         <Width>87</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>mapActionName1</Name>
-         <X>714</X>
-         <Y>209</Y>
          <Width>93</Width>
          <Height>48</Height>
       </Position>
       <Position>
-         <Name>mapError00</Name>
-         <X>1178</X>
-         <Y>128</Y>
-         <Width>66</Width>
-         <Height>48</Height>
+         <Name>createOK?1</Name>
+         <X>959</X>
+         <Y>140</Y>
+         <Width>95</Width>
+         <Height>26</Height>
       </Position>
       <Position>
-         <Name>mapError00_</Name>
-         <X>724</X>
-         <Y>39</Y>
-         <Width>72</Width>
-         <Height>48</Height>
+         <Name>errorFound?1</Name>
+         <X>299</X>
+         <Y>804</Y>
+         <Width>107</Width>
+         <Height>26</Height>
       </Position>
       <Position>
-         <Name>mapError01</Name>
-         <X>319</X>
-         <Y>226</Y>
-         <Width>66</Width>
-         <Height>48</Height>
+         <Name>errorFound?11</Name>
+         <X>1377</X>
+         <Y>140</Y>
+         <Width>114</Width>
+         <Height>26</Height>
       </Position>
       <Position>
-         <Name>mapError02</Name>
-         <X>530</X>
-         <Y>369</Y>
-         <Width>66</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>mapError03</Name>
-         <X>727</X>
-         <Y>612</Y>
-         <Width>66</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>mapError04</Name>
-         <X>399</X>
-         <Y>302</Y>
-         <Width>66</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>mapError05</Name>
-         <X>530</X>
-         <Y>433</Y>
-         <Width>66</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>mapError06</Name>
-         <X>535</X>
-         <Y>553</Y>
-         <Width>66</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>mapError08</Name>
-         <X>148</X>
-         <Y>345</Y>
-         <Width>66</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>mapError1</Name>
-         <X>976</X>
-         <Y>209</Y>
-         <Width>61</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>mapErrorDesc1</Name>
-         <X>311</X>
-         <Y>853</Y>
+         <Name>getServices1</Name>
+         <X>48</X>
+         <Y>257</Y>
          <Width>83</Width>
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>imsOK?</Name>
+         <X>317</X>
+         <Y>139</Y>
+         <Width>72</Width>
+         <Height>26</Height>
+      </Position>
+      <Position>
+         <Name>insertServices1</Name>
+         <X>983</X>
+         <Y>51</Y>
+         <Width>97</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>mapActionName</Name>
+         <X>515</X>
+         <Y>184</Y>
+         <Width>103</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>mapActionName1</Name>
+         <X>706</X>
+         <Y>209</Y>
+         <Width>110</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>mapError00</Name>
+         <X>1173</X>
+         <Y>128</Y>
+         <Width>78</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>mapError00_</Name>
+         <X>718</X>
+         <Y>39</Y>
+         <Width>85</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>mapError01</Name>
+         <X>314</X>
+         <Y>226</Y>
+         <Width>78</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>mapError02</Name>
+         <X>525</X>
+         <Y>369</Y>
+         <Width>78</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>mapError03</Name>
+         <X>722</X>
+         <Y>612</Y>
+         <Width>78</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>mapError04</Name>
+         <X>394</X>
+         <Y>302</Y>
+         <Width>78</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>mapError05</Name>
+         <X>525</X>
+         <Y>433</Y>
+         <Width>78</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>mapError06</Name>
+         <X>530</X>
+         <Y>553</Y>
+         <Width>78</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>mapError08</Name>
+         <X>143</X>
+         <Y>345</Y>
+         <Width>78</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>mapError1</Name>
+         <X>972</X>
+         <Y>209</Y>
+         <Width>71</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>mapErrorDesc1</Name>
+         <X>304</X>
+         <Y>853</Y>
+         <Width>98</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>mapErrorDesc11</Name>
-         <X>1390</X>
+         <X>1383</X>
          <Y>210</Y>
-         <Width>89</Width>
+         <Width>105</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>noMapErrorDesc1</Name>
-         <X>467</X>
+         <X>460</X>
          <Y>792</Y>
-         <Width>95</Width>
+         <Width>111</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>noMapErrorDesc11</Name>
-         <X>1508</X>
+         <X>1500</X>
          <Y>128</Y>
-         <Width>101</Width>
+         <Width>118</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>printError</Name>
-         <X>322</X>
+         <X>321</X>
          <Y>1006</Y>
-         <Width>61</Width>
+         <Width>65</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>services?1</Name>
-         <X>141</X>
+         <X>138</X>
          <Y>269</Y>
-         <Width>80</Width>
-         <Height>24</Height>
+         <Width>89</Width>
+         <Height>26</Height>
       </Position>
       <Arrows>
          <Name>DeleteInventory</Name>

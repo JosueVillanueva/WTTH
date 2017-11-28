@@ -8,32 +8,44 @@
    <Nodes>
       <Process-Node inactive="true">
          <Name>PrintStart</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
             <Param name="message" value="START %s"/>
             <Param name="queue" value="variable:WORKFLOW_NAME"/>
             <Param name="param0" value="WORKFLOW_NAME"/>
          </Action>
-         <Next-Node>insertData</Next-Node>
+         <Next-Node>start count</Next-Node>
       </Process-Node>
-      <Process-Node>
-         <Name>insertData</Name>
+      <Process-Node disablePersistence="true">
+         <Name>start count</Name>
          <Description></Description>
          <State></State>
          <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.ExecSQLStatement</Class-Name>
-            <Param name="statement" value="insert into LOCK_FILE_TABLE_TMP values(&apos;lrt_ims_to_mov&apos;,?)"/>
-            <Param name="throw_excep" value="constant:false"/>
-            <Param name="param0" value="services_JOB_ID"/>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="count_retries" value="0"/>
+            <Param name="number_retries" value="10"/>
+            <Param name="table_name" value="lrt_ims_to_mov"/>
+         </Action>
+         <Next-Node>CreateInventory</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>CreateInventory</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.CreateInventory</Class-Name>
+            <Param name="bean" value="constant:com.hpe.ov.activator.inventory.LockFileTable"/>
+            <Param name="bean_variable" value="lock_file_table_obk"/>
+            <Param name="strict_create" value="constant:true"/>
+            <Param name="key_field0" value="constant:lockTableName"/>
+            <Param name="key_value0" value="table_name"/>
+            <Param name="key_field1" value="constant:jobId"/>
+            <Param name="key_value1" value="services_JOB_ID"/>
          </Action>
          <Next-Node>WasPreviousNodeOK</Next-Node>
       </Process-Node>
       <Rule-Node disablePersistence="true">
          <Name>WasPreviousNodeOK</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.WasPreviousNodeOK</Class-Name>
          </Action>
@@ -42,8 +54,6 @@
       </Rule-Node>
       <Process-Node disablePersistence="true">
          <Name>setError0</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="wtth_result_code" value="0"/>
@@ -55,7 +65,39 @@
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Sleep</Class-Name>
             <Param name="time" value="constant:500"/>
          </Action>
-         <Next-Node>insertData</Next-Node>
+         <Next-Node>LessThanOrEqual</Next-Node>
+      </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>LessThanOrEqual</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.LessThanOrEqual</Class-Name>
+            <Param name="op1" value="count_retries"/>
+            <Param name="op2" value="number_retries"/>
+         </Action>
+         <True-Next-Node>CreateInventory</True-Next-Node>
+         <False-Next-Node>mapError</False-Next-Node>
+      </Rule-Node>
+      <Process-Node disablePersistence="true">
+         <Name>mapError</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="404"/>
+            <Param name="wtth_result_desc" value="number of retries an limit"/>
+         </Action>
+      </Process-Node>
+      <Process-Node>
+         <Name>insertData</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.ExecSQLStatement</Class-Name>
+            <Param name="statement" value="insert into LOCK_FILE_TABLE_TMP values(&apos;lrt_ims_to_mov&apos;,?)"/>
+            <Param name="throw_excep" value="constant:false"/>
+            <Param name="param0" value="services_JOB_ID"/>
+         </Action>
+         <Next-Node>WasPreviousNodeOK</Next-Node>
       </Process-Node>
    </Nodes>
    <Error-Handler>
@@ -71,6 +113,7 @@
       <Param name="queue" value="constant:sync"/>
       <Param name="destination0" value="wtth_result_code"/>
       <Param name="variable0" value="wtth_result_code"/>
+      <Param name="variable1" value="wtth_result_desc"/>
    </Error-Handler>
    <End-Handler>
       <Name>SyncHandler1</Name>
@@ -79,17 +122,23 @@
       <Param name="queue" value="constant:sync"/>
       <Param name="destination0" value="wtth_result_code"/>
       <Param name="variable0" value="wtth_result_code"/>
+      <Param name="variable1" value="wtth_result_desc"/>
    </End-Handler>
    <Case-Packet>
+      <Variable name="ANNOTATION" type="String"/>
       <Variable name="BREAK_POINT" type="String"/>
       <Variable name="DEFAULT_ROLE" type="String"/>
       <Variable name="EMPTY_STRING" type="String"/>
+      <Variable name="ETC" type="String"/>
       <Variable name="EX_STEP_NAME" type="String"/>
       <Variable name="FILE_URL_PREFIX" type="String"/>
       <Variable name="HOST_NAME" type="String"/>
       <Variable name="JOB_ID" type="Integer"/>
+      <Variable name="KILLED" type="Boolean"/>
       <Variable name="KILL_ROLE" type="String"/>
+      <Variable name="MACRO_OUTPUT" type="Object"/>
       <Variable name="MASTER_CHILD_JOBS" type="Object"/>
+      <Variable name="MUTEX" type="Boolean"/>
       <Variable name="NULL" type="Object"/>
       <Variable name="PRIORITY" type="Integer"/>
       <Variable name="RESERVATIONS" type="Object"/>
@@ -111,6 +160,7 @@
       <Variable name="TIMEOUT" type="Boolean"/>
       <Variable name="TRACE_ROLE" type="String"/>
       <Variable name="UNIQUE_WORKFLOW" type="Integer"/>
+      <Variable name="VAR" type="String"/>
       <Variable name="WORKFLOW_EXCEPTION" type="Object"/>
       <Variable name="WORKFLOW_EXECUTION_STATUS" type="String"/>
       <Variable name="WORKFLOW_NAME" type="String"/>
@@ -121,52 +171,91 @@
       <Variable name="activation_description" type="String"/>
       <Variable name="activation_major_code" type="Integer"/>
       <Variable name="activation_minor_code" type="Integer"/>
+      <Variable name="count_retries" type="Integer"/>
+      <Variable name="lock_file_table_obk" type="Object"/>
       <Variable name="message_url" type="String"/>
       <Variable name="module_name" type="String"/>
+      <Variable name="number_retries" type="Integer"/>
       <Variable name="services_JOB_ID" type="Integer"/>
       <Variable name="skip_activation" type="Boolean"/>
+      <Variable name="table_name" type="String"/>
       <Variable name="wtth_error_code" type="Integer"/>
+      <Variable name="wtth_error_desc" type="String"/>
       <Variable name="wtth_result_code" type="Integer"/>
+      <Variable name="wtth_result_desc" type="String"/>
    </Case-Packet>
-   <Initial-Case-Packet/>
+   <Initial-Case-Packet>
+      <Variable-Value name="FILE_URL_PREFIX" value="file:///"/>
+      <Variable-Value name="SOLUTION_NAME" value="WTTH"/>
+      <Variable-Value name="WORKFLOW_NAME" value="LOCK_FILE_TABLE"/>
+      <Variable-Value name="WORKFLOW_VERSION" value="-1"/>
+   </Initial-Case-Packet>
    <Coordinates>
       <Position>
+         <Name>CreateInventory</Name>
+         <X>278</X>
+         <Y>103</Y>
+         <Width>101</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>LessThanOrEqual</Name>
+         <X>476</X>
+         <Y>296</Y>
+         <Width>129</Width>
+         <Height>26</Height>
+      </Position>
+      <Position>
          <Name>PrintStart</Name>
-         <X>190</X>
-         <Y>102</Y>
-         <Width>61</Width>
+         <X>70</X>
+         <Y>103</Y>
+         <Width>64</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>Sleep</Name>
-         <X>509</X>
+         <X>510</X>
          <Y>191</Y>
          <Width>61</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>WasPreviousNodeOK</Name>
-         <X>474</X>
+         <X>466</X>
          <Y>114</Y>
-         <Width>131</Width>
-         <Height>24</Height>
+         <Width>148</Width>
+         <Height>26</Height>
       </Position>
       <Position>
          <Name>insertData</Name>
-         <X>286</X>
-         <Y>102</Y>
-         <Width>61</Width>
+         <X>144</X>
+         <Y>280</Y>
+         <Width>68</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>mapError</Name>
+         <X>508</X>
+         <Y>384</Y>
+         <Width>64</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>setError0</Name>
-         <X>663</X>
-         <Y>102</Y>
-         <Width>61</Width>
+         <X>660</X>
+         <Y>103</Y>
+         <Width>63</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>start count</Name>
+         <X>167</X>
+         <Y>103</Y>
+         <Width>71</Width>
          <Height>48</Height>
       </Position>
       <Arrows>
-         <Name>PrintStart</Name>
+         <Name>CreateInventory</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
@@ -179,7 +268,7 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
-         <Name>Sleep</Name>
+         <Name>LessThanOrEqual</Name>
          <True-Arrow>
             <Type>2</Type>
             <DeltaX>0</DeltaX>
@@ -192,6 +281,32 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>PrintStart</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Sleep</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>WasPreviousNodeOK</Name>
          <True-Arrow>
             <Type>0</Type>
@@ -218,7 +333,33 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>mapError</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>setError0</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>start count</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
