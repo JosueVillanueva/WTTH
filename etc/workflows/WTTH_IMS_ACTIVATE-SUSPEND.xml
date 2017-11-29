@@ -4,6 +4,7 @@
 <Workflow Init-On-Startup="false" Unique="false" auditEnabled="true" auditStateChangeEvent="false" autoAuditEnabled="true" disablePersistence="false" statEnabled="true">
    <Name>WTTH_IMS_ACTIVATE-SUSPEND</Name>
    <Solution>WTTH</Solution>
+   <Description>Search Credentials for activate SSW</Description>
    <Start-Node>VariableMapper1</Start-Node>
    <Nodes>
       <Process-Node disablePersistence="true">
@@ -12,17 +13,16 @@
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="action_Name" value="REACTIVATE"/>
             <Param name="action_type" value="IMS"/>
-            <Param name="moduleName" value="http_example_sender"/>
+            <Param name="moduleName" value="http_sender_wtth"/>
             <Param name="rollback" value="0"/>
+            <Param name="service_class" value="WTH"/>
             <Param name="ssw_id" value="1"/>
-            <Param name="telephone_number" value="+524431236410"/>
+            <Param name="telephone_number" value="+5717423662"/>
          </Action>
          <Next-Node>Equal</Next-Node>
       </Process-Node>
       <Rule-Node disablePersistence="true">
          <Name>Equal</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
             <Param name="op1" value="action_Name"/>
@@ -33,8 +33,6 @@
       </Rule-Node>
       <Process-Node disablePersistence="true">
          <Name>VariableMapper</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="OUTRST_value" value="1"/>
@@ -62,13 +60,21 @@
             <Param name="op1" value="net_send#"/>
             <Param name="op2" value="constant:0"/>
          </Action>
-         <True-Next-Node>DoNothing</True-Next-Node>
+         <True-Next-Node>MapSSW9.111</True-Next-Node>
          <False-Next-Node>MapSSW1211</False-Next-Node>
       </Rule-Node>
       <Process-Node disablePersistence="true">
+         <Name>MapSSW9.111</Name>
+         <Description>Map Variables for activate Softswitch</Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="171"/>
+            <Param name="wtth_result_desc" value="UNDO_OK Network element not found for WTTH"/>
+         </Action>
+         <Next-Node>DoNothing</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
          <Name>DoNothing</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.DoNothing</Class-Name>
          </Action>
@@ -78,7 +84,7 @@
          <Description>Credentials Map</Description>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="authurl" value="%net_send[0].url%"/>
+            <Param name="authurl" value="ims.claro.com.co"/>
             <Param name="password_enc" value="%net_send[0].password%"/>
             <Param name="user" value="%net_send[0].userName%"/>
          </Action>
@@ -93,7 +99,7 @@
          </Action>
          <Next-Node>PutMessage111</Next-Node>
       </Process-Node>
-      <Process-Node>
+      <Process-Node inactive="true">
          <Name>PutMessage111</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
@@ -125,21 +131,31 @@
             <Param name="op1" value="template_obj"/>
             <Param name="op2" value="constant:0"/>
          </Action>
-         <True-Next-Node>DoNothing</True-Next-Node>
+         <True-Next-Node>MapSSW9.1111</True-Next-Node>
          <False-Next-Node>VariableMapper51</False-Next-Node>
       </Rule-Node>
+      <Process-Node disablePersistence="true">
+         <Name>MapSSW9.1111</Name>
+         <Description>Map Variables for activate Softswitch</Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="172"/>
+            <Param name="wtth_result_desc" value="UNDO_OK Template not found for %action_Name%"/>
+         </Action>
+         <Next-Node>DoNothing</Next-Node>
+      </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>VariableMapper51</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="authurl" value="%net_send[0].url%"/>
+            <Param name="authurl" value="ims.claro.com.co"/>
             <Param name="password" value="%passwd%"/>
             <Param name="telephone_full" value="%telephone_number%"/>
             <Param name="username" value="%net_send[0].userName%"/>
          </Action>
          <Next-Node>PutMessage131</Next-Node>
       </Process-Node>
-      <Process-Node>
+      <Process-Node inactive="true">
          <Name>PutMessage131</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
@@ -162,11 +178,11 @@
          <Name>VariableMapper31</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="xsl_template" value="file:///C:/HP/OpenView/ServiceActivator/solutions/WTTH/etc/template_files/WTTHColombia/XSLs/%template_obj[0].templateName%.xsl"/>
+            <Param name="xsl_template" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/WTTHColombia/XSLs/%template_obj[0].templateName%.xsl"/>
          </Action>
          <Next-Node>PutMessage41</Next-Node>
       </Process-Node>
-      <Process-Node>
+      <Process-Node inactive="true">
          <Name>PutMessage41</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
@@ -193,7 +209,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
             <Param name="message" value="XML Enviado: %s"/>
-            <Param name="queue" value="SSW"/>
+            <Param name="queue" value="SSW_WTTH"/>
             <Param name="param0" value="output_result"/>
          </Action>
          <Next-Node>HTTPRequest11</Next-Node>
@@ -206,6 +222,7 @@
             <Param name="request" value="output_result"/>
             <Param name="request_type" value="constant:POST"/>
             <Param name="response" value="ws_response"/>
+            <Param name="throw_excep" value="constant:false"/>
          </Action>
          <Next-Node>SSW Available11</Next-Node>
       </Process-Node>
@@ -217,7 +234,7 @@
             <Param name="op2" value="constant:0"/>
          </Action>
          <True-Next-Node>MsgHTTP11</True-Next-Node>
-         <False-Next-Node>DoNothing</False-Next-Node>
+         <False-Next-Node>MapSSW9.1112</False-Next-Node>
       </Rule-Node>
       <Process-Node>
          <Name>MsgHTTP11</Name>
@@ -225,7 +242,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
             <Param name="message" value="%s - XML Respuesta: %s"/>
-            <Param name="queue" value="SSW"/>
+            <Param name="queue" value="SSW_WTTH"/>
             <Param name="param0" value="account_number"/>
             <Param name="param1" value="ws_response"/>
          </Action>
@@ -244,6 +261,8 @@
          <Name>XMLMapper111</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.XMLMapper</Class-Name>
+            <Param name="fault_code" value="/SOAP-ENV:Envelope/SOAP-ENV:Body/SOAP-ENV:Fault/faultcode"/>
+            <Param name="fault_string" value="/SOAP-ENV:Envelope/SOAP-ENV:Body/SOAP-ENV:Fault/faultstring"/>
             <Param name="ignore_missing_tags" value="true"/>
             <Param name="result_code" value="last_result_code"/>
             <Param name="result_desc" value="last_result_desc"/>
@@ -258,12 +277,108 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
             <Param name="message" value="%s - ResultCode: %s, ResultDesc: %s"/>
-            <Param name="queue" value="SSW"/>
+            <Param name="queue" value="SSW_WTTH"/>
             <Param name="param0" value="account_number"/>
             <Param name="param1" value="result_code"/>
             <Param name="param2" value="result_desc"/>
          </Action>
-         <Next-Node>MapDataOK?11</Next-Node>
+         <Next-Node>Equal51</Next-Node>
+      </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>Equal51</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
+            <Param name="op1" value="result_code"/>
+            <Param name="op2" value="constant:"/>
+         </Action>
+         <True-Next-Node>VariableMapper81</True-Next-Node>
+         <False-Next-Node>MapDataOK?11</False-Next-Node>
+      </Rule-Node>
+      <Process-Node disablePersistence="true">
+         <Name>VariableMapper81</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="result_code" value="%fault_code%"/>
+            <Param name="result_desc" value="%fault_string%"/>
+         </Action>
+         <Next-Node>PutMessage161</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>PutMessage161</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="Hubo un error al enviar el comando. %s ----- %s"/>
+            <Param name="queue" value="SSW_WTTH"/>
+            <Param name="param0" value="result_code"/>
+            <Param name="param1" value="result_desc"/>
+         </Action>
+         <Next-Node>Equal1</Next-Node>
+      </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>Equal1</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
+            <Param name="op1" value="rollback"/>
+            <Param name="op2" value="constant:1"/>
+         </Action>
+         <True-Next-Node>MapSSW9.11121</True-Next-Node>
+         <False-Next-Node>PutMessage</False-Next-Node>
+      </Rule-Node>
+      <Process-Node disablePersistence="true">
+         <Name>MapSSW9.11121</Name>
+         <Description>Map Variables for activate Softswitch</Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_desc" value="UNDO_NO_OK %wtth_result_desc%"/>
+         </Action>
+         <Next-Node>DoNothing</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>PutMessage</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="INICIANDO ROLLBACK!"/>
+            <Param name="queue" value="SSW_WTTH"/>
+         </Action>
+         <Next-Node>VariableMapper5</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>VariableMapper5</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="rollback" value="1"/>
+            <Param name="wtth_result_code" value="%result_code%"/>
+            <Param name="wtth_result_desc" value="%result_desc%"/>
+         </Action>
+         <Next-Node>Equal2</Next-Node>
+      </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>Equal2</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
+            <Param name="op1" value="action_Name"/>
+            <Param name="op2" value="constant:SUSPEND"/>
+         </Action>
+         <True-Next-Node>VariableMapper3</True-Next-Node>
+         <False-Next-Node>VariableMapper4</False-Next-Node>
+      </Rule-Node>
+      <Process-Node disablePersistence="true">
+         <Name>VariableMapper3</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="action_Name" value="REACTIVATE"/>
+            <Param name="OUTRST_value" value="0"/>
+         </Action>
+         <Next-Node>SearchZystem11</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>VariableMapper4</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="action_Name" value="SUSPEND"/>
+            <Param name="OUTRST_value" value="1"/>
+         </Action>
+         <Next-Node>SearchZystem11</Next-Node>
       </Process-Node>
       <Rule-Node disablePersistence="true">
          <Name>MapDataOK?11</Name>
@@ -282,7 +397,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
             <Param name="message" value="Activation Successfully. Cause: %s"/>
-            <Param name="queue" value="SSW"/>
+            <Param name="queue" value="SSW_WTTH"/>
             <Param name="param0" value="result_code"/>
          </Action>
          <Next-Node>MapSSW9.11</Next-Node>
@@ -292,8 +407,8 @@
          <Description>Map Variables for activate Softswitch</Description>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="validate_result" value="true"/>
             <Param name="wtth_result_code" value="0"/>
+            <Param name="wtth_result_desc" value="DO_%action_Name% Successfully!!!"/>
          </Action>
          <Next-Node>Log2.11</Next-Node>
       </Process-Node>
@@ -315,86 +430,18 @@
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.DoNothing</Class-Name>
          </Action>
       </Process-Node>
-      <Process-Node>
-         <Name>PutMessage161</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
-            <Param name="message" value="Hubo un error al enviar el comando. %s ----- %s"/>
-            <Param name="queue" value="SSW"/>
-            <Param name="param0" value="result_code"/>
-            <Param name="param1" value="result_desc"/>
-         </Action>
-         <Next-Node>Equal1</Next-Node>
-      </Process-Node>
-      <Rule-Node disablePersistence="true">
-         <Name>Equal1</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
-            <Param name="op1" value="rollback"/>
-            <Param name="op2" value="constant:1"/>
-         </Action>
-         <True-Next-Node>DoNothing</True-Next-Node>
-         <False-Next-Node>PutMessage</False-Next-Node>
-      </Rule-Node>
-      <Process-Node>
-         <Name>PutMessage</Name>
-         <Description></Description>
-         <State></State>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
-            <Param name="message" value="INICIANDO ROLLBACK!"/>
-            <Param name="queue" value="SSW"/>
-         </Action>
-         <Next-Node>VariableMapper5</Next-Node>
-      </Process-Node>
       <Process-Node disablePersistence="true">
-         <Name>VariableMapper5</Name>
-         <Description></Description>
-         <State></State>
+         <Name>MapSSW9.1112</Name>
+         <Description>Map Variables for activate Softswitch</Description>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="rollback" value="1"/>
+            <Param name="wtth_result_code" value="173"/>
+            <Param name="wtth_result_desc" value="UNDO_OK No conection for %moduleName%"/>
          </Action>
-         <Next-Node>Equal2</Next-Node>
-      </Process-Node>
-      <Rule-Node disablePersistence="true">
-         <Name>Equal2</Name>
-         <Description></Description>
-         <State></State>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
-            <Param name="op1" value="action_Name"/>
-            <Param name="op2" value="constant:SUSPEND"/>
-         </Action>
-         <True-Next-Node>VariableMapper3</True-Next-Node>
-         <False-Next-Node>VariableMapper4</False-Next-Node>
-      </Rule-Node>
-      <Process-Node disablePersistence="true">
-         <Name>VariableMapper3</Name>
-         <Description></Description>
-         <State></State>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="action_Name" value="REACTIVATE"/>
-            <Param name="OUTRST_value" value="0"/>
-         </Action>
-         <Next-Node>SearchZystem11</Next-Node>
-      </Process-Node>
-      <Process-Node disablePersistence="true">
-         <Name>VariableMapper4</Name>
-         <Description></Description>
-         <State></State>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="action_Name" value="SUSPEND"/>
-            <Param name="OUTRST_value" value="1"/>
-         </Action>
-         <Next-Node>SearchZystem11</Next-Node>
+         <Next-Node>DoNothing</Next-Node>
       </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>VariableMapper2</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="OUTRST_value" value="0"/>
@@ -408,6 +455,7 @@
       <Param name="job_id" value="services_JOB_ID"/>
       <Param name="queue" value="constant:controller_queue"/>
       <Param name="variable0" value="wtth_result_code"/>
+      <Param name="variable1" value="wtth_result_desc"/>
    </Error-Handler>
    <End-Handler>
       <Name>SyncHandler1</Name>
@@ -415,17 +463,23 @@
       <Param name="job_id" value="services_JOB_ID"/>
       <Param name="queue" value="constant:controller_queue"/>
       <Param name="variable0" value="wtth_result_code"/>
+      <Param name="variable1" value="wtth_result_desc"/>
    </End-Handler>
    <Case-Packet>
+      <Variable name="ANNOTATION" type="String"/>
       <Variable name="BREAK_POINT" type="String"/>
       <Variable name="DEFAULT_ROLE" type="String"/>
       <Variable name="EMPTY_STRING" type="String"/>
+      <Variable name="ETC" type="String"/>
       <Variable name="EX_STEP_NAME" type="String"/>
       <Variable name="FILE_URL_PREFIX" type="String"/>
       <Variable name="HOST_NAME" type="String"/>
       <Variable name="JOB_ID" type="Integer"/>
+      <Variable name="KILLED" type="Boolean"/>
       <Variable name="KILL_ROLE" type="String"/>
+      <Variable name="MACRO_OUTPUT" type="Object"/>
       <Variable name="MASTER_CHILD_JOBS" type="Object"/>
+      <Variable name="MUTEX" type="Boolean"/>
       <Variable name="NULL" type="Object"/>
       <Variable name="OUTRST_value" type="String"/>
       <Variable name="PRIORITY" type="Integer"/>
@@ -448,6 +502,7 @@
       <Variable name="TIMEOUT" type="Boolean"/>
       <Variable name="TRACE_ROLE" type="String"/>
       <Variable name="UNIQUE_WORKFLOW" type="Integer"/>
+      <Variable name="VAR" type="String"/>
       <Variable name="WORKFLOW_EXCEPTION" type="Object"/>
       <Variable name="WORKFLOW_EXECUTION_STATUS" type="String"/>
       <Variable name="WORKFLOW_NAME" type="String"/>
@@ -463,6 +518,8 @@
       <Variable name="activation_minor_code" type="Integer"/>
       <Variable name="authurl" type="String"/>
       <Variable name="docsis_result_code" type="String"/>
+      <Variable name="fault_code" type="String"/>
+      <Variable name="fault_string" type="String"/>
       <Variable name="last_result_code" type="String"/>
       <Variable name="last_result_desc" type="String"/>
       <Variable name="message_url" type="String"/>
@@ -478,6 +535,7 @@
       <Variable name="result_code" type="String"/>
       <Variable name="result_desc" type="String"/>
       <Variable name="rollback" type="String"/>
+      <Variable name="service_class" type="String"/>
       <Variable name="services_JOB_ID" type="String"/>
       <Variable name="skip_activation" type="Boolean"/>
       <Variable name="ssw_id" type="String"/>
@@ -490,9 +548,15 @@
       <Variable name="which_xml" type="String"/>
       <Variable name="ws_response" type="String"/>
       <Variable name="wtth_result_code" type="String"/>
+      <Variable name="wtth_result_desc" type="String"/>
       <Variable name="xsl_template" type="String"/>
    </Case-Packet>
-   <Initial-Case-Packet/>
+   <Initial-Case-Packet>
+      <Variable-Value name="FILE_URL_PREFIX" value="file:///"/>
+      <Variable-Value name="SOLUTION_NAME" value="WTTH"/>
+      <Variable-Value name="WORKFLOW_NAME" value="WTTH_IMS_ACTIVATE-SUSPEND"/>
+      <Variable-Value name="WORKFLOW_VERSION" value="-1"/>
+   </Initial-Case-Packet>
    <Coordinates>
       <Position>
          <Name>Decrypt11</Name>
@@ -503,8 +567,8 @@
       </Position>
       <Position>
          <Name>DoNothing</Name>
-         <X>483</X>
-         <Y>166</Y>
+         <X>445</X>
+         <Y>253</Y>
          <Width>61</Width>
          <Height>48</Height>
       </Position>
@@ -518,28 +582,35 @@
       <Position>
          <Name>Equal</Name>
          <X>177</X>
-         <Y>24</Y>
+         <Y>25</Y>
          <Width>56</Width>
          <Height>24</Height>
       </Position>
       <Position>
          <Name>Equal1</Name>
-         <X>132</X>
-         <Y>404</Y>
+         <X>134</X>
+         <Y>402</Y>
          <Width>62</Width>
          <Height>24</Height>
       </Position>
       <Position>
          <Name>Equal2</Name>
-         <X>132</X>
+         <X>134</X>
          <Y>219</Y>
          <Width>62</Width>
          <Height>24</Height>
       </Position>
       <Position>
          <Name>Equal21</Name>
-         <X>535</X>
-         <Y>266</Y>
+         <X>617</X>
+         <Y>265</Y>
+         <Width>68</Width>
+         <Height>24</Height>
+      </Position>
+      <Position>
+         <Name>Equal51</Name>
+         <X>235</X>
+         <Y>541</Y>
          <Width>68</Width>
          <Height>24</Height>
       </Position>
@@ -559,7 +630,7 @@
       </Position>
       <Position>
          <Name>MapDataOK?11</Name>
-         <X>111</X>
+         <X>113</X>
          <Y>593</Y>
          <Width>104</Width>
          <Height>24</Height>
@@ -586,6 +657,34 @@
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>MapSSW9.111</Name>
+         <X>594</X>
+         <Y>138</Y>
+         <Width>80</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>MapSSW9.1111</Name>
+         <X>522</X>
+         <Y>205</Y>
+         <Width>86</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>MapSSW9.1112</Name>
+         <X>432</X>
+         <Y>419</Y>
+         <Width>86</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>MapSSW9.11121</Name>
+         <X>248</X>
+         <Y>390</Y>
+         <Width>92</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>MsgHTTP11</Name>
          <X>544</X>
          <Y>581</Y>
@@ -594,14 +693,14 @@
       </Position>
       <Position>
          <Name>MsgSSW1511</Name>
-         <X>242</X>
-         <Y>581</Y>
+         <X>330</X>
+         <Y>525</Y>
          <Width>75</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>MsgSSW711</Name>
-         <X>129</X>
+         <X>131</X>
          <Y>674</Y>
          <Width>69</Width>
          <Height>48</Height>
@@ -615,8 +714,8 @@
       </Position>
       <Position>
          <Name>PutMessage</Name>
-         <X>129</X>
-         <Y>337</Y>
+         <X>131</X>
+         <Y>335</Y>
          <Width>68</Width>
          <Height>48</Height>
       </Position>
@@ -629,15 +728,15 @@
       </Position>
       <Position>
          <Name>PutMessage131</Name>
-         <X>526</X>
+         <X>522</X>
          <Y>383</Y>
          <Width>86</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>PutMessage161</Name>
-         <X>120</X>
-         <Y>473</Y>
+         <X>122</X>
+         <Y>461</Y>
          <Width>86</Width>
          <Height>48</Height>
       </Position>
@@ -650,8 +749,8 @@
       </Position>
       <Position>
          <Name>QueryMap11</Name>
-         <X>641</X>
-         <Y>254</Y>
+         <X>713</X>
+         <Y>253</Y>
          <Width>72</Width>
          <Height>48</Height>
       </Position>
@@ -727,15 +826,22 @@
       </Position>
       <Position>
          <Name>VariableMapper5</Name>
-         <X>118</X>
+         <X>120</X>
          <Y>259</Y>
          <Width>90</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>VariableMapper51</Name>
-         <X>521</X>
+         <X>517</X>
          <Y>310</Y>
+         <Width>96</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>VariableMapper81</Name>
+         <X>221</X>
+         <Y>461</Y>
          <Width>96</Width>
          <Height>48</Height>
       </Position>
@@ -808,7 +914,7 @@
       <Arrows>
          <Name>Equal1</Name>
          <True-Arrow>
-            <Type>2</Type>
+            <Type>0</Type>
             <DeltaX>0</DeltaX>
             <DeltaY>0</DeltaY>
          </True-Arrow>
@@ -839,7 +945,20 @@
             <DeltaY>0</DeltaY>
          </True-Arrow>
          <False-Arrow>
+            <Type>2</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Equal51</Name>
+         <True-Arrow>
             <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>2</Type>
             <DeltaX>0</DeltaX>
             <DeltaY>0</DeltaY>
          </False-Arrow>
@@ -913,6 +1032,58 @@
          <Name>MapSSW9.11</Name>
          <True-Arrow>
             <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>MapSSW9.111</Name>
+         <True-Arrow>
+            <Type>2</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>MapSSW9.1111</Name>
+         <True-Arrow>
+            <Type>2</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>MapSSW9.1112</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>MapSSW9.11121</Name>
+         <True-Arrow>
+            <Type>3</Type>
             <DeltaX>0</DeltaX>
             <DeltaY>0</DeltaY>
          </True-Arrow>
@@ -1209,6 +1380,19 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>VariableMapper81</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>XMLMapper111</Name>
          <True-Arrow>
             <Type>0</Type>
@@ -1224,7 +1408,7 @@
       <Arrows>
          <Name>Zystem?11</Name>
          <True-Arrow>
-            <Type>3</Type>
+            <Type>0</Type>
             <DeltaX>-181</DeltaX>
             <DeltaY>97</DeltaY>
          </True-Arrow>
