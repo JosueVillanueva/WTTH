@@ -37,10 +37,18 @@
             <Param name="destination0" value="services_JOB_ID"/>
             <Param name="outputvar0" value="wtth_result_code"/>
             <Param name="variable0" value="JOB_ID"/>
+            <Param name="destination1" value="telephone_number"/>
+            <Param name="outputvar1" value="wtth_result_desc"/>
             <Param name="variable1" value="fixed_telephone_number_new"/>
+            <Param name="destination2" value="pwd_value"/>
             <Param name="variable2" value="password_customer"/>
+            <Param name="destination3" value="action_Name"/>
             <Param name="variable3" value="action_name"/>
             <Param name="variable4" value="account_number"/>
+            <Param name="destination5" value="geo_id"/>
+            <Param name="variable5" value="geographical_location_id"/>
+            <Param name="destination6" value="service_class"/>
+            <Param name="variable6" value="service_id_new"/>
          </Action>
          <Next-Node>imsOK?</Next-Node>
       </Process-Node>
@@ -63,6 +71,7 @@
             <Param name="destination0" value="services_JOB_ID"/>
             <Param name="outputvar0" value="wtth_result_code"/>
             <Param name="variable0" value="JOB_ID"/>
+            <Param name="outputvar1" value="wtth_result_desc"/>
             <Param name="variable1" value="fixed_telephone_number_new"/>
             <Param name="variable2" value="password_customer"/>
             <Param name="variable3" value="action_name"/>
@@ -89,6 +98,7 @@
             <Param name="destination0" value="services_JOB_ID"/>
             <Param name="outputvar0" value="wtth_result_code"/>
             <Param name="variable0" value="JOB_ID"/>
+            <Param name="outputvar1" value="wtth_result_desc"/>
             <Param name="variable1" value="fixed_telephone_number_new"/>
             <Param name="variable2" value="mobile_telephone_number_new"/>
             <Param name="variable3" value="action_name"/>
@@ -103,8 +113,315 @@
             <Param name="op1" value="wtth_result_code"/>
             <Param name="op2" value="constant:0"/>
          </Action>
-         <True-Next-Node>insertServices</True-Next-Node>
+         <True-Next-Node>UnlockTable</True-Next-Node>
          <False-Next-Node>mapActionName1</False-Next-Node>
+      </Rule-Node>
+      <Process-Node>
+         <Name>UnlockTable</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.ExecSQLStatement</Class-Name>
+            <Param name="statement" value="delete from LOCK_FILE_TABLE_TMP"/>
+         </Action>
+         <Next-Node>mapError00</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>mapError00</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="0"/>
+         </Action>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>mapActionName1</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="action_name" value="DELETE"/>
+            <Param name="wtth_result_code_rb" value="%wtth_result_code%"/>
+            <Param name="wtth_result_desc_rb" value="%wtth_result_desc%"/>
+         </Action>
+         <Next-Node>NNCDel1</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>NNCDel1</Name>
+         <Description>DeleteNNC</Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.StartJobAndWait</Class-Name>
+            <Param name="queue" value="controller_queue"/>
+            <Param name="workflow_name" value="constant:WTTH_NNC_CREATE"/>
+            <Param name="destination0" value="services_JOB_ID"/>
+            <Param name="outputvar0" value="wtth_result_code"/>
+            <Param name="variable0" value="JOB_ID"/>
+            <Param name="outputvar1" value="wtth_result_desc"/>
+            <Param name="variable1" value="fixed_telephone_number_new"/>
+            <Param name="variable2" value="password_customer"/>
+            <Param name="variable3" value="action_name"/>
+            <Param name="variable4" value="account_number"/>
+         </Action>
+         <Next-Node>NNCDeleteOK?</Next-Node>
+      </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>NNCDeleteOK?</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
+            <Param name="op1" value="wtth_result_code"/>
+            <Param name="op2" value="constant:0"/>
+         </Action>
+         <True-Next-Node>IMS3</True-Next-Node>
+         <False-Next-Node>mapError05</False-Next-Node>
+      </Rule-Node>
+      <Process-Node>
+         <Name>IMS3</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.StartJobAndWait</Class-Name>
+            <Param name="queue" value="controller_queue"/>
+            <Param name="workflow_name" value="constant:WTTH_IMS_CREATE"/>
+            <Param name="destination0" value="services_JOB_ID"/>
+            <Param name="outputvar0" value="wtth_result_code"/>
+            <Param name="variable0" value="JOB_ID"/>
+            <Param name="destination1" value="telephone_number"/>
+            <Param name="outputvar1" value="wtth_result_desc"/>
+            <Param name="variable1" value="fixed_telephone_number_new"/>
+            <Param name="destination2" value="pwd_value"/>
+            <Param name="variable2" value="password_customer"/>
+            <Param name="destination3" value="action_Name"/>
+            <Param name="variable3" value="action_name"/>
+            <Param name="variable4" value="account_number"/>
+            <Param name="destination5" value="geo_id"/>
+            <Param name="variable5" value="geographical_location_id"/>
+            <Param name="destination6" value="service_class"/>
+            <Param name="variable6" value="service_id_new"/>
+         </Action>
+         <Next-Node>ImsDeleteOK?_</Next-Node>
+      </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>ImsDeleteOK?_</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
+            <Param name="op1" value="wtth_result_code"/>
+            <Param name="op2" value="constant:0"/>
+         </Action>
+         <True-Next-Node>mapError03</True-Next-Node>
+         <False-Next-Node>mapError06</False-Next-Node>
+      </Rule-Node>
+      <Process-Node disablePersistence="true">
+         <Name>mapError03</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="%wtth_result_code_rb%"/>
+            <Param name="wtth_result_desc" value="UNDO_OK.%wtth_result_desc_rb%"/>
+         </Action>
+         <Next-Node>Error</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>Error</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.DoNothing</Class-Name>
+         </Action>
+         <Next-Node>UnlockTable1</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>UnlockTable1</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.ExecSQLStatement</Class-Name>
+            <Param name="statement" value="delete from LOCK_FILE_TABLE_TMP"/>
+         </Action>
+         <Next-Node>printError</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>printError</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="error %s wtth_result_desc %s"/>
+            <Param name="queue" value="variable:WORKFLOW_NAME"/>
+            <Param name="param0" value="wtth_result_code"/>
+            <Param name="param1" value="wtth_result_desc"/>
+         </Action>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>mapError06</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="%wtth_result_code_rb%"/>
+            <Param name="wtth_result_desc" value="UNDO_NO_OK.%wtth_result_desc_rb%"/>
+         </Action>
+         <Next-Node>Error</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>mapError05</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="%wtth_result_code_rb%"/>
+            <Param name="wtth_result_desc" value="UNDO_NO_OK.%wtth_result_desc%"/>
+         </Action>
+         <Next-Node>Error</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>mapActionName</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="action_name" value="DELETE"/>
+            <Param name="wtth_result_code_rb" value="%wtth_result_code%"/>
+            <Param name="wtth_result_desc_rb" value="%wtth_result_desc%"/>
+         </Action>
+         <Next-Node>IMS2</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>IMS2</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.StartJobAndWait</Class-Name>
+            <Param name="queue" value="controller_queue"/>
+            <Param name="workflow_name" value="constant:WTTH_IMS_CREATE"/>
+            <Param name="destination0" value="services_JOB_ID"/>
+            <Param name="outputvar0" value="wtth_result_code"/>
+            <Param name="variable0" value="JOB_ID"/>
+            <Param name="destination1" value="telephone_number"/>
+            <Param name="outputvar1" value="wtth_result_desc"/>
+            <Param name="variable1" value="fixed_telephone_number_new"/>
+            <Param name="destination2" value="pwd_value"/>
+            <Param name="variable2" value="password_customer"/>
+            <Param name="destination3" value="action_Name"/>
+            <Param name="variable3" value="action_name"/>
+            <Param name="variable4" value="account_number"/>
+            <Param name="destination5" value="geo_id"/>
+            <Param name="variable5" value="geographical_location_id"/>
+            <Param name="destination6" value="service_class"/>
+            <Param name="variable6" value="service_id_new"/>
+         </Action>
+         <Next-Node>ImsDeleteOK?</Next-Node>
+      </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>ImsDeleteOK?</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
+            <Param name="op1" value="wtth_result_code"/>
+            <Param name="op2" value="constant:0"/>
+         </Action>
+         <True-Next-Node>mapError02</True-Next-Node>
+         <False-Next-Node>mapError04</False-Next-Node>
+      </Rule-Node>
+      <Process-Node disablePersistence="true">
+         <Name>mapError02</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="%wtth_result_code_rb%"/>
+            <Param name="wtth_result_desc" value="UNDO_OK. %wtth_result_desc_rb%"/>
+         </Action>
+         <Next-Node>Error</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>mapError04</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="%wtth_result_code%"/>
+            <Param name="wtth_result_desc" value="UNDO_NO_OK.%wtth_result_desc_rb%"/>
+         </Action>
+         <Next-Node>Error</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>mapError01</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="%wtth_result_code%"/>
+         </Action>
+         <Next-Node>Error</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>IMS1</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.StartJobAndWait</Class-Name>
+            <Param name="queue" value="controller_queue"/>
+            <Param name="workflow_name" value="constant:WTTH_IMS_CREATE"/>
+            <Param name="destination0" value="services_JOB_ID"/>
+            <Param name="outputvar0" value="wtth_result_code"/>
+            <Param name="variable0" value="JOB_ID"/>
+            <Param name="outputvar1" value="wtth_result_desc"/>
+            <Param name="variable1" value="fixed_telephone_number_new"/>
+            <Param name="variable2" value="password_customer"/>
+            <Param name="variable3" value="action_name"/>
+            <Param name="variable4" value="account_number"/>
+         </Action>
+         <Next-Node>ImsDeleteOK?_</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>IMSDel</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.StartJobAndWait</Class-Name>
+            <Param name="queue" value="controller_queue"/>
+            <Param name="workflow_name" value="constant:WTTH_IMS_CREATE"/>
+            <Param name="destination0" value="services_JOB_ID"/>
+            <Param name="outputvar0" value="wtth_result_code"/>
+            <Param name="variable0" value="JOB_ID"/>
+            <Param name="outputvar1" value="wtth_result_desc"/>
+            <Param name="variable1" value="fixed_telephone_number_new"/>
+            <Param name="variable2" value="password_customer"/>
+            <Param name="variable3" value="action_name"/>
+            <Param name="variable4" value="account_number"/>
+         </Action>
+         <Next-Node>ImsDeleteOK?</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>PutMessage2</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="wtth_result_code %s wtth_result_desc %s"/>
+            <Param name="queue" value="variable:WORKFLOW_NAME"/>
+            <Param name="param0" value="wtth_result_code"/>
+            <Param name="param1" value="wtth_result_desc"/>
+         </Action>
+      </Process-Node>
+      <Process-Node>
+         <Name>QueryInventory</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.QueryInventory</Class-Name>
+            <Param name="bean" value="constant:com.hpe.ov.activator.inventory.ErrorHandling"/>
+            <Param name="find_by_method" value="constant:findAll"/>
+            <Param name="return_array" value="constant:true"/>
+            <Param name="variable" value="error_handling_obj"/>
+            <Param name="where" value="constant:ERROR_CODE = &apos;%s&apos;"/>
+            <Param name="param0" value="wtth_result_code"/>
+         </Action>
+         <Next-Node>errorFound?</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>QueryInventory1</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.QueryInventory</Class-Name>
+            <Param name="bean" value="constant:com.hpe.ov.activator.inventory.ErrorHandling"/>
+            <Param name="find_by_method" value="constant:findAll"/>
+            <Param name="return_array" value="constant:true"/>
+            <Param name="variable" value="error_handling_obj"/>
+            <Param name="where" value="constant:ERROR_CODE = &apos;%s&apos;"/>
+            <Param name="param0" value="wtth_result_code"/>
+         </Action>
+         <Next-Node>errorFound?1</Next-Node>
+      </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>createOK?</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.WasPreviousNodeOK</Class-Name>
+         </Action>
+         <True-Next-Node>UnlockTable</True-Next-Node>
+         <False-Next-Node>mapError</False-Next-Node>
+      </Rule-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>errorFound?</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
+            <Param name="op1" value="error_handling_obj#"/>
+            <Param name="op2" value="constant:0"/>
+         </Action>
+         <True-Next-Node>noMapErrorDesc</True-Next-Node>
+         <False-Next-Node>mapErrorDesc</False-Next-Node>
+      </Rule-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>errorFound?1</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
+            <Param name="op1" value="error_handling_obj#"/>
+            <Param name="op2" value="constant:0"/>
+         </Action>
+         <True-Next-Node>noMapErrorDesc1</True-Next-Node>
+         <False-Next-Node>mapErrorDesc1</False-Next-Node>
       </Rule-Node>
       <Process-Node>
          <Name>insertServices</Name>
@@ -128,79 +445,6 @@
          </Action>
          <Next-Node>createOK?</Next-Node>
       </Process-Node>
-      <Rule-Node disablePersistence="true">
-         <Name>createOK?</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.WasPreviousNodeOK</Class-Name>
-         </Action>
-         <True-Next-Node>UnlockTable</True-Next-Node>
-         <False-Next-Node>mapError</False-Next-Node>
-      </Rule-Node>
-      <Process-Node>
-         <Name>UnlockTable</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.ExecSQLStatement</Class-Name>
-            <Param name="statement" value="delete from LOCK_FILE_TABLE_TMP"/>
-         </Action>
-         <Next-Node>mapError00</Next-Node>
-      </Process-Node>
-      <Process-Node disablePersistence="true">
-         <Name>mapError00</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="wtth_result_code" value="0"/>
-         </Action>
-         <Next-Node>QueryInventory1</Next-Node>
-      </Process-Node>
-      <Process-Node>
-         <Name>QueryInventory1</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.QueryInventory</Class-Name>
-            <Param name="bean" value="constant:com.hpe.ov.activator.inventory.ErrorHandling"/>
-            <Param name="find_by_method" value="constant:findAll"/>
-            <Param name="return_array" value="constant:true"/>
-            <Param name="variable" value="error_handling_obj"/>
-            <Param name="where" value="constant:ERROR_CODE = &apos;%s&apos;"/>
-            <Param name="param0" value="wtth_result_code"/>
-         </Action>
-         <Next-Node>errorFound?1</Next-Node>
-      </Process-Node>
-      <Rule-Node disablePersistence="true">
-         <Name>errorFound?1</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
-            <Param name="op1" value="error_handling_obj#"/>
-            <Param name="op2" value="constant:0"/>
-         </Action>
-         <True-Next-Node>noMapErrorDesc1</True-Next-Node>
-         <False-Next-Node>mapErrorDesc1</False-Next-Node>
-      </Rule-Node>
-      <Process-Node disablePersistence="true">
-         <Name>noMapErrorDesc1</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="wtth_result_desc" value="Error not Found"/>
-         </Action>
-         <Next-Node>PutMessage2</Next-Node>
-      </Process-Node>
-      <Process-Node>
-         <Name>PutMessage2</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
-            <Param name="message" value="wtth_result_code %s wtth_result_desc %s"/>
-            <Param name="queue" value="variable:WORKFLOW_NAME"/>
-            <Param name="param0" value="wtth_result_code"/>
-            <Param name="param1" value="wtth_result_desc"/>
-         </Action>
-      </Process-Node>
-      <Process-Node disablePersistence="true">
-         <Name>mapErrorDesc1</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="wtth_result_desc" value="%error_handling_obj[0].errorDesc%"/>
-         </Action>
-         <Next-Node>PutMessage2</Next-Node>
-      </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>mapError</Name>
          <Action>
@@ -211,104 +455,21 @@
          <Next-Node>mapActionName1</Next-Node>
       </Process-Node>
       <Process-Node disablePersistence="true">
-         <Name>mapActionName1</Name>
+         <Name>mapErrorDesc</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="action_name" value="DELETE"/>
+            <Param name="wtth_result_desc" value="%error_handling_obj[0].errorDesc%"/>
          </Action>
-         <Next-Node>NNCDel1</Next-Node>
+         <Next-Node>UnlockTable1</Next-Node>
       </Process-Node>
-      <Process-Node>
-         <Name>NNCDel1</Name>
-         <Description>DeleteNNC</Description>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.StartJobAndWait</Class-Name>
-            <Param name="queue" value="controller_queue"/>
-            <Param name="workflow_name" value="constant:WTTH_NNC_CREATE"/>
-            <Param name="destination0" value="services_JOB_ID"/>
-            <Param name="outputvar0" value="wtth_result_code"/>
-            <Param name="variable0" value="JOB_ID"/>
-            <Param name="variable1" value="fixed_telephone_number_new"/>
-            <Param name="variable2" value="password_customer"/>
-            <Param name="variable3" value="action_name"/>
-            <Param name="variable4" value="account_number"/>
-         </Action>
-         <Next-Node>NNCDeleteOK?</Next-Node>
-      </Process-Node>
-      <Rule-Node disablePersistence="true">
-         <Name>NNCDeleteOK?</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
-            <Param name="op1" value="wtth_result_code"/>
-            <Param name="op2" value="constant:0"/>
-         </Action>
-         <True-Next-Node>IMS1</True-Next-Node>
-         <False-Next-Node>mapError05</False-Next-Node>
-      </Rule-Node>
-      <Process-Node>
-         <Name>IMS1</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.StartJobAndWait</Class-Name>
-            <Param name="queue" value="controller_queue"/>
-            <Param name="workflow_name" value="constant:WTTH_IMS_CREATE"/>
-            <Param name="destination0" value="services_JOB_ID"/>
-            <Param name="outputvar0" value="wtth_result_code"/>
-            <Param name="variable0" value="JOB_ID"/>
-            <Param name="variable1" value="fixed_telephone_number_new"/>
-            <Param name="variable2" value="password_customer"/>
-            <Param name="variable3" value="action_name"/>
-            <Param name="variable4" value="account_number"/>
-         </Action>
-         <Next-Node>ImsDeleteOK?_</Next-Node>
-      </Process-Node>
-      <Rule-Node disablePersistence="true">
-         <Name>ImsDeleteOK?_</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
-            <Param name="op1" value="wtth_result_code"/>
-            <Param name="op2" value="constant:0"/>
-         </Action>
-         <True-Next-Node>mapError03</True-Next-Node>
-         <False-Next-Node>mapError06</False-Next-Node>
-      </Rule-Node>
       <Process-Node disablePersistence="true">
-         <Name>mapError03</Name>
+         <Name>mapErrorDesc1</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="wtth_result_code" value="3"/>
+            <Param name="wtth_result_desc" value="%error_handling_obj[0].errorDesc%"/>
          </Action>
-         <Next-Node>Error</Next-Node>
+         <Next-Node>PutMessage2</Next-Node>
       </Process-Node>
-      <Process-Node disablePersistence="true">
-         <Name>Error</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.DoNothing</Class-Name>
-         </Action>
-         <Next-Node>QueryInventory</Next-Node>
-      </Process-Node>
-      <Process-Node>
-         <Name>QueryInventory</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.QueryInventory</Class-Name>
-            <Param name="bean" value="constant:com.hpe.ov.activator.inventory.ErrorHandling"/>
-            <Param name="find_by_method" value="constant:findAll"/>
-            <Param name="return_array" value="constant:true"/>
-            <Param name="variable" value="error_handling_obj"/>
-            <Param name="where" value="constant:ERROR_CODE = &apos;%s&apos;"/>
-            <Param name="param0" value="wtth_result_code"/>
-         </Action>
-         <Next-Node>errorFound?</Next-Node>
-      </Process-Node>
-      <Rule-Node disablePersistence="true">
-         <Name>errorFound?</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
-            <Param name="op1" value="error_handling_obj#"/>
-            <Param name="op2" value="constant:0"/>
-         </Action>
-         <True-Next-Node>noMapErrorDesc</True-Next-Node>
-         <False-Next-Node>mapErrorDesc</False-Next-Node>
-      </Rule-Node>
       <Process-Node disablePersistence="true">
          <Name>noMapErrorDesc</Name>
          <Action>
@@ -317,137 +478,14 @@
          </Action>
          <Next-Node>UnlockTable1</Next-Node>
       </Process-Node>
-      <Process-Node>
-         <Name>UnlockTable1</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.ExecSQLStatement</Class-Name>
-            <Param name="statement" value="delete from LOCK_FILE_TABLE_TMP"/>
-         </Action>
-         <Next-Node>printError</Next-Node>
-      </Process-Node>
-      <Process-Node>
-         <Name>printError</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
-            <Param name="message" value="error %s wtth_result_desc %s"/>
-            <Param name="queue" value="variable:WORKFLOW_NAME"/>
-            <Param name="param0" value="wtth_result_code"/>
-            <Param name="param1" value="wtth_result_desc"/>
-         </Action>
-      </Process-Node>
       <Process-Node disablePersistence="true">
-         <Name>mapErrorDesc</Name>
+         <Name>noMapErrorDesc1</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="wtth_result_desc" value="%error_handling_obj[0].errorDesc%"/>
+            <Param name="wtth_result_desc" value="Error not Found"/>
          </Action>
-         <Next-Node>UnlockTable1</Next-Node>
+         <Next-Node>PutMessage2</Next-Node>
       </Process-Node>
-      <Process-Node disablePersistence="true" inactive="true">
-         <Name>mapError06</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="wtth_result_code" value="6"/>
-         </Action>
-         <Next-Node>Error</Next-Node>
-      </Process-Node>
-      <Process-Node disablePersistence="true" inactive="true">
-         <Name>mapError05</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="wtth_result_code" value="5"/>
-         </Action>
-         <Next-Node>Error</Next-Node>
-      </Process-Node>
-      <Process-Node disablePersistence="true">
-         <Name>mapActionName</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="action_name" value="DELETE"/>
-         </Action>
-         <Next-Node>IMSDel</Next-Node>
-      </Process-Node>
-      <Process-Node>
-         <Name>IMSDel</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.StartJobAndWait</Class-Name>
-            <Param name="queue" value="controller_queue"/>
-            <Param name="workflow_name" value="constant:WTTH_IMS_CREATE"/>
-            <Param name="destination0" value="services_JOB_ID"/>
-            <Param name="outputvar0" value="wtth_result_code"/>
-            <Param name="variable0" value="JOB_ID"/>
-            <Param name="variable1" value="fixed_telephone_number_new"/>
-            <Param name="variable2" value="password_customer"/>
-            <Param name="variable3" value="action_name"/>
-            <Param name="variable4" value="account_number"/>
-         </Action>
-         <Next-Node>ImsDeleteOK?</Next-Node>
-      </Process-Node>
-      <Rule-Node disablePersistence="true">
-         <Name>ImsDeleteOK?</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
-            <Param name="op1" value="wtth_result_code"/>
-            <Param name="op2" value="constant:0"/>
-         </Action>
-         <True-Next-Node>mapError02</True-Next-Node>
-         <False-Next-Node>mapError04</False-Next-Node>
-      </Rule-Node>
-      <Process-Node disablePersistence="true">
-         <Name>mapError02</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="wtth_result_code" value="2"/>
-         </Action>
-         <Next-Node>Error</Next-Node>
-      </Process-Node>
-      <Process-Node disablePersistence="true" inactive="true">
-         <Name>mapError04</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-         </Action>
-         <Next-Node>Error</Next-Node>
-      </Process-Node>
-      <Process-Node disablePersistence="true" inactive="true">
-         <Name>mapError01</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="wtth_result_code" value="1"/>
-         </Action>
-         <Next-Node>Error</Next-Node>
-      </Process-Node>
-      <Process-Node>
-         <Name>getServices</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.QueryInventory</Class-Name>
-            <Param name="bean" value="constant:com.hpe.ov.activator.inventory.Services"/>
-            <Param name="find_by_method" value="constant:findAll"/>
-            <Param name="return_array" value="constant:true"/>
-            <Param name="variable" value="services_obj"/>
-            <Param name="where" value="constant:service_id=&apos;%s&apos;"/>
-            <Param name="param0" value="service_id_new"/>
-         </Action>
-         <Next-Node>services?</Next-Node>
-      </Process-Node>
-      <Process-Node disablePersistence="true">
-         <Name>mapError08</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="wtth_result_code" value="750"/>
-            <Param name="wtth_result_desc" value="servicio existente"/>
-         </Action>
-         <Next-Node>Error</Next-Node>
-      </Process-Node>
-      <Rule-Node disablePersistence="true">
-         <Name>services?</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
-            <Param name="op1" value="services_obj#"/>
-            <Param name="op2" value="constant:0"/>
-         </Action>
-         <True-Next-Node>LockTable</True-Next-Node>
-         <False-Next-Node>mapError08</False-Next-Node>
-      </Rule-Node>
    </Nodes>
    <Error-Handler>
       <Name>PutMessageHandler</Name>
@@ -523,6 +561,7 @@
       <Variable name="controller_JOB_ID" type="Integer"/>
       <Variable name="error_handling_obj" type="Object"/>
       <Variable name="fixed_telephone_number_new" type="String"/>
+      <Variable name="geographical_location_id" type="String"/>
       <Variable name="message_url" type="String"/>
       <Variable name="mobile_telephone_number_new" type="String"/>
       <Variable name="module_name" type="String"/>
@@ -532,7 +571,9 @@
       <Variable name="services_obj" type="Object"/>
       <Variable name="skip_activation" type="Boolean"/>
       <Variable name="wtth_result_code" type="Integer"/>
+      <Variable name="wtth_result_code_rb" type="Integer"/>
       <Variable name="wtth_result_desc" type="String"/>
+      <Variable name="wtth_result_desc_rb" type="String"/>
    </Case-Packet>
    <Initial-Case-Packet>
       <Variable-Value name="FILE_URL_PREFIX" value="file:///"/>
@@ -557,15 +598,29 @@
       </Position>
       <Position>
          <Name>IMS1</Name>
-         <X>730</X>
-         <Y>493</Y>
+         <X>915</X>
+         <Y>468</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>IMS2</Name>
+         <X>536</X>
+         <Y>252</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>IMS3</Name>
+         <X>731</X>
+         <Y>497</Y>
          <Width>61</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>IMSDel</Name>
-         <X>535</X>
-         <Y>250</Y>
+         <X>614</X>
+         <Y>266</Y>
          <Width>61</Width>
          <Height>48</Height>
       </Position>
@@ -634,8 +689,8 @@
       </Position>
       <Position>
          <Name>QueryInventory</Name>
-         <X>305</X>
-         <Y>733</Y>
+         <X>451</X>
+         <Y>734</Y>
          <Width>97</Width>
          <Height>48</Height>
       </Position>
@@ -676,15 +731,15 @@
       </Position>
       <Position>
          <Name>createOK?</Name>
-         <X>929</X>
-         <Y>140</Y>
+         <X>948</X>
+         <Y>204</Y>
          <Width>88</Width>
          <Height>26</Height>
       </Position>
       <Position>
          <Name>errorFound?</Name>
-         <X>304</X>
-         <Y>800</Y>
+         <X>450</X>
+         <Y>801</Y>
          <Width>100</Width>
          <Height>26</Height>
       </Position>
@@ -696,13 +751,6 @@
          <Height>26</Height>
       </Position>
       <Position>
-         <Name>getServices</Name>
-         <X>50</X>
-         <Y>234</Y>
-         <Width>76</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
          <Name>imsOK?</Name>
          <X>316</X>
          <Y>140</Y>
@@ -711,8 +759,8 @@
       </Position>
       <Position>
          <Name>insertServices</Name>
-         <X>825</X>
-         <Y>128</Y>
+         <X>844</X>
+         <Y>192</Y>
          <Width>90</Width>
          <Height>48</Height>
       </Position>
@@ -732,8 +780,8 @@
       </Position>
       <Position>
          <Name>mapError</Name>
-         <X>942</X>
-         <Y>209</Y>
+         <X>961</X>
+         <Y>273</Y>
          <Width>64</Width>
          <Height>48</Height>
       </Position>
@@ -787,16 +835,9 @@
          <Height>48</Height>
       </Position>
       <Position>
-         <Name>mapError08</Name>
-         <X>136</X>
-         <Y>322</Y>
-         <Width>78</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
          <Name>mapErrorDesc</Name>
-         <X>309</X>
-         <Y>849</Y>
+         <X>455</X>
+         <Y>850</Y>
          <Width>91</Width>
          <Height>48</Height>
       </Position>
@@ -809,8 +850,8 @@
       </Position>
       <Position>
          <Name>noMapErrorDesc</Name>
-         <X>463</X>
-         <Y>788</Y>
+         <X>609</X>
+         <Y>789</Y>
          <Width>104</Width>
          <Height>48</Height>
       </Position>
@@ -827,13 +868,6 @@
          <Y>1002</Y>
          <Width>65</Width>
          <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>services?</Name>
-         <X>133</X>
-         <Y>246</Y>
-         <Width>82</Width>
-         <Height>26</Height>
       </Position>
       <Arrows>
          <Name>Error</Name>
@@ -863,6 +897,32 @@
       </Arrows>
       <Arrows>
          <Name>IMS1</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>IMS2</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>IMS3</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
@@ -1122,19 +1182,6 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
-         <Name>getServices</Name>
-         <True-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </True-Arrow>
-         <False-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </False-Arrow>
-      </Arrows>
-      <Arrows>
          <Name>imsOK?</Name>
          <True-Arrow>
             <Type>0</Type>
@@ -1291,19 +1338,6 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
-         <Name>mapError08</Name>
-         <True-Arrow>
-            <Type>3</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </True-Arrow>
-         <False-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </False-Arrow>
-      </Arrows>
-      <Arrows>
          <Name>mapErrorDesc</Name>
          <True-Arrow>
             <Type>0</Type>
@@ -1357,19 +1391,6 @@
       </Arrows>
       <Arrows>
          <Name>printError</Name>
-         <True-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </True-Arrow>
-         <False-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </False-Arrow>
-      </Arrows>
-      <Arrows>
-         <Name>services?</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>

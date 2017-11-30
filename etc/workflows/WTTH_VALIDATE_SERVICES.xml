@@ -21,10 +21,10 @@
          <Name>mapPaths</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="path_xsd_cf" value="%FILE_URL_PREFIX%%SOLUTION_ETC%\template_files\XSLs\cambio_CF.xsd"/>
-            <Param name="path_xsd_services" value="%FILE_URL_PREFIX%%SOLUTION_ETC%\template_files\XSLs\activate_wtth.xsd"/>
-            <Param name="path_xsl" value="%FILE_URL_PREFIX%%SOLUTION_ETC%\template_files\XSLs\TransformXmlParams.xsl"/>
-            <Param name="path_xsl_cf" value="%FILE_URL_PREFIX%%SOLUTION_ETC%\template_files\XSLs\TransformXmlParamsCF.xsl"/>
+            <Param name="path_xsd_cf" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/WTTHColombia/XSLs/cambio_CF.xsd"/>
+            <Param name="path_xsd_services" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/WTTHColombia/XSLs/activate_wtth.xsd"/>
+            <Param name="path_xsl" value="%FILE_URL_PREFIX%/%SOLUTION_ETC%/template_files/WTTHColombia/XSLs/TransformXmlParams.xsl"/>
+            <Param name="path_xsl_cf" value="%FILE_URL_PREFIX%/%SOLUTION_ETC%/template_files/WTTHColombia/XSLs/TransformXmlParamsCF.xsl"/>
          </Action>
          <Next-Node>Validate XML</Next-Node>
       </Process-Node>

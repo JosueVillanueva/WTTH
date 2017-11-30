@@ -22,7 +22,7 @@
          <Name>mapPath</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="path_xsl" value="%FILE_URL_PREFIX%%SOLUTION_ETC%\template_files\XSLs\TransformXmlParams.xsl"/>
+            <Param name="path_xsl" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/WTTHColombia/XSLs/TransformXmlParams.xsl"/>
          </Action>
          <Next-Node>validateServices</Next-Node>
       </Process-Node>
@@ -175,6 +175,7 @@
             <Param name="variable6" value="service_id_new"/>
             <Param name="variable7" value="account_number"/>
             <Param name="variable8" value="service_type"/>
+            <Param name="variable9" value="geographical_location_id"/>
          </Action>
          <Next-Node>ModifOK?</Next-Node>
       </Process-Node>
@@ -210,6 +211,9 @@
             <Param name="variable4" value="account_number"/>
             <Param name="variable5" value="mobile_telephone_number_new"/>
             <Param name="variable6" value="service_id_new"/>
+            <Param name="variable7" value="account_number"/>
+            <Param name="variable8" value="service_type"/>
+            <Param name="variable9" value="geographical_location_id"/>
          </Action>
          <Next-Node>ModifOK?</Next-Node>
       </Process-Node>
@@ -715,7 +719,7 @@
       <Position>
          <Name>ModifOK?</Name>
          <X>1116</X>
-         <Y>515</Y>
+         <Y>514</Y>
          <Width>83</Width>
          <Height>26</Height>
       </Position>
