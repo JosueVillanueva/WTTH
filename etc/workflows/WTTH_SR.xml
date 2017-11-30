@@ -241,8 +241,6 @@
       </Process-Node>
       <Process-Node>
          <Name>PutMessage11</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
             <Param name="message" value="activation_major_code %s"/>
@@ -253,8 +251,6 @@
       </Process-Node>
       <Process-Node>
          <Name>PutMessage12</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
             <Param name="message" value="activation_major_code %s"/>
@@ -421,8 +417,6 @@
       </Process-Node>
       <Process-Node disablePersistence="true" inactive="true">
          <Name>VariableMapper</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="wtth_result_code" value="309"/>
@@ -596,10 +590,10 @@
          <Name>mapError03</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="wtth_result_code" value="303"/>
+            <Param name="wtth_result_code" value="0"/>
             <Param name="wtth_result_desc" value="ImsToMov table is empty"/>
          </Action>
-         <Next-Node>Error</Next-Node>
+         <Next-Node>PutMessage3</Next-Node>
       </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>mapError04</Name>

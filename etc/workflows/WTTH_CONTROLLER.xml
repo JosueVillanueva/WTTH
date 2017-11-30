@@ -217,16 +217,6 @@
          </Action>
          <Next-Node>ModifOK?</Next-Node>
       </Process-Node>
-      <Rule-Node disablePersistence="true">
-         <Name>Equal2</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
-            <Param name="op1" value="action_name"/>
-            <Param name="op2" value="constant:MODIFYCALLFEATURES"/>
-         </Action>
-         <True-Next-Node>XMLMapper1</True-Next-Node>
-         <False-Next-Node>MapVar</False-Next-Node>
-      </Rule-Node>
       <Process-Node disablePersistence="true" inactive="true">
          <Name>MapError00</Name>
          <Action>
@@ -234,22 +224,6 @@
             <Param name="wtth_result_code" value="0"/>
          </Action>
          <Next-Node>PutMessage2</Next-Node>
-      </Process-Node>
-      <Process-Node disablePersistence="true" inactive="true">
-         <Name>MapError01</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="wtth_result_code" value="1"/>
-         </Action>
-         <Next-Node>Error</Next-Node>
-      </Process-Node>
-      <Process-Node disablePersistence="true" inactive="true">
-         <Name>MapError02</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="wtth_result_code" value="2"/>
-         </Action>
-         <Next-Node>Error</Next-Node>
       </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>MapError03</Name>
@@ -267,7 +241,7 @@
             <Param name="op2" value="constant:0"/>
          </Action>
          <True-Next-Node>MapError00</True-Next-Node>
-         <False-Next-Node>MapError01</False-Next-Node>
+         <False-Next-Node>Error</False-Next-Node>
       </Rule-Node>
       <Process-Node>
          <Name>PutMessage2</Name>
@@ -288,26 +262,6 @@
             <Param name="param0" value="xml_message"/>
          </Action>
       </Process-Node>
-      <Process-Node inactive="true">
-         <Name>PutMessage6</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
-            <Param name="message" value="-xml_message[%s]"/>
-            <Param name="queue" value="variable:WORKFLOW_NAME"/>
-            <Param name="param0" value="xml_message"/>
-         </Action>
-         <Next-Node>XMLMapper</Next-Node>
-      </Process-Node>
-      <Process-Node disablePersistence="true" inactive="true">
-         <Name>TransformXML</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.TransformXML</Class-Name>
-            <Param name="output_var" value="xml_message"/>
-            <Param name="xml_var" value="xml_message"/>
-            <Param name="xsl_url" value="path_xsl"/>
-         </Action>
-         <Next-Node>PutMessage6</Next-Node>
-      </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>TransformXML1</Name>
          <Action>
@@ -327,73 +281,6 @@
          </Action>
          <Next-Node>TransformXML1</Next-Node>
       </Process-Node>
-      <Process-Node disablePersistence="true" inactive="true">
-         <Name>XMLMapper</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.XMLMapper</Class-Name>
-            <Param name="account_number" value="/msg/header/account_number"/>
-            <Param name="account_status" value="/msg/header/account_status"/>
-            <Param name="action_name" value="/msg/header/action_name"/>
-            <Param name="building_unit" value="/msg/header/building_unit"/>
-            <Param name="customer" value="/msg/header/customer"/>
-            <Param name="email_customer" value="/msg/header/email_customer"/>
-            <Param name="fixed_telephone_number_new" value="/msg/body/service/fixed_telephone_number/new_value"/>
-            <Param name="fixed_telephone_number_old" value="/msg/body/service/fixed_telephone_number/old_value"/>
-            <Param name="geographical_location_id" value="/msg/header/geographical_location_id"/>
-            <Param name="ignore_missing_tags" value="true"/>
-            <Param name="mobile_telephone_number_new" value="/msg/body/service/mobile_telephone_number/new_value"/>
-            <Param name="mobile_telephone_number_old" value="/msg/body/service/mobile_telephone_number/new_value"/>
-            <Param name="origin_id" value="/msg/header/origin_id"/>
-            <Param name="parent_account" value="/msg/header/parent_account"/>
-            <Param name="password_customer" value="/msg/header/password_customer"/>
-            <Param name="request_date" value="/msg/header/request_date"/>
-            <Param name="scope" value="/msg/header/scope"/>
-            <Param name="service_id_new" value="/msg/body/service/service_id/new_value"/>
-            <Param name="service_id_old" value="/msg/body/service/service_id/old_value"/>
-            <Param name="service_type" value="/msg/header/service_type"/>
-            <Param name="service_wo" value="/msg/header/service_wo"/>
-            <Param name="ssw_id_new" value="/msg/body/service/ssw_id/new_value"/>
-            <Param name="ssw_id_old" value="/msg/body/service/ssw_id/old_value"/>
-            <Param name="transaction_id_new" value="/msg/body/service/transaction_id/new_value"/>
-            <Param name="transaction_id_old" value="/msg/body/service/transaction_id/old_value"/>
-            <Param name="validate" value="false"/>
-            <Param name="xml_var" value="xml_message"/>
-         </Action>
-         <Next-Node>Upper Action</Next-Node>
-      </Process-Node>
-      <Process-Node disablePersistence="true">
-         <Name>XMLMapper1</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.XMLMapper</Class-Name>
-            <Param name="account_number" value="/msg/header/account_number"/>
-            <Param name="account_status" value="/msg/header/account_status"/>
-            <Param name="action_name" value="/msg/header/action_name"/>
-            <Param name="building_unit" value="/msg/header/building_unit"/>
-            <Param name="customer" value="/msg/header/customer"/>
-            <Param name="email_customer" value="/msg/header/email_customer"/>
-            <Param name="fixed_telephone_number_new" value="/msg/body/service/fixed_telephone_number/new_value"/>
-            <Param name="fixed_telephone_number_old" value="/msg/body/service/fixed_telephone_number/old_value"/>
-            <Param name="geographical_location_id" value="/msg/header/geographical_location_id"/>
-            <Param name="ignore_missing_tags" value="true"/>
-            <Param name="mobile_telephone_number_new" value="/msg/body/service/mobile_telephone_number/new_value"/>
-            <Param name="mobile_telephone_number_old" value="/msg/body/service/mobile_telephone_number/new_value"/>
-            <Param name="origin_id" value="/msg/header/origin_id"/>
-            <Param name="parent_account" value="/msg/header/parent_account"/>
-            <Param name="password_customer" value="/msg/header/password_customer"/>
-            <Param name="request_date" value="/msg/header/request_date"/>
-            <Param name="scope" value="/msg/header/scope"/>
-            <Param name="service_id_new" value="/msg/body/service/service_id/new_value"/>
-            <Param name="service_id_old" value="/msg/body/service/service_id/old_value"/>
-            <Param name="service_type" value="/msg/header/service_type"/>
-            <Param name="service_wo" value="/msg/header/service_wo"/>
-            <Param name="ssw_id_new" value="/msg/body/service/ssw_id/new_value"/>
-            <Param name="ssw_id_old" value="/msg/body/service/ssw_id/old_value"/>
-            <Param name="transaction_id_new" value="/msg/body/service/transaction_id/new_value"/>
-            <Param name="transaction_id_old" value="/msg/body/service/transaction_id/old_value"/>
-            <Param name="validate" value="false"/>
-            <Param name="xml_var" value="xml_message"/>
-         </Action>
-      </Process-Node>
       <Process-Node>
          <Name>checkService</Name>
          <Action>
@@ -412,16 +299,6 @@
          </Action>
          <Next-Node>ModifOK?</Next-Node>
       </Process-Node>
-      <Rule-Node disablePersistence="true">
-         <Name>deleteOK?</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
-            <Param name="op1" value="wtth_result_code"/>
-            <Param name="op2" value="constant:0"/>
-         </Action>
-         <True-Next-Node>MapError00</True-Next-Node>
-         <False-Next-Node>MapError02</False-Next-Node>
-      </Rule-Node>
       <Process-Node>
          <Name>modifyService</Name>
          <Action>
@@ -668,16 +545,9 @@
          <Height>48</Height>
       </Position>
       <Position>
-         <Name>Equal2</Name>
-         <X>675</X>
-         <Y>28</Y>
-         <Width>68</Width>
-         <Height>26</Height>
-      </Position>
-      <Position>
          <Name>Error</Name>
-         <X>877</X>
-         <Y>780</Y>
+         <X>876</X>
+         <Y>634</Y>
          <Width>61</Width>
          <Height>48</Height>
       </Position>
@@ -685,20 +555,6 @@
          <Name>MapError00</Name>
          <X>1119</X>
          <Y>684</Y>
-         <Width>77</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>MapError01</Name>
-         <X>992</X>
-         <Y>621</Y>
-         <Width>77</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>MapError02</Name>
-         <X>917</X>
-         <Y>569</Y>
          <Width>77</Width>
          <Height>48</Height>
       </Position>
@@ -759,24 +615,10 @@
          <Height>48</Height>
       </Position>
       <Position>
-         <Name>PutMessage6</Name>
-         <X>372</X>
-         <Y>52</Y>
-         <Width>85</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
          <Name>PutMessage61</Name>
-         <X>282</X>
-         <Y>123</Y>
-         <Width>92</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>TransformXML</Name>
-         <X>266</X>
+         <X>392</X>
          <Y>52</Y>
-         <Width>94</Width>
+         <Width>92</Width>
          <Height>48</Height>
       </Position>
       <Position>
@@ -801,20 +643,6 @@
          <Height>48</Height>
       </Position>
       <Position>
-         <Name>XMLMapper</Name>
-         <X>469</X>
-         <Y>52</Y>
-         <Width>77</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>XMLMapper1</Name>
-         <X>726</X>
-         <Y>5</Y>
-         <Width>84</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
          <Name>action_name?</Name>
          <X>941</X>
          <Y>171</Y>
@@ -827,13 +655,6 @@
          <Y>318</Y>
          <Width>84</Width>
          <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>deleteOK?</Name>
-         <X>1359</X>
-         <Y>581</Y>
-         <Width>87</Width>
-         <Height>26</Height>
       </Position>
       <Position>
          <Name>mapPath</Name>
@@ -914,14 +735,14 @@
       </Position>
       <Position>
          <Name>validateServices</Name>
-         <X>163</X>
-         <Y>123</Y>
+         <X>265</X>
+         <Y>52</Y>
          <Width>102</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>xmlValid?</Name>
-         <X>378</X>
+         <X>396</X>
          <Y>135</Y>
          <Width>84</Width>
          <Height>26</Height>
@@ -979,19 +800,6 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
-         <Name>Equal2</Name>
-         <True-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </True-Arrow>
-         <False-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </False-Arrow>
-      </Arrows>
-      <Arrows>
          <Name>Error</Name>
          <True-Arrow>
             <Type>0</Type>
@@ -1008,32 +816,6 @@
          <Name>MapError00</Name>
          <True-Arrow>
             <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </True-Arrow>
-         <False-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </False-Arrow>
-      </Arrows>
-      <Arrows>
-         <Name>MapError01</Name>
-         <True-Arrow>
-            <Type>2</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </True-Arrow>
-         <False-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </False-Arrow>
-      </Arrows>
-      <Arrows>
-         <Name>MapError02</Name>
-         <True-Arrow>
-            <Type>2</Type>
             <DeltaX>0</DeltaX>
             <DeltaY>0</DeltaY>
          </True-Arrow>
@@ -1148,33 +930,7 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
-         <Name>PutMessage6</Name>
-         <True-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </True-Arrow>
-         <False-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </False-Arrow>
-      </Arrows>
-      <Arrows>
          <Name>PutMessage61</Name>
-         <True-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </True-Arrow>
-         <False-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </False-Arrow>
-      </Arrows>
-      <Arrows>
-         <Name>TransformXML</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
@@ -1214,32 +970,6 @@
       </Arrows>
       <Arrows>
          <Name>VariableMapper1</Name>
-         <True-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </True-Arrow>
-         <False-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </False-Arrow>
-      </Arrows>
-      <Arrows>
-         <Name>XMLMapper</Name>
-         <True-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </True-Arrow>
-         <False-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </False-Arrow>
-      </Arrows>
-      <Arrows>
-         <Name>XMLMapper1</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
@@ -1315,19 +1045,6 @@
       </Arrows>
       <Arrows>
          <Name>checkService</Name>
-         <True-Arrow>
-            <Type>3</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </True-Arrow>
-         <False-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </False-Arrow>
-      </Arrows>
-      <Arrows>
-         <Name>deleteOK?</Name>
          <True-Arrow>
             <Type>3</Type>
             <DeltaX>0</DeltaX>
