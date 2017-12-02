@@ -10,13 +10,13 @@
 			<Name>serviceParamsId</Name>
 			<Column>SERVICE_PARAMS_ID</Column>
 			<Type>long</Type>
-			<Description>service primary key</Description>
+			<Description>service params primary key</Description>
 		</Field>
 		<Field mandatory="true" update="false">
 			<Name>serviceId</Name>
 			<Column>SERVICE_ID</Column>
-			<Type>String</Type>
-			<Description>service primary key</Description>
+			<Type>long</Type>
+			<Description>services primary key</Description>
 		</Field>
 		<Field mandatory="true">
 			<Name>customerId</Name>
@@ -49,9 +49,13 @@
 			<Description>additional info</Description>
 		</Field>
 	</Fields>
+	
 	<Keys>
 		<Key pk="true">
 			<KeyField>serviceParamsId</KeyField>
+		</Key>
+		<Key foreignBean="Services">
+			<KeyField foreignField="serviceId">serviceId</KeyField>
 		</Key>
 		<Key unique="false" makeIndex="true">
 			<KeyField>customerId</KeyField>

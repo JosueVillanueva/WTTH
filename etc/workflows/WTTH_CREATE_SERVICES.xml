@@ -174,7 +174,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.StartJobAndWait</Class-Name>
             <Param name="queue" value="controller_queue"/>
-            <Param name="workflow_name" value="constant:WTTH_IMS_CREATE"/>
+            <Param name="workflow_name" value="constant:WTTH_IMS_DELETE"/>
             <Param name="destination0" value="services_JOB_ID"/>
             <Param name="outputvar0" value="wtth_result_code"/>
             <Param name="variable0" value="JOB_ID"/>
@@ -270,7 +270,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.StartJobAndWait</Class-Name>
             <Param name="queue" value="controller_queue"/>
-            <Param name="workflow_name" value="constant:WTTH_IMS_CREATE"/>
+            <Param name="workflow_name" value="constant:WTTH_IMS_DELETE"/>
             <Param name="destination0" value="services_JOB_ID"/>
             <Param name="outputvar0" value="wtth_result_code"/>
             <Param name="variable0" value="JOB_ID"/>
@@ -326,40 +326,6 @@
          <Next-Node>Error</Next-Node>
       </Process-Node>
       <Process-Node>
-         <Name>IMS1</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.StartJobAndWait</Class-Name>
-            <Param name="queue" value="controller_queue"/>
-            <Param name="workflow_name" value="constant:WTTH_IMS_CREATE"/>
-            <Param name="destination0" value="services_JOB_ID"/>
-            <Param name="outputvar0" value="wtth_result_code"/>
-            <Param name="variable0" value="JOB_ID"/>
-            <Param name="outputvar1" value="wtth_result_desc"/>
-            <Param name="variable1" value="fixed_telephone_number_new"/>
-            <Param name="variable2" value="password_customer"/>
-            <Param name="variable3" value="action_name"/>
-            <Param name="variable4" value="account_number"/>
-         </Action>
-         <Next-Node>ImsDeleteOK?_</Next-Node>
-      </Process-Node>
-      <Process-Node>
-         <Name>IMSDel</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.StartJobAndWait</Class-Name>
-            <Param name="queue" value="controller_queue"/>
-            <Param name="workflow_name" value="constant:WTTH_IMS_CREATE"/>
-            <Param name="destination0" value="services_JOB_ID"/>
-            <Param name="outputvar0" value="wtth_result_code"/>
-            <Param name="variable0" value="JOB_ID"/>
-            <Param name="outputvar1" value="wtth_result_desc"/>
-            <Param name="variable1" value="fixed_telephone_number_new"/>
-            <Param name="variable2" value="password_customer"/>
-            <Param name="variable3" value="action_name"/>
-            <Param name="variable4" value="account_number"/>
-         </Action>
-         <Next-Node>ImsDeleteOK?</Next-Node>
-      </Process-Node>
-      <Process-Node>
          <Name>PutMessage2</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
@@ -367,6 +333,15 @@
             <Param name="queue" value="variable:WORKFLOW_NAME"/>
             <Param name="param0" value="wtth_result_code"/>
             <Param name="param1" value="wtth_result_desc"/>
+         </Action>
+      </Process-Node>
+      <Process-Node>
+         <Name>PutMessage3</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="wtth_result_code %s"/>
+            <Param name="queue" value="variable:WORKFLOW_NAME"/>
+            <Param name="param0" value="wtth_result_code"/>
          </Action>
       </Process-Node>
       <Process-Node>
@@ -395,6 +370,30 @@
          </Action>
          <Next-Node>errorFound?1</Next-Node>
       </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>VariableMapper</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="0"/>
+         </Action>
+         <Next-Node>PutMessage3</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>VariableMapper2</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="5"/>
+         </Action>
+         <Next-Node>PutMessage3</Next-Node>
+      </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>WasPreviousNodeOK</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.WasPreviousNodeOK</Class-Name>
+         </Action>
+         <True-Next-Node>VariableMapper</True-Next-Node>
+         <False-Next-Node>VariableMapper2</False-Next-Node>
+      </Rule-Node>
       <Rule-Node disablePersistence="true">
          <Name>createOK?</Name>
          <Action>
@@ -431,7 +430,7 @@
             <Param name="bean_variable" value="services_obj"/>
             <Param name="throw_excep" value="constant:true"/>
             <Param name="key_field0" value="constant:serviceId"/>
-            <Param name="key_value0" value="service_id_new"/>
+            <Param name="key_value0" value="constant:0"/>
             <Param name="key_field1" value="constant:customerId"/>
             <Param name="key_value1" value="account_number"/>
             <Param name="key_field2" value="constant:serviceType"/>
@@ -440,10 +439,8 @@
             <Param name="key_value3" value="account_number"/>
             <Param name="key_field4" value="constant:accountStatus"/>
             <Param name="key_value4" value="constant:0"/>
-            <Param name="key_field5" value="constant:aux1"/>
-            <Param name="key_value5" value="constant:0"/>
          </Action>
-         <Next-Node>createOK?</Next-Node>
+         <Next-Node>WasPreviousNodeOK</Next-Node>
       </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>mapError</Name>
@@ -584,8 +581,8 @@
    <Coordinates>
       <Position>
          <Name>Error</Name>
-         <X>322</X>
-         <Y>669</Y>
+         <X>323</X>
+         <Y>841</Y>
          <Width>61</Width>
          <Height>48</Height>
       </Position>
@@ -597,44 +594,30 @@
          <Height>48</Height>
       </Position>
       <Position>
-         <Name>IMS1</Name>
-         <X>915</X>
-         <Y>468</Y>
-         <Width>61</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
          <Name>IMS2</Name>
-         <X>536</X>
-         <Y>252</Y>
+         <X>535</X>
+         <Y>309</Y>
          <Width>61</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>IMS3</Name>
-         <X>731</X>
-         <Y>497</Y>
-         <Width>61</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>IMSDel</Name>
-         <X>614</X>
-         <Y>266</Y>
+         <X>730</X>
+         <Y>624</Y>
          <Width>61</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>ImsDeleteOK?</Name>
-         <X>509</X>
-         <Y>314</Y>
+         <X>511</X>
+         <Y>390</Y>
          <Width>109</Width>
          <Height>26</Height>
       </Position>
       <Position>
          <Name>ImsDeleteOK?_</Name>
-         <X>703</X>
-         <Y>565</Y>
+         <X>702</X>
+         <Y>695</Y>
          <Width>116</Width>
          <Height>26</Height>
       </Position>
@@ -655,14 +638,14 @@
       <Position>
          <Name>NNCDel1</Name>
          <X>730</X>
-         <Y>287</Y>
+         <Y>314</Y>
          <Width>61</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>NNCDeleteOK?</Name>
-         <X>705</X>
-         <Y>445</Y>
+         <X>704</X>
+         <Y>548</Y>
          <Width>112</Width>
          <Height>26</Height>
       </Position>
@@ -688,9 +671,16 @@
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>PutMessage3</Name>
+         <X>181</X>
+         <Y>392</Y>
+         <Width>85</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>QueryInventory</Name>
-         <X>451</X>
-         <Y>734</Y>
+         <X>704</X>
+         <Y>880</Y>
          <Width>97</Width>
          <Height>48</Height>
       </Position>
@@ -724,10 +714,31 @@
       </Position>
       <Position>
          <Name>UnlockTable1</Name>
-         <X>311</X>
+         <X>310</X>
          <Y>935</Y>
          <Width>86</Width>
          <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>VariableMapper</Name>
+         <X>38</X>
+         <Y>392</Y>
+         <Width>100</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>VariableMapper2</Name>
+         <X>171</X>
+         <Y>322</Y>
+         <Width>107</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>WasPreviousNodeOK</Name>
+         <X>15</X>
+         <Y>332</Y>
+         <Width>148</Width>
+         <Height>26</Height>
       </Position>
       <Position>
          <Name>createOK?</Name>
@@ -738,8 +749,8 @@
       </Position>
       <Position>
          <Name>errorFound?</Name>
-         <X>450</X>
-         <Y>801</Y>
+         <X>703</X>
+         <Y>947</Y>
          <Width>100</Width>
          <Height>26</Height>
       </Position>
@@ -752,29 +763,29 @@
       </Position>
       <Position>
          <Name>imsOK?</Name>
-         <X>316</X>
+         <X>317</X>
          <Y>140</Y>
          <Width>72</Width>
          <Height>26</Height>
       </Position>
       <Position>
          <Name>insertServices</Name>
-         <X>844</X>
-         <Y>192</Y>
+         <X>43</X>
+         <Y>255</Y>
          <Width>90</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>mapActionName</Name>
-         <X>515</X>
-         <Y>184</Y>
+         <X>514</X>
+         <Y>218</Y>
          <Width>103</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>mapActionName1</Name>
-         <X>706</X>
-         <Y>209</Y>
+         <X>705</X>
+         <Y>220</Y>
          <Width>110</Width>
          <Height>48</Height>
       </Position>
@@ -801,43 +812,43 @@
       </Position>
       <Position>
          <Name>mapError02</Name>
-         <X>525</X>
-         <Y>369</Y>
+         <X>526</X>
+         <Y>457</Y>
          <Width>78</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>mapError03</Name>
-         <X>722</X>
-         <Y>612</Y>
+         <X>721</X>
+         <Y>739</Y>
          <Width>78</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>mapError04</Name>
-         <X>394</X>
-         <Y>302</Y>
+         <X>393</X>
+         <Y>379</Y>
          <Width>78</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>mapError05</Name>
-         <X>525</X>
-         <Y>433</Y>
+         <X>529</X>
+         <Y>537</Y>
          <Width>78</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>mapError06</Name>
-         <X>530</X>
-         <Y>553</Y>
+         <X>531</X>
+         <Y>684</Y>
          <Width>78</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>mapErrorDesc</Name>
-         <X>455</X>
-         <Y>850</Y>
+         <X>708</X>
+         <Y>996</Y>
          <Width>91</Width>
          <Height>48</Height>
       </Position>
@@ -850,8 +861,8 @@
       </Position>
       <Position>
          <Name>noMapErrorDesc</Name>
-         <X>609</X>
-         <Y>789</Y>
+         <X>862</X>
+         <Y>935</Y>
          <Width>104</Width>
          <Height>48</Height>
       </Position>
@@ -864,7 +875,7 @@
       </Position>
       <Position>
          <Name>printError</Name>
-         <X>322</X>
+         <X>321</X>
          <Y>1002</Y>
          <Width>65</Width>
          <Height>48</Height>
@@ -896,19 +907,6 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
-         <Name>IMS1</Name>
-         <True-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </True-Arrow>
-         <False-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </False-Arrow>
-      </Arrows>
-      <Arrows>
          <Name>IMS2</Name>
          <True-Arrow>
             <Type>0</Type>
@@ -923,19 +921,6 @@
       </Arrows>
       <Arrows>
          <Name>IMS3</Name>
-         <True-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </True-Arrow>
-         <False-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </False-Arrow>
-      </Arrows>
-      <Arrows>
-         <Name>IMSDel</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
@@ -1065,6 +1050,19 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>PutMessage3</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>QueryInventory</Name>
          <True-Arrow>
             <Type>0</Type>
@@ -1131,6 +1129,45 @@
       </Arrows>
       <Arrows>
          <Name>UnlockTable1</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>VariableMapper</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>VariableMapper2</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>WasPreviousNodeOK</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>

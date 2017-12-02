@@ -6,10 +6,10 @@
 	<Package>com.hpe.ov.activator.inventory</Package>
 	<DBTable>GENSERV_Services</DBTable>
 	<Fields>
-		<Field mandatory="true" update="false">
+		<Field sequence="true" hiddenCreate="true" hiddenUpdate="true" create="true" update="false" sequenceName="WTTH_SERVICES_SEQ">
 			<Name>serviceId</Name>
 			<Column>SERVICE_ID</Column>
-			<Type>String</Type>
+			<Type>long</Type>
 			<Description>service primary key</Description>
 		</Field>
 		<Field mandatory="false">
