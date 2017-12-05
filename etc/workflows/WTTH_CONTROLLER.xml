@@ -253,33 +253,15 @@
             <Param name="param1" value="wtth_result_desc"/>
          </Action>
       </Process-Node>
-      <Process-Node>
-         <Name>PutMessage5</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
-            <Param name="message" value="-xml_message[%s]"/>
-            <Param name="queue" value="variable:WORKFLOW_NAME"/>
-            <Param name="param0" value="xml_message"/>
-         </Action>
-      </Process-Node>
       <Process-Node disablePersistence="true">
-         <Name>TransformXML1</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.TransformXML</Class-Name>
-            <Param name="output_url" value="path_xml_test"/>
-            <Param name="xml_var" value="xml_message"/>
-            <Param name="xsl_url" value="path_xsl"/>
-         </Action>
-         <Next-Node>PutMessage5</Next-Node>
-      </Process-Node>
-      <Process-Node disablePersistence="true">
-         <Name>VariableMapper1</Name>
+         <Name>VariableMapper</Name>
+         <Description></Description>
+         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="path_xml_test" value="%FILE_URL_PREFIX%C:\Users\HectorS5\Documents\Proyects\WTTH-colombia\WTTH\etc\template_files\WTTHColombia\XSLs\test\TransformXmlParamsCF.xml"/>
-            <Param name="path_xsl" value="%FILE_URL_PREFIX%C:\Users\HectorS5\Documents\Proyects\WTTH-colombia\WTTH\etc\template_files\WTTHColombia\XSLs\TransformXmlParamsCF.xsl"/>
+            <Param name="wtth_result_code" value="0"/>
+            <Param name="wtth_result_desc" value="resultado exitoso"/>
          </Action>
-         <Next-Node>TransformXML1</Next-Node>
       </Process-Node>
       <Process-Node>
          <Name>checkService</Name>
@@ -608,24 +590,10 @@
          <Height>48</Height>
       </Position>
       <Position>
-         <Name>PutMessage5</Name>
-         <X>255</X>
-         <Y>233</Y>
-         <Width>85</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
          <Name>PutMessage61</Name>
          <X>392</X>
          <Y>52</Y>
          <Width>92</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>TransformXML1</Name>
-         <X>153</X>
-         <Y>233</Y>
-         <Width>101</Width>
          <Height>48</Height>
       </Position>
       <Position>
@@ -636,10 +604,10 @@
          <Height>48</Height>
       </Position>
       <Position>
-         <Name>VariableMapper1</Name>
-         <X>47</X>
-         <Y>233</Y>
-         <Width>107</Width>
+         <Name>VariableMapper</Name>
+         <X>82</X>
+         <Y>201</Y>
+         <Width>100</Width>
          <Height>48</Height>
       </Position>
       <Position>
@@ -917,33 +885,7 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
-         <Name>PutMessage5</Name>
-         <True-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </True-Arrow>
-         <False-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </False-Arrow>
-      </Arrows>
-      <Arrows>
          <Name>PutMessage61</Name>
-         <True-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </True-Arrow>
-         <False-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </False-Arrow>
-      </Arrows>
-      <Arrows>
-         <Name>TransformXML1</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
@@ -969,7 +911,7 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
-         <Name>VariableMapper1</Name>
+         <Name>VariableMapper</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>

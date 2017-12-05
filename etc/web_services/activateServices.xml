@@ -3,7 +3,7 @@
 <WebService login="true" soapBindingStyle="RPC">
    <Name>Services</Name>
    <Package>com.hpe.ov.activator.Services</Package>
-   <Method mwfmMethod="startJob" returnType="none" workflowName="WTTH_CONTROLLER">
+   <Method mwfmMethod="startAndWaitForJob" returnType="bean" workflowName="WTTH_CONTROLLER">
       <Name>activateServices</Name>
       <Description>WebServices to receive the XML file</Description>
       <InputParam casePacketName="xml_message">
@@ -11,5 +11,17 @@
          <Description>xml_message with information about services to be processed</Description>
          <Type>String</Type>
       </InputParam>
+      <OutputParam casePacketName="JOB_ID">
+         <Name>TransactionId</Name>
+         <Type>Long</Type>
+      </OutputParam>
+      <OutputParam casePacketName="wtth_result_code">
+         <Name>ErrorCode</Name>
+         <Type>Long</Type>
+      </OutputParam>
+      <OutputParam casePacketName="wtth_result_desc">
+         <Name>Description</Name>
+         <Type>String</Type>
+      </OutputParam>
    </Method>
 </WebService>
