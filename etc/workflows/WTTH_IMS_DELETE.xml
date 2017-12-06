@@ -7,7 +7,7 @@
    <Description>Get Code Country of Telephone Number</Description>
    <Start-Node>VariableMapper1</Start-Node>
    <Nodes>
-      <Process-Node disablePersistence="true">
+      <Process-Node disablePersistence="true" inactive="true">
          <Name>VariableMapper1</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
@@ -19,13 +19,16 @@
             <Param name="ssw_id" value="1"/>
             <Param name="telephone_number" value="+5717423662"/>
          </Action>
-         <Next-Node>VariableMapper21</Next-Node>
+         <Next-Node>VariableMapper22</Next-Node>
       </Process-Node>
       <Process-Node disablePersistence="true">
-         <Name>VariableMapper21</Name>
+         <Name>VariableMapper22</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="action_type" value="IMS"/>
             <Param name="costumer_id" value="%telephone_number%"/>
+            <Param name="moduleName" value="http_sender_wtth"/>
+            <Param name="ssw_id" value="1"/>
          </Action>
          <Next-Node>CodeCountry1</Next-Node>
       </Process-Node>
@@ -59,13 +62,13 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.JavaNode</Class-Name>
             <Param name="in_scope" value="telephone_number"/>
-            <Param name="javacode" value="constant:public String toTelephone() {return telephone_number.substring(4);}"/>
+            <Param name="javacode" value="constant:public String toTelephone() {return telephone_number.substring(7);}"/>
             <Param name="method" value="constant:toTelephone"/>
-            <Param name="output_var" value="telephone"/>
+            <Param name="output_var" value="COP_value"/>
          </Action>
          <Next-Node>LowerCase1</Next-Node>
       </Process-Node>
-      <Process-Node>
+      <Process-Node inactive="true">
          <Name>LowerCase1</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.JavaNode</Class-Name>
@@ -82,9 +85,22 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.JavaNode</Class-Name>
             <Param name="in_scope" value="telephone_number"/>
-            <Param name="javacode" value="constant:public String toCOP() {return telephone_number.substring(9);}"/>
+            <Param name="javacode" value="constant:public String toCOP() {return telephone_number.substring(4);}"/>
             <Param name="method" value="constant:toCOP"/>
-            <Param name="output_var" value="COP_value"/>
+            <Param name="output_var" value="telephone"/>
+         </Action>
+         <Next-Node>Java1</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>Java1</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.JavaNode</Class-Name>
+            <Param name="in_scope" value="telephone_number"/>
+            <Param name="javacode" value="constant:public String toTelephone() {return telephone_number.substring(1);}"/>
+            <Param name="method" value="constant:toTelephone"/>
+            <Param name="output_var" value="telephone_WO_c"/>
          </Action>
          <Next-Node>SearchZystem11</Next-Node>
       </Process-Node>
@@ -252,11 +268,8 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="authurl" value="ims.claro.com.co"/>
-            <Param name="MEName_value" value="%net_send[0].deviceName%"/>
             <Param name="password" value="%passwd%"/>
-            <Param name="pwd_value" value="fFlxPryI"/>
             <Param name="telephone_full" value="%telephone_number%"/>
-            <Param name="telephone_WO_c" value="%COP_value%"/>
             <Param name="username" value="%net_send[0].userName%"/>
          </Action>
          <Next-Node>PutMessage131</Next-Node>
@@ -877,7 +890,14 @@
             <Param name="message" value="askjdnasjkd"/>
             <Param name="queue" value="You must change this!"/>
          </Action>
-         <Next-Node>VariableMapper73211</Next-Node>
+         <Next-Node>VariableMapper732111</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>VariableMapper732111</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_desc" value="UNDO_OK %wtth_result_desc%"/>
+         </Action>
       </Process-Node>
       <Rule-Node disablePersistence="true">
          <Name>MapDataOK?11</Name>
@@ -1130,6 +1150,7 @@
       <Variable-Value name="SOLUTION_NAME" value="WTTH"/>
       <Variable-Value name="WORKFLOW_NAME" value="WTTH_IMS_DELETE"/>
       <Variable-Value name="WORKFLOW_VERSION" value="-1"/>
+      <Variable-Value name="controller_queue" value="controller_queue"/>
       <Variable-Value name="method_counter" value="0"/>
    </Initial-Case-Packet>
    <Coordinates>
@@ -1299,6 +1320,13 @@
          <X>1155</X>
          <Y>1070</Y>
          <Width>93</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Java1</Name>
+         <X>704</X>
+         <Y>164</Y>
+         <Width>61</Width>
          <Height>48</Height>
       </Position>
       <Position>
@@ -1548,7 +1576,7 @@
       </Position>
       <Position>
          <Name>PutMessage201</Name>
-         <X>121</X>
+         <X>126</X>
          <Y>1110</Y>
          <Width>86</Width>
          <Height>48</Height>
@@ -1687,9 +1715,9 @@
          <Height>48</Height>
       </Position>
       <Position>
-         <Name>VariableMapper21</Name>
-         <X>197</X>
-         <Y>15</Y>
+         <Name>VariableMapper22</Name>
+         <X>201</X>
+         <Y>19</Y>
          <Width>96</Width>
          <Height>48</Height>
       </Position>
@@ -1740,6 +1768,13 @@
          <X>400</X>
          <Y>1110</Y>
          <Width>114</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>VariableMapper732111</Name>
+         <X>109</X>
+         <Y>1213</Y>
+         <Width>120</Width>
          <Height>48</Height>
       </Position>
       <Position>
@@ -2071,6 +2106,19 @@
       </Arrows>
       <Arrows>
          <Name>HTTPRequest111</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Java1</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
@@ -2798,7 +2846,7 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
-         <Name>VariableMapper21</Name>
+         <Name>VariableMapper22</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
@@ -2890,6 +2938,19 @@
       </Arrows>
       <Arrows>
          <Name>VariableMapper73211</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>VariableMapper732111</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
