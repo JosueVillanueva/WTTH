@@ -6,11 +6,23 @@
 	<Package>com.hpe.ov.activator.inventory</Package>
 	<DBTable>GENSERV_Services</DBTable>
 	<Fields>
-		<Field sequence="true" hiddenCreate="true" hiddenUpdate="true" create="true" update="false" sequenceName="WTTH_SERVICES_SEQ">
+		<Field mandatory="true">
+			<Name>accountNumber</Name>
+			<Column>ACCOUNT_NUMBER</Column>
+			<Type>String</Type>
+			<Description>account number</Description>
+		</Field>
+		<Field mandatory="false">
+			<Name>accountStatus</Name>
+			<Column>ACCOUNT_STATUS</Column>
+			<Type>String</Type>
+			<Description>account_status</Description>
+		</Field>
+		<Field mandatory="false">
 			<Name>serviceId</Name>
 			<Column>SERVICE_ID</Column>
-			<Type>long</Type>
-			<Description>service primary key</Description>
+			<Type>String</Type>
+			<Description>service Id</Description>
 		</Field>
 		<Field mandatory="false">
 			<Name>customerId</Name>
@@ -24,24 +36,15 @@
 			<Type>String</Type>
 			<Description>service type</Description>
 		</Field>
-		<Field mandatory="false">
-			<Name>accountNumber</Name>
-			<Column>ACCOUNT_NUMBER</Column>
-			<Type>String</Type>
-			<Description>account number</Description>
-		</Field>
-		<Field mandatory="false">
-			<Name>accountStatus</Name>
-			<Column>ACCOUNT_STATUS</Column>
-			<Type>String</Type>
-			<Description>account_status</Description>
-		</Field>
+		
+		
 		<Field mandatory="false">
 			<Name>aux1</Name>
 			<Column>AUX1</Column>
 			<Type>long</Type>
 			<Description>auxiliar field</Description>
 		</Field>
+		
 		<Field mandatory="false">
 			<Name>metada</Name>
 			<Column>METADATA</Column>
@@ -51,20 +54,21 @@
 	</Fields>
 	<Keys>
 		<Key pk="true">
+			<KeyField>accountNumber</KeyField>
+		</Key>
+		<Key unique="false" makeIndex="true">
 			<KeyField>serviceId</KeyField>
 		</Key>
 		<Key unique="false" makeIndex="true">
 			<KeyField>customerId</KeyField>
 		</Key>
-		<Key unique="false" makeIndex="true">
-			<KeyField>accountNumber</KeyField>
-		</Key>
+		
 	</Keys>
 	<Operations>
 		<Store/>
 		<Update/>
 		<Remove/>
-		<FindBy>
+		<FindBy key="serviceId">
 			<OrderField>serviceId</OrderField>
 		</FindBy>
 		<FindBy key="customerId">

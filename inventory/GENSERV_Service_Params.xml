@@ -15,7 +15,7 @@
 		<Field mandatory="true" update="false">
 			<Name>serviceId</Name>
 			<Column>SERVICE_ID</Column>
-			<Type>long</Type>
+			<Type>String</Type>
 			<Description>services primary key</Description>
 		</Field>
 		<Field mandatory="true">
@@ -54,9 +54,7 @@
 		<Key pk="true">
 			<KeyField>serviceParamsId</KeyField>
 		</Key>
-		<Key foreignBean="Services">
-			<KeyField foreignField="serviceId">serviceId</KeyField>
-		</Key>
+		
 		<Key unique="false" makeIndex="true">
 			<KeyField>customerId</KeyField>
 		</Key>

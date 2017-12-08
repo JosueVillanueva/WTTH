@@ -55,6 +55,7 @@
             <Param name="path_xsl_mov_to_ims" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/WTTHColombia/XSLs/WTTH_mov_to_ims_b.xsl"/>
             <Param name="path_xsl_sftp" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/WTTHColombia/XSLs/sftp.xsl"/>
             <Param name="path_xsl_update_tables" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/WTTHColombia/XSLs/WTTH_update_tables.xsl"/>
+            <Param name="remote_file_path_sftp" value="/home"/>
          </Action>
          <Next-Node>Switch</Next-Node>
       </Process-Node>
@@ -66,7 +67,7 @@
             <Param name="case0" value="constant:DELETE"/>
             <Param name="case1" value="constant:CREATE"/>
          </Action>
-         <Switch name="case1">getDate</Switch>
+         <Switch name="case1">getImsToMov</Switch>
          <Switch name="case0">DeleteLine</Switch>
          <Default>mapError02</Default>
       </Switch-Node>
@@ -258,6 +259,18 @@
             <Param name="param0" value="activation_major_code"/>
          </Action>
          <Next-Node>!error?1</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>PutMessage13</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="create_date %s fixed_telephone_number_new %s mobile_telephone_number_new %s"/>
+            <Param name="queue" value="variable:WORKFLOW_NAME"/>
+            <Param name="param0" value="create_date"/>
+            <Param name="param1" value="fixed_telephone_number_new"/>
+            <Param name="param2" value="mobile_telephone_number_new"/>
+         </Action>
+         <Next-Node>addLine</Next-Node>
       </Process-Node>
       <Process-Node inactive="true">
          <Name>PutMessage2</Name>
@@ -557,8 +570,36 @@
             <Param name="output_var" value="create_date"/>
             <Param name="throw_excep" value="constant:true"/>
          </Action>
-         <Next-Node>addLine</Next-Node>
+         <Next-Node>PutMessage13</Next-Node>
       </Process-Node>
+      <Process-Node>
+         <Name>getImsToMov</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.QueryInventory</Class-Name>
+            <Param name="bean" value="constant:com.hpe.ov.activator.inventory.IMStoMov"/>
+            <Param name="find_by_method" value="constant:findAll"/>
+            <Param name="return_array" value="constant:true"/>
+            <Param name="variable" value="ims_to_mov_obj"/>
+            <Param name="where" value="constant:FIXED_NUMBER =&apos;%s&apos; or MOBILE_NUMBER=&apos;%s&apos;"/>
+            <Param name="param0" value="fixed_telephone_number_new"/>
+            <Param name="param1" value="mobile_telephone_number_new"/>
+         </Action>
+         <Next-Node>imsToMov?</Next-Node>
+      </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>imsToMov?</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
+            <Param name="op1" value="ims_to_mov_obj#"/>
+            <Param name="op2" value="constant:0"/>
+         </Action>
+         <True-Next-Node>getDate</True-Next-Node>
+         <False-Next-Node>mapError09</False-Next-Node>
+      </Rule-Node>
       <Process-Node disablePersistence="true">
          <Name>mapError00</Name>
          <Action>
@@ -586,7 +627,7 @@
          </Action>
          <Next-Node>Error</Next-Node>
       </Process-Node>
-      <Process-Node disablePersistence="true">
+      <Process-Node disablePersistence="true" inactive="true">
          <Name>mapError03</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
@@ -639,6 +680,17 @@
             <Param name="wtth_result_desc" value="cannot execute command update"/>
          </Action>
          <Next-Node>Rollback</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>mapError09</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="309"/>
+            <Param name="wtth_result_desc" value="Number already exists in database"/>
+         </Action>
+         <Next-Node>Error</Next-Node>
       </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>mapError10</Name>
@@ -695,7 +747,6 @@
             <Param name="local_file_path_sftp" value="%SOLUTION_ETC%/template_files/WTTHColombia/SALIDAS/"/>
             <Param name="path_xml_sftp" value="%FILE_URL_PREFIX%/%path_xml_sftp%sftp_%table_ims_to_mov%.xml"/>
             <Param name="remote_file_name_sftp" value="%table_ims_to_mov%.xml"/>
-            <Param name="remote_file_path_sftp" value="/home"/>
             <Param name="sftp_operation" value="put"/>
             <Param name="url_sftp" value="%host_sftp%:%port%"/>
          </Action>
@@ -709,7 +760,6 @@
             <Param name="local_file_path_sftp" value="%SOLUTION_ETC%/template_files/WTTHColombia/SALIDAS/"/>
             <Param name="path_xml_sftp" value="%FILE_URL_PREFIX%/%path_xml_sftp%sftp_%table_mov_to_ims%.xml"/>
             <Param name="remote_file_name_sftp" value="%table_mov_to_ims%.xml"/>
-            <Param name="remote_file_path_sftp" value="/home"/>
             <Param name="sftp_operation" value="put"/>
          </Action>
          <Next-Node>TransformXML1</Next-Node>
@@ -1036,14 +1086,14 @@
       <Position>
          <Name>!error?</Name>
          <X>2959</X>
-         <Y>293</Y>
+         <Y>316</Y>
          <Width>69</Width>
          <Height>26</Height>
       </Position>
       <Position>
          <Name>!error?1</Name>
          <X>2479</X>
-         <Y>293</Y>
+         <Y>316</Y>
          <Width>76</Width>
          <Height>26</Height>
       </Position>
@@ -1057,7 +1107,7 @@
       <Position>
          <Name>DeleteLine</Name>
          <X>435</X>
-         <Y>208</Y>
+         <Y>209</Y>
          <Width>69</Width>
          <Height>48</Height>
       </Position>
@@ -1071,7 +1121,7 @@
       <Position>
          <Name>Equal</Name>
          <X>1117</X>
-         <Y>213</Y>
+         <Y>220</Y>
          <Width>61</Width>
          <Height>26</Height>
       </Position>
@@ -1106,7 +1156,7 @@
       <Position>
          <Name>Get NE</Name>
          <X>1533</X>
-         <Y>281</Y>
+         <Y>305</Y>
          <Width>61</Width>
          <Height>48</Height>
       </Position>
@@ -1133,15 +1183,15 @@
       </Position>
       <Position>
          <Name>MapPaths</Name>
-         <X>185</X>
-         <Y>209</Y>
+         <X>287</X>
+         <Y>118</Y>
          <Width>65</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>NE?</Name>
          <X>1630</X>
-         <Y>293</Y>
+         <Y>316</Y>
          <Width>51</Width>
          <Height>26</Height>
       </Position>
@@ -1162,14 +1212,14 @@
       <Position>
          <Name>PutMessage10</Name>
          <X>2219</X>
-         <Y>281</Y>
+         <Y>305</Y>
          <Width>92</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>PutMessage11</Name>
          <X>2842</X>
-         <Y>282</Y>
+         <Y>305</Y>
          <Width>92</Width>
          <Height>48</Height>
       </Position>
@@ -1181,16 +1231,23 @@
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>PutMessage13</Name>
+         <X>418</X>
+         <Y>375</Y>
+         <Width>92</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>PutMessage2</Name>
          <X>1012</X>
-         <Y>202</Y>
+         <Y>209</Y>
          <Width>85</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>PutMessage3</Name>
          <X>1105</X>
-         <Y>281</Y>
+         <Y>305</Y>
          <Width>85</Width>
          <Height>48</Height>
       </Position>
@@ -1217,7 +1274,7 @@
       </Position>
       <Position>
          <Name>PutMessage5</Name>
-         <X>3527</X>
+         <X>3549</X>
          <Y>159</Y>
          <Width>85</Width>
          <Height>48</Height>
@@ -1225,21 +1282,21 @@
       <Position>
          <Name>PutMessage6</Name>
          <X>1952</X>
-         <Y>281</Y>
+         <Y>305</Y>
          <Width>85</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>PutMessage7</Name>
-         <X>675</X>
-         <Y>282</Y>
+         <X>676</X>
+         <Y>305</Y>
          <Width>85</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>PutMessage8</Name>
-         <X>3262</X>
-         <Y>275</Y>
+         <X>3308</X>
+         <Y>305</Y>
          <Width>85</Width>
          <Height>48</Height>
       </Position>
@@ -1288,14 +1345,14 @@
       <Position>
          <Name>VariableMapper</Name>
          <X>3427</X>
-         <Y>266</Y>
+         <Y>305</Y>
          <Width>100</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>addLine</Name>
          <X>434</X>
-         <Y>282</Y>
+         <Y>305</Y>
          <Width>61</Width>
          <Height>48</Height>
       </Position>
@@ -1308,15 +1365,15 @@
       </Position>
       <Position>
          <Name>addOK?</Name>
-         <X>519</X>
-         <Y>294</Y>
+         <X>520</X>
+         <Y>316</Y>
          <Width>73</Width>
          <Height>26</Height>
       </Position>
       <Position>
          <Name>cleanSftpPath</Name>
          <X>2567</X>
-         <Y>281</Y>
+         <Y>305</Y>
          <Width>88</Width>
          <Height>48</Height>
       </Position>
@@ -1329,7 +1386,7 @@
       </Position>
       <Position>
          <Name>coun_retry ++</Name>
-         <X>3259</X>
+         <X>3305</X>
          <Y>380</Y>
          <Width>91</Width>
          <Height>48</Height>
@@ -1337,7 +1394,7 @@
       <Position>
          <Name>countImsToMov++</Name>
          <X>1191</X>
-         <Y>201</Y>
+         <Y>209</Y>
          <Width>116</Width>
          <Height>48</Height>
       </Position>
@@ -1350,7 +1407,7 @@
       </Position>
       <Position>
          <Name>countRetry</Name>
-         <X>3177</X>
+         <X>3197</X>
          <Y>159</Y>
          <Width>71</Width>
          <Height>48</Height>
@@ -1365,7 +1422,7 @@
       <Position>
          <Name>findImsToMov</Name>
          <X>673</X>
-         <Y>208</Y>
+         <Y>209</Y>
          <Width>90</Width>
          <Height>48</Height>
       </Position>
@@ -1378,14 +1435,28 @@
       </Position>
       <Position>
          <Name>getDate</Name>
-         <X>327</X>
-         <Y>282</Y>
+         <X>434</X>
+         <Y>453</Y>
          <Width>61</Width>
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>getImsToMov</Name>
+         <X>263</X>
+         <Y>303</Y>
+         <Width>87</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>imsToMov?</Name>
+         <X>259</X>
+         <Y>464</Y>
+         <Width>94</Width>
+         <Height>26</Height>
+      </Position>
+      <Position>
          <Name>mapError00</Name>
-         <X>3625</X>
+         <X>3647</X>
          <Y>159</Y>
          <Width>78</Width>
          <Height>48</Height>
@@ -1393,14 +1464,14 @@
       <Position>
          <Name>mapError01</Name>
          <X>517</X>
-         <Y>336</Y>
+         <Y>425</Y>
          <Width>78</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>mapError02</Name>
-         <X>267</X>
-         <Y>1010</Y>
+         <X>171</X>
+         <Y>884</Y>
          <Width>78</Width>
          <Height>48</Height>
       </Position>
@@ -1447,6 +1518,13 @@
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>mapError09</Name>
+         <X>267</X>
+         <Y>884</Y>
+         <Width>78</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>mapError10</Name>
          <X>1290</X>
          <Y>965</Y>
@@ -1456,14 +1534,14 @@
       <Position>
          <Name>mapSftp</Name>
          <X>1770</X>
-         <Y>281</Y>
+         <Y>305</Y>
          <Width>61</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>mapSftp1</Name>
          <X>1696</X>
-         <Y>281</Y>
+         <Y>305</Y>
          <Width>65</Width>
          <Height>48</Height>
       </Position>
@@ -1477,7 +1555,7 @@
       <Position>
          <Name>mapSftpParams1</Name>
          <X>1836</X>
-         <Y>281</Y>
+         <Y>305</Y>
          <Width>108</Width>
          <Height>48</Height>
       </Position>
@@ -1491,20 +1569,20 @@
       <Position>
          <Name>mapTables</Name>
          <X>101</X>
-         <Y>208</Y>
+         <Y>118</Y>
          <Width>73</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>notImsToMov?</Name>
          <X>768</X>
-         <Y>214</Y>
+         <Y>220</Y>
          <Width>113</Width>
          <Height>26</Height>
       </Position>
       <Position>
          <Name>number_retries valid?</Name>
-         <X>3228</X>
+         <X>3274</X>
          <Y>517</Y>
          <Width>154</Width>
          <Height>26</Height>
@@ -1519,28 +1597,28 @@
       <Position>
          <Name>sendFileSftp</Name>
          <X>2336</X>
-         <Y>281</Y>
+         <Y>305</Y>
          <Width>80</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>sendFileSftp1</Name>
          <X>2729</X>
-         <Y>282</Y>
+         <Y>305</Y>
          <Width>87</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>start count ne</Name>
          <X>1418</X>
-         <Y>281</Y>
+         <Y>305</Y>
          <Width>89</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>start count_retries_sftp</Name>
          <X>2043</X>
-         <Y>281</Y>
+         <Y>305</Y>
          <Width>143</Width>
          <Height>48</Height>
       </Position>
@@ -1554,7 +1632,7 @@
       <Position>
          <Name>startingNumbers</Name>
          <X>901</X>
-         <Y>202</Y>
+         <Y>209</Y>
          <Width>104</Width>
          <Height>48</Height>
       </Position>
@@ -1567,7 +1645,7 @@
       </Position>
       <Position>
          <Name>updateImsToMov</Name>
-         <X>3251</X>
+         <X>3297</X>
          <Y>159</Y>
          <Width>108</Width>
          <Height>48</Height>
@@ -1582,7 +1660,7 @@
       <Position>
          <Name>xmlImsToMov1</Name>
          <X>1206</X>
-         <Y>281</Y>
+         <Y>305</Y>
          <Width>96</Width>
          <Height>48</Height>
       </Position>
@@ -1596,7 +1674,7 @@
       <Position>
          <Name>xmlMovToIms</Name>
          <X>1319</X>
-         <Y>281</Y>
+         <Y>305</Y>
          <Width>89</Width>
          <Height>48</Height>
       </Position>
@@ -1881,6 +1959,19 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>PutMessage13</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>PutMessage2</Name>
          <True-Arrow>
             <Type>0</Type>
@@ -2037,7 +2128,7 @@
          </False-Arrow>
          <Switch-Arrow>
             <Default-Arrow>
-               <Type>0</Type>
+               <Type>2</Type>
                <DeltaX>0</DeltaX>
                <DeltaY>0</DeltaY>
             </Default-Arrow>
@@ -2049,7 +2140,7 @@
             </Case-Arrow>
             <Case-Arrow>
                <Name>case1</Name>
-               <Type>3</Type>
+               <Type>0</Type>
                <DeltaX>0</DeltaX>
                <DeltaY>0</DeltaY>
             </Case-Arrow>
@@ -2296,6 +2387,32 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>getImsToMov</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>imsToMov?</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>mapError00</Name>
          <True-Arrow>
             <Type>0</Type>
@@ -2324,7 +2441,7 @@
       <Arrows>
          <Name>mapError02</Name>
          <True-Arrow>
-            <Type>0</Type>
+            <Type>3</Type>
             <DeltaX>0</DeltaX>
             <DeltaY>0</DeltaY>
          </True-Arrow>
@@ -2403,6 +2520,19 @@
          <Name>mapError08</Name>
          <True-Arrow>
             <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>mapError09</Name>
+         <True-Arrow>
+            <Type>3</Type>
             <DeltaX>0</DeltaX>
             <DeltaY>0</DeltaY>
          </True-Arrow>

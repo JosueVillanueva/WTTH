@@ -11,16 +11,16 @@
          <Name>PutMessage</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
-            <Param name="message" value="START %s sasa"/>
+            <Param name="message" value="START %s service_wo  %s ssw_id_new %s"/>
             <Param name="queue" value="variable:WORKFLOW_NAME"/>
             <Param name="param0" value="WORKFLOW_NAME"/>
+            <Param name="param1" value="service_wo"/>
+            <Param name="param2" value="ssw_id_new"/>
          </Action>
          <Next-Node>get Services</Next-Node>
       </Process-Node>
       <Process-Node>
          <Name>get Services</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.QueryInventory</Class-Name>
             <Param name="bean" value="constant:com.hpe.ov.activator.inventory.Services"/>
@@ -34,8 +34,6 @@
       </Process-Node>
       <Rule-Node disablePersistence="true">
          <Name>services?</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
             <Param name="op1" value="services_obj#"/>
@@ -145,22 +143,20 @@
       </Rule-Node>
       <Process-Node>
          <Name>CreateInventory</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.CreateInventory</Class-Name>
             <Param name="bean" value="constant:com.hpe.ov.activator.inventory.Services"/>
             <Param name="throw_excep" value="constant:true"/>
-            <Param name="key_field0" value="constant:serviceId"/>
-            <Param name="key_value0" value="constant:0"/>
-            <Param name="key_field1" value="constant:customerId"/>
-            <Param name="key_value1" value="account_number"/>
-            <Param name="key_field2" value="constant:serviceType"/>
-            <Param name="key_value2" value="constant:WTTH"/>
-            <Param name="key_field3" value="constant:accountNumber"/>
+            <Param name="key_field0" value="constant:accountNumber"/>
+            <Param name="key_value0" value="account_number"/>
+            <Param name="key_field1" value="constant:accountStatus"/>
+            <Param name="key_value1" value="constant:0"/>
+            <Param name="key_field2" value="constant:serviceId"/>
+            <Param name="key_value2" value="service_id_new"/>
+            <Param name="key_field3" value="constant:customerId"/>
             <Param name="key_value3" value="account_number"/>
-            <Param name="key_field4" value="constant:accountStatus"/>
-            <Param name="key_value4" value="constant:0"/>
+            <Param name="key_field4" value="constant:serviceType"/>
+            <Param name="key_value4" value="constant:WTTH"/>
             <Param name="key_field5" value="constant:aux1"/>
             <Param name="key_value5" value="constant:0"/>
          </Action>
@@ -171,9 +167,221 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.WasPreviousNodeOK</Class-Name>
          </Action>
-         <True-Next-Node>UnlockTable</True-Next-Node>
+         <True-Next-Node>action=create?</True-Next-Node>
          <False-Next-Node>mapError</False-Next-Node>
       </Rule-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>action=create?</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
+            <Param name="op1" value="action_name"/>
+            <Param name="op2" value="constant:CREATE"/>
+         </Action>
+         <True-Next-Node>service_wo?</True-Next-Node>
+         <False-Next-Node>UnlockTable</False-Next-Node>
+      </Rule-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>service_wo?</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.IsTrue</Class-Name>
+            <Param name="op1" value="service_wo"/>
+         </Action>
+         <True-Next-Node>insertServiceWo</True-Next-Node>
+         <False-Next-Node>PutMessage4</False-Next-Node>
+      </Rule-Node>
+      <Process-Node>
+         <Name>insertServiceWo</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.CreateInventory</Class-Name>
+            <Param name="bean" value="constant:com.hpe.ov.activator.inventory.ServiceParams"/>
+            <Param name="throw_excep" value="constant:true"/>
+            <Param name="key_field0" value="constant:serviceParamsId"/>
+            <Param name="key_value0" value="constant:0"/>
+            <Param name="key_field1" value="constant:serviceId"/>
+            <Param name="key_value1" value="service_id_new"/>
+            <Param name="key_field2" value="constant:customerId"/>
+            <Param name="key_value2" value="account_number"/>
+            <Param name="key_field3" value="constant:paramName"/>
+            <Param name="key_value3" value="constant:service_wo"/>
+            <Param name="key_field4" value="constant:paramValue"/>
+            <Param name="key_value4" value="service_wo"/>
+            <Param name="key_field5" value="constant:aux1"/>
+            <Param name="key_value5" value="constant:0"/>
+         </Action>
+         <Next-Node>PutMessage4</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>PutMessage4</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="service_wo %s"/>
+            <Param name="queue" value="variable:WORKFLOW_NAME"/>
+            <Param name="param0" value="service_wo"/>
+         </Action>
+         <Next-Node>geo_loc_id?</Next-Node>
+      </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>geo_loc_id?</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.IsTrue</Class-Name>
+            <Param name="op1" value="geographical_location_id"/>
+         </Action>
+         <True-Next-Node>insertGeoLocId</True-Next-Node>
+         <False-Next-Node>PutMessage41</False-Next-Node>
+      </Rule-Node>
+      <Process-Node>
+         <Name>insertGeoLocId</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.CreateInventory</Class-Name>
+            <Param name="bean" value="constant:com.hpe.ov.activator.inventory.ServiceParams"/>
+            <Param name="throw_excep" value="constant:true"/>
+            <Param name="key_field0" value="constant:serviceParamsId"/>
+            <Param name="key_value0" value="constant:0"/>
+            <Param name="key_field1" value="constant:serviceId"/>
+            <Param name="key_value1" value="service_id_new"/>
+            <Param name="key_field2" value="constant:customerId"/>
+            <Param name="key_value2" value="account_number"/>
+            <Param name="key_field3" value="constant:paramName"/>
+            <Param name="key_value3" value="constant:geographical_location_id"/>
+            <Param name="key_field4" value="constant:paramValue"/>
+            <Param name="key_value4" value="geographical_location_id"/>
+            <Param name="key_field5" value="constant:aux1"/>
+            <Param name="key_value5" value="constant:0"/>
+         </Action>
+         <Next-Node>PutMessage41</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>PutMessage41</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="geographical_location_id %s"/>
+            <Param name="queue" value="variable:WORKFLOW_NAME"/>
+            <Param name="param0" value="geographical_location_id"/>
+         </Action>
+         <Next-Node>ssw_id?</Next-Node>
+      </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>ssw_id?</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.IsTrue</Class-Name>
+            <Param name="op1" value="ssw_id_new"/>
+         </Action>
+         <True-Next-Node>insertSSWId</True-Next-Node>
+         <False-Next-Node>PutMessage411</False-Next-Node>
+      </Rule-Node>
+      <Process-Node>
+         <Name>insertSSWId</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.CreateInventory</Class-Name>
+            <Param name="bean" value="constant:com.hpe.ov.activator.inventory.ServiceParams"/>
+            <Param name="throw_excep" value="constant:true"/>
+            <Param name="key_field0" value="constant:serviceParamsId"/>
+            <Param name="key_value0" value="constant:0"/>
+            <Param name="key_field1" value="constant:serviceId"/>
+            <Param name="key_value1" value="service_id_new"/>
+            <Param name="key_field2" value="constant:customerId"/>
+            <Param name="key_value2" value="account_number"/>
+            <Param name="key_field3" value="constant:paramName"/>
+            <Param name="key_value3" value="constant:ssw_id"/>
+            <Param name="key_field4" value="constant:paramValue"/>
+            <Param name="key_value4" value="ssw_id_new"/>
+            <Param name="key_field5" value="constant:aux1"/>
+            <Param name="key_value5" value="constant:0"/>
+         </Action>
+         <Next-Node>PutMessage411</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>PutMessage411</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="ssw_id_new %s"/>
+            <Param name="queue" value="variable:WORKFLOW_NAME"/>
+            <Param name="param0" value="ssw_id_new"/>
+         </Action>
+         <Next-Node>fixed_tn?</Next-Node>
+      </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>fixed_tn?</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.IsTrue</Class-Name>
+            <Param name="op1" value="fixed_telephone_number_new"/>
+         </Action>
+         <True-Next-Node>insertfixedTN</True-Next-Node>
+         <False-Next-Node>PutMessage412</False-Next-Node>
+      </Rule-Node>
+      <Process-Node>
+         <Name>insertfixedTN</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.CreateInventory</Class-Name>
+            <Param name="bean" value="constant:com.hpe.ov.activator.inventory.ServiceParams"/>
+            <Param name="throw_excep" value="constant:true"/>
+            <Param name="key_field0" value="constant:serviceParamsId"/>
+            <Param name="key_value0" value="constant:0"/>
+            <Param name="key_field1" value="constant:serviceId"/>
+            <Param name="key_value1" value="service_id_new"/>
+            <Param name="key_field2" value="constant:customerId"/>
+            <Param name="key_value2" value="account_number"/>
+            <Param name="key_field3" value="constant:paramName"/>
+            <Param name="key_value3" value="constant:fixed_telephone_number"/>
+            <Param name="key_field4" value="constant:paramValue"/>
+            <Param name="key_value4" value="fixed_telephone_number_new"/>
+            <Param name="key_field5" value="constant:aux1"/>
+            <Param name="key_value5" value="constant:0"/>
+         </Action>
+         <Next-Node>PutMessage412</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>PutMessage412</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="fixed_telephone_number_new %s"/>
+            <Param name="queue" value="variable:WORKFLOW_NAME"/>
+            <Param name="param0" value="fixed_telephone_number_new"/>
+         </Action>
+         <Next-Node>mobile_tn?</Next-Node>
+      </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>mobile_tn?</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.IsTrue</Class-Name>
+            <Param name="op1" value="mobile_telephone_number_new"/>
+         </Action>
+         <True-Next-Node>insertMobileTN</True-Next-Node>
+         <False-Next-Node>PutMessage413</False-Next-Node>
+      </Rule-Node>
+      <Process-Node>
+         <Name>insertMobileTN</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.CreateInventory</Class-Name>
+            <Param name="bean" value="constant:com.hpe.ov.activator.inventory.ServiceParams"/>
+            <Param name="throw_excep" value="constant:true"/>
+            <Param name="key_field0" value="constant:serviceParamsId"/>
+            <Param name="key_value0" value="constant:0"/>
+            <Param name="key_field1" value="constant:serviceId"/>
+            <Param name="key_value1" value="service_id_new"/>
+            <Param name="key_field2" value="constant:customerId"/>
+            <Param name="key_value2" value="account_number"/>
+            <Param name="key_field3" value="constant:paramName"/>
+            <Param name="key_value3" value="constant:mobile_telephone_number"/>
+            <Param name="key_field4" value="constant:paramValue"/>
+            <Param name="key_value4" value="mobile_telephone_number_new"/>
+            <Param name="key_field5" value="constant:aux1"/>
+            <Param name="key_value5" value="constant:0"/>
+         </Action>
+         <Next-Node>PutMessage413</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>PutMessage413</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="mobile_telephone_number_new %s"/>
+            <Param name="queue" value="variable:WORKFLOW_NAME"/>
+            <Param name="param0" value="mobile_telephone_number_new"/>
+         </Action>
+         <Next-Node>UnlockTable</Next-Node>
+      </Process-Node>
       <Process-Node>
          <Name>UnlockTable</Name>
          <Action>
@@ -187,6 +395,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="wtth_result_code" value="0"/>
+            <Param name="wtth_result_desc" value="OK. Transaction executed succesful"/>
          </Action>
       </Process-Node>
       <Process-Node disablePersistence="true">
@@ -394,33 +603,12 @@
       </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>mapError07</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="wtth_result_code" value="7"/>
             <Param name="wtth_result_desc" value="Service already exist"/>
          </Action>
          <Next-Node>Error</Next-Node>
-      </Process-Node>
-      <Process-Node>
-         <Name>PutMessage2</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
-            <Param name="message" value="wtth_result_code %s wtth_result_desc %s"/>
-            <Param name="queue" value="variable:WORKFLOW_NAME"/>
-            <Param name="param0" value="wtth_result_code"/>
-            <Param name="param1" value="wtth_result_desc"/>
-         </Action>
-      </Process-Node>
-      <Process-Node>
-         <Name>PutMessage3</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
-            <Param name="message" value="wtth_result_code %s"/>
-            <Param name="queue" value="variable:WORKFLOW_NAME"/>
-            <Param name="param0" value="wtth_result_code"/>
-         </Action>
       </Process-Node>
       <Process-Node>
          <Name>QueryInventory</Name>
@@ -435,43 +623,6 @@
          </Action>
          <Next-Node>errorFound?</Next-Node>
       </Process-Node>
-      <Process-Node>
-         <Name>QueryInventory1</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.QueryInventory</Class-Name>
-            <Param name="bean" value="constant:com.hpe.ov.activator.inventory.ErrorHandling"/>
-            <Param name="find_by_method" value="constant:findAll"/>
-            <Param name="return_array" value="constant:true"/>
-            <Param name="variable" value="error_handling_obj"/>
-            <Param name="where" value="constant:ERROR_CODE = &apos;%s&apos;"/>
-            <Param name="param0" value="wtth_result_code"/>
-         </Action>
-         <Next-Node>errorFound?1</Next-Node>
-      </Process-Node>
-      <Process-Node disablePersistence="true">
-         <Name>VariableMapper</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="wtth_result_code" value="0"/>
-         </Action>
-         <Next-Node>PutMessage3</Next-Node>
-      </Process-Node>
-      <Process-Node disablePersistence="true">
-         <Name>VariableMapper2</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="wtth_result_code" value="5"/>
-         </Action>
-         <Next-Node>PutMessage3</Next-Node>
-      </Process-Node>
-      <Rule-Node disablePersistence="true">
-         <Name>WasPreviousNodeOK</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.WasPreviousNodeOK</Class-Name>
-         </Action>
-         <True-Next-Node>VariableMapper</True-Next-Node>
-         <False-Next-Node>VariableMapper2</False-Next-Node>
-      </Rule-Node>
       <Rule-Node disablePersistence="true">
          <Name>errorFound?</Name>
          <Action>
@@ -482,36 +633,6 @@
          <True-Next-Node>noMapErrorDesc</True-Next-Node>
          <False-Next-Node>mapErrorDesc</False-Next-Node>
       </Rule-Node>
-      <Rule-Node disablePersistence="true">
-         <Name>errorFound?1</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
-            <Param name="op1" value="error_handling_obj#"/>
-            <Param name="op2" value="constant:0"/>
-         </Action>
-         <True-Next-Node>PutMessage2</True-Next-Node>
-         <False-Next-Node>mapErrorDesc1</False-Next-Node>
-      </Rule-Node>
-      <Process-Node>
-         <Name>insertServices</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.CreateInventory</Class-Name>
-            <Param name="bean" value="constant:com.hpe.ov.activator.inventory.Services"/>
-            <Param name="bean_variable" value="services_obj"/>
-            <Param name="throw_excep" value="constant:true"/>
-            <Param name="key_field0" value="constant:serviceId"/>
-            <Param name="key_value0" value="constant:0"/>
-            <Param name="key_field1" value="constant:customerId"/>
-            <Param name="key_value1" value="account_number"/>
-            <Param name="key_field2" value="constant:serviceType"/>
-            <Param name="key_value2" value="service_type"/>
-            <Param name="key_field3" value="constant:accountNumber"/>
-            <Param name="key_value3" value="account_number"/>
-            <Param name="key_field4" value="constant:accountStatus"/>
-            <Param name="key_value4" value="constant:0"/>
-         </Action>
-         <Next-Node>WasPreviousNodeOK</Next-Node>
-      </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>mapErrorDesc</Name>
          <Action>
@@ -519,14 +640,6 @@
             <Param name="wtth_result_desc" value="%error_handling_obj[0].errorDesc%"/>
          </Action>
          <Next-Node>UnlockTable1</Next-Node>
-      </Process-Node>
-      <Process-Node disablePersistence="true">
-         <Name>mapErrorDesc1</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="wtth_result_desc" value="%error_handling_obj[0].errorDesc%"/>
-         </Action>
-         <Next-Node>PutMessage2</Next-Node>
       </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>noMapErrorDesc</Name>
@@ -609,6 +722,7 @@
       <Variable name="activation_major_code" type="Integer"/>
       <Variable name="activation_minor_code" type="Integer"/>
       <Variable name="controller_JOB_ID" type="Integer"/>
+      <Variable name="email_customer" type="String"/>
       <Variable name="error_handling_obj" type="Object"/>
       <Variable name="fixed_telephone_number_new" type="String"/>
       <Variable name="geographical_location_id" type="String"/>
@@ -618,8 +732,10 @@
       <Variable name="password_customer" type="String"/>
       <Variable name="service_id_new" type="String"/>
       <Variable name="service_type" type="String"/>
+      <Variable name="service_wo" type="String"/>
       <Variable name="services_obj" type="Object"/>
       <Variable name="skip_activation" type="Boolean"/>
+      <Variable name="ssw_id_new" type="String"/>
       <Variable name="wtth_result_code" type="Integer"/>
       <Variable name="wtth_result_code_rb" type="Integer"/>
       <Variable name="wtth_result_desc" type="String"/>
@@ -724,17 +840,38 @@
          <Height>48</Height>
       </Position>
       <Position>
-         <Name>PutMessage2</Name>
-         <X>1956</X>
-         <Y>458</Y>
+         <Name>PutMessage4</Name>
+         <X>1487</X>
+         <Y>128</Y>
          <Width>85</Width>
          <Height>48</Height>
       </Position>
       <Position>
-         <Name>PutMessage3</Name>
-         <X>194</X>
-         <Y>605</Y>
-         <Width>85</Width>
+         <Name>PutMessage41</Name>
+         <X>1751</X>
+         <Y>128</Y>
+         <Width>92</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>PutMessage411</Name>
+         <X>2012</X>
+         <Y>128</Y>
+         <Width>99</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>PutMessage412</Name>
+         <X>2228</X>
+         <Y>128</Y>
+         <Width>99</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>PutMessage413</Name>
+         <X>2445</X>
+         <Y>128</Y>
+         <Width>99</Width>
          <Height>48</Height>
       </Position>
       <Position>
@@ -742,13 +879,6 @@
          <X>954</X>
          <Y>880</Y>
          <Width>97</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>QueryInventory1</Name>
-         <X>1598</X>
-         <Y>457</Y>
-         <Width>104</Width>
          <Height>48</Height>
       </Position>
       <Position>
@@ -767,7 +897,7 @@
       </Position>
       <Position>
          <Name>UnlockTable</Name>
-         <X>1351</X>
+         <X>2568</X>
          <Y>128</Y>
          <Width>79</Width>
          <Height>48</Height>
@@ -780,24 +910,10 @@
          <Height>48</Height>
       </Position>
       <Position>
-         <Name>VariableMapper</Name>
-         <X>51</X>
-         <Y>605</Y>
-         <Width>100</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>VariableMapper2</Name>
-         <X>184</X>
-         <Y>535</Y>
-         <Width>107</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>WasPreviousNodeOK</Name>
-         <X>27</X>
-         <Y>548</Y>
-         <Width>148</Width>
+         <Name>action=create?</Name>
+         <X>1221</X>
+         <Y>7</Y>
+         <Width>115</Width>
          <Height>26</Height>
       </Position>
       <Position>
@@ -815,10 +931,17 @@
          <Height>26</Height>
       </Position>
       <Position>
-         <Name>errorFound?1</Name>
-         <X>1716</X>
-         <Y>470</Y>
-         <Width>107</Width>
+         <Name>fixed_tn?</Name>
+         <X>2122</X>
+         <Y>139</Y>
+         <Width>81</Width>
+         <Height>26</Height>
+      </Position>
+      <Position>
+         <Name>geo_loc_id?</Name>
+         <X>1616</X>
+         <Y>139</Y>
+         <Width>97</Width>
          <Height>26</Height>
       </Position>
       <Position>
@@ -836,10 +959,38 @@
          <Height>26</Height>
       </Position>
       <Position>
-         <Name>insertServices</Name>
-         <X>56</X>
-         <Y>468</Y>
-         <Width>90</Width>
+         <Name>insertGeoLocId</Name>
+         <X>1617</X>
+         <Y>220</Y>
+         <Width>94</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>insertMobileTN</Name>
+         <X>2339</X>
+         <Y>46</Y>
+         <Width>95</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>insertSSWId</Name>
+         <X>1910</X>
+         <Y>46</Y>
+         <Width>81</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>insertServiceWo</Name>
+         <X>1415</X>
+         <Y>46</Y>
+         <Width>103</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>insertfixedTN</Name>
+         <X>2120</X>
+         <Y>220</Y>
+         <Width>85</Width>
          <Height>48</Height>
       </Position>
       <Position>
@@ -865,8 +1016,8 @@
       </Position>
       <Position>
          <Name>mapError00</Name>
-         <X>1511</X>
-         <Y>128</Y>
+         <X>2690</X>
+         <Y>129</Y>
          <Width>78</Width>
          <Height>48</Height>
       </Position>
@@ -927,11 +1078,11 @@
          <Height>48</Height>
       </Position>
       <Position>
-         <Name>mapErrorDesc1</Name>
-         <X>1721</X>
-         <Y>540</Y>
-         <Width>98</Width>
-         <Height>48</Height>
+         <Name>mobile_tn?</Name>
+         <X>2340</X>
+         <Y>139</Y>
+         <Width>92</Width>
+         <Height>26</Height>
       </Position>
       <Position>
          <Name>noMapErrorDesc</Name>
@@ -948,10 +1099,24 @@
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>service_wo?</Name>
+         <X>1352</X>
+         <Y>139</Y>
+         <Width>100</Width>
+         <Height>26</Height>
+      </Position>
+      <Position>
          <Name>services?</Name>
          <X>292</X>
          <Y>139</Y>
          <Width>82</Width>
+         <Height>26</Height>
+      </Position>
+      <Position>
+         <Name>ssw_id?</Name>
+         <X>1913</X>
+         <Y>139</Y>
+         <Width>75</Width>
          <Height>26</Height>
       </Position>
       <Arrows>
@@ -1124,7 +1289,7 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
-         <Name>PutMessage2</Name>
+         <Name>PutMessage4</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
@@ -1137,7 +1302,46 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
-         <Name>PutMessage3</Name>
+         <Name>PutMessage41</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>PutMessage411</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>PutMessage412</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>PutMessage413</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
@@ -1151,19 +1355,6 @@
       </Arrows>
       <Arrows>
          <Name>QueryInventory</Name>
-         <True-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </True-Arrow>
-         <False-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </False-Arrow>
-      </Arrows>
-      <Arrows>
-         <Name>QueryInventory1</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
@@ -1228,40 +1419,14 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
-         <Name>VariableMapper</Name>
+         <Name>action=create?</Name>
          <True-Arrow>
-            <Type>0</Type>
+            <Type>2</Type>
             <DeltaX>0</DeltaX>
             <DeltaY>0</DeltaY>
          </True-Arrow>
          <False-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </False-Arrow>
-      </Arrows>
-      <Arrows>
-         <Name>VariableMapper2</Name>
-         <True-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </True-Arrow>
-         <False-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </False-Arrow>
-      </Arrows>
-      <Arrows>
-         <Name>WasPreviousNodeOK</Name>
-         <True-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </True-Arrow>
-         <False-Arrow>
-            <Type>0</Type>
+            <Type>2</Type>
             <DeltaX>0</DeltaX>
             <DeltaY>0</DeltaY>
          </False-Arrow>
@@ -1293,7 +1458,20 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
-         <Name>errorFound?1</Name>
+         <Name>fixed_tn?</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>geo_loc_id?</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
@@ -1332,9 +1510,61 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
-         <Name>insertServices</Name>
+         <Name>insertGeoLocId</Name>
          <True-Arrow>
+            <Type>2</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
             <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>insertMobileTN</Name>
+         <True-Arrow>
+            <Type>2</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>insertSSWId</Name>
+         <True-Arrow>
+            <Type>2</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>insertServiceWo</Name>
+         <True-Arrow>
+            <Type>2</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>insertfixedTN</Name>
+         <True-Arrow>
+            <Type>2</Type>
             <DeltaX>0</DeltaX>
             <DeltaY>0</DeltaY>
          </True-Arrow>
@@ -1501,9 +1731,9 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
-         <Name>mapErrorDesc1</Name>
+         <Name>mobile_tn?</Name>
          <True-Arrow>
-            <Type>2</Type>
+            <Type>0</Type>
             <DeltaX>0</DeltaX>
             <DeltaY>0</DeltaY>
          </True-Arrow>
@@ -1540,7 +1770,33 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>service_wo?</Name>
+         <True-Arrow>
+            <Type>3</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>services?</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>ssw_id?</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>

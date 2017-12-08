@@ -20,8 +20,6 @@
       </Process-Node>
       <Process-Node>
          <Name>get Services</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.QueryInventory</Class-Name>
             <Param name="bean" value="constant:com.hpe.ov.activator.inventory.Services"/>
@@ -35,8 +33,6 @@
       </Process-Node>
       <Rule-Node disablePersistence="true">
          <Name>services?</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
             <Param name="op1" value="services_obj#"/>
@@ -47,8 +43,6 @@
       </Rule-Node>
       <Process-Node disablePersistence="true">
          <Name>mapError07</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="wtth_result_code" value="7"/>
@@ -181,8 +175,6 @@
       </Rule-Node>
       <Process-Node>
          <Name>delete Service</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.ExecSQLStatement</Class-Name>
             <Param name="statement" value="delete from GENSERV_SERVICES where account_number = ?"/>
@@ -196,8 +188,27 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.WasPreviousNodeOK</Class-Name>
          </Action>
-         <True-Next-Node>UnlockTable1</True-Next-Node>
+         <True-Next-Node>delete ServiceParam</True-Next-Node>
          <False-Next-Node>mapError1</False-Next-Node>
+      </Rule-Node>
+      <Process-Node>
+         <Name>delete ServiceParam</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.ExecSQLStatement</Class-Name>
+            <Param name="statement" value="delete from GENSERV_SERVICE_PARAMS where customer_id = ? and service_id =?"/>
+            <Param name="throw_excep" value="constant:false"/>
+            <Param name="param0" value="account_number"/>
+            <Param name="param1" value="service_id_new"/>
+         </Action>
+         <Next-Node>deleteOK?1</Next-Node>
+      </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>deleteOK?1</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.WasPreviousNodeOK</Class-Name>
+         </Action>
+         <True-Next-Node>UnlockTable1</True-Next-Node>
+         <False-Next-Node>mapError08</False-Next-Node>
       </Rule-Node>
       <Process-Node>
          <Name>UnlockTable1</Name>
@@ -212,14 +223,15 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="wtth_result_code" value="0"/>
+            <Param name="wtth_result_desc" value="OK. Transaction executed succesful"/>
          </Action>
       </Process-Node>
       <Process-Node disablePersistence="true">
-         <Name>mapError1</Name>
+         <Name>mapError08</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="wtth_result_code" value="7"/>
-            <Param name="wtth_result_desc" value="Cannot delete register in database %RET_TEXT%"/>
+            <Param name="wtth_result_code" value="8"/>
+            <Param name="wtth_result_desc" value="Cannot delete register in table services_params %RET_TEXT%"/>
          </Action>
          <Next-Node>mapActionName1</Next-Node>
       </Process-Node>
@@ -315,6 +327,15 @@
             <Param name="wtth_result_desc" value="UNDO_NO_OK.%wtth_result_desc%"/>
          </Action>
          <Next-Node>Error</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>mapError1</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="7"/>
+            <Param name="wtth_result_desc" value="Cannot delete register in database %RET_TEXT%"/>
+         </Action>
+         <Next-Node>mapActionName1</Next-Node>
       </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>mapActionName</Name>
@@ -626,7 +647,7 @@
       <Position>
          <Name>NNCDel1</Name>
          <X>1142</X>
-         <Y>251</Y>
+         <Y>287</Y>
          <Width>61</Width>
          <Height>32</Height>
       </Position>
@@ -688,7 +709,7 @@
       </Position>
       <Position>
          <Name>UnlockTable1</Name>
-         <X>1554</X>
+         <X>1744</X>
          <Y>111</Y>
          <Width>86</Width>
          <Height>32</Height>
@@ -708,10 +729,24 @@
          <Height>32</Height>
       </Position>
       <Position>
+         <Name>delete ServiceParam</Name>
+         <X>1484</X>
+         <Y>111</Y>
+         <Width>128</Width>
+         <Height>32</Height>
+      </Position>
+      <Position>
          <Name>deleteOK?</Name>
          <X>1379</X>
          <Y>114</Y>
          <Width>87</Width>
+         <Height>26</Height>
+      </Position>
+      <Position>
+         <Name>deleteOK?1</Name>
+         <X>1622</X>
+         <Y>114</Y>
+         <Width>94</Width>
          <Height>26</Height>
       </Position>
       <Position>
@@ -752,13 +787,13 @@
       <Position>
          <Name>mapActionName1</Name>
          <X>1117</X>
-         <Y>198</Y>
+         <Y>234</Y>
          <Width>110</Width>
          <Height>32</Height>
       </Position>
       <Position>
          <Name>mapError00</Name>
-         <X>1768</X>
+         <X>1858</X>
          <Y>111</Y>
          <Width>78</Width>
          <Height>32</Height>
@@ -813,9 +848,16 @@
          <Height>32</Height>
       </Position>
       <Position>
+         <Name>mapError08</Name>
+         <X>1630</X>
+         <Y>173</Y>
+         <Width>78</Width>
+         <Height>32</Height>
+      </Position>
+      <Position>
          <Name>mapError1</Name>
          <X>1387</X>
-         <Y>198</Y>
+         <Y>173</Y>
          <Width>71</Width>
          <Height>32</Height>
       </Position>
@@ -1122,7 +1164,33 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>delete ServiceParam</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>deleteOK?</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>deleteOK?1</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
@@ -1317,9 +1385,22 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>mapError08</Name>
+         <True-Arrow>
+            <Type>3</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>mapError1</Name>
          <True-Arrow>
-            <Type>0</Type>
+            <Type>3</Type>
             <DeltaX>0</DeltaX>
             <DeltaY>0</DeltaY>
          </True-Arrow>

@@ -58,6 +58,34 @@
 		</attribute>
 	</header>
 	<body>
-		
+		 <voice>
+			<telephone>
+				<attribute>
+					<name>ssw_id</name>
+					<new_value></new_value>
+					<old_value/>
+				</attribute>
+				<attribute>
+					<name>fixed_telephone_number</name>
+					<new_value>+5718034952</new_value>
+					<old_value/>
+				</attribute>
+				<attribute>
+					<name>transaction_id</name>
+					<new_value>2985005</new_value>
+					<old_value/>
+				</attribute>
+				<attribute>
+					<name>mobile_telephone_number</name>
+					<new_value>+573108128121</new_value>
+					<old_value/>
+				</attribute>
+				<attribute>
+					<name>service_id</name>
+					<new_value>LTE</new_value>
+					<old_value/>
+				</attribute>
+			</telephone>
+		</voice>
 	</body>
 </msg>

@@ -176,6 +176,15 @@
             <Param name="variable7" value="account_number"/>
             <Param name="variable8" value="service_type"/>
             <Param name="variable9" value="geographical_location_id"/>
+            <Param name="variable10" value="email_customer"/>
+            <Param name="variable11" value="service_wo"/>
+            <Param name="variable12" value="origin_id"/>
+            <Param name="variable13" value="geographical_location_id"/>
+            <Param name="variable14" value="parent_account"/>
+            <Param name="variable15" value="building_unit"/>
+            <Param name="variable16" value="scope"/>
+            <Param name="variable17" value="ssw_id_new"/>
+            <Param name="variable18" value="transaction_id_new"/>
          </Action>
          <Next-Node>ModifOK?</Next-Node>
       </Process-Node>
@@ -255,8 +264,6 @@
       </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>VariableMapper</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="wtth_result_code" value="0"/>
@@ -268,16 +275,12 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.StartJobAndWait</Class-Name>
             <Param name="queue" value="controller_queue"/>
-            <Param name="workflow_name" value="constant:WTTH_IMS_CREATE"/>
+            <Param name="workflow_name" value="constant:WTTH_VIEW_SERVICES"/>
             <Param name="destination0" value="controller_JOB_ID"/>
             <Param name="outputvar0" value="wtth_result_code"/>
             <Param name="variable0" value="JOB_ID"/>
             <Param name="outputvar1" value="wtth_result_desc"/>
-            <Param name="variable1" value="fixed_telephone_number_new"/>
-            <Param name="variable2" value="password_customer"/>
-            <Param name="variable3" value="action_name"/>
-            <Param name="variable4" value="account_number"/>
-            <Param name="variable5" value="mobile_telephone_number_new"/>
+            <Param name="variable1" value="account_number"/>
          </Action>
          <Next-Node>ModifOK?</Next-Node>
       </Process-Node>
@@ -285,17 +288,25 @@
          <Name>modifyService</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.StartJobAndWait</Class-Name>
-            <Param name="queue" value="controller_queue"/>
-            <Param name="workflow_name" value="constant:WTTH_IMS_CREATE"/>
+            <Param name="queue" value="controller_mod_queue"/>
+            <Param name="workflow_name" value="constant:WTTH_IMS_MOD"/>
             <Param name="destination0" value="controller_JOB_ID"/>
             <Param name="outputvar0" value="wtth_result_code"/>
             <Param name="variable0" value="JOB_ID"/>
+            <Param name="destination1" value="telephone_number_new"/>
             <Param name="outputvar1" value="wtth_result_desc"/>
             <Param name="variable1" value="fixed_telephone_number_new"/>
+            <Param name="destination2" value="pwd_value"/>
             <Param name="variable2" value="password_customer"/>
+            <Param name="destination3" value="action_Name"/>
             <Param name="variable3" value="action_name"/>
             <Param name="variable4" value="account_number"/>
-            <Param name="variable5" value="mobile_telephone_number_new"/>
+            <Param name="destination5" value="geo_id"/>
+            <Param name="variable5" value="geographical_location_id"/>
+            <Param name="destination6" value="service_class"/>
+            <Param name="variable6" value="service_id_new"/>
+            <Param name="destination7" value="telephone_number"/>
+            <Param name="variable7" value="fixed_telephone_number_old"/>
          </Action>
          <Next-Node>ModifOK?</Next-Node>
       </Process-Node>
@@ -377,16 +388,15 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.StartJobAndWait</Class-Name>
             <Param name="queue" value="controller_queue"/>
-            <Param name="workflow_name" value="constant:WTTH_IMS_CREATE"/>
+            <Param name="workflow_name" value="constant:WTTH_IMS_ACTIVATE-SUSPEND"/>
             <Param name="destination0" value="controller_JOB_ID"/>
             <Param name="outputvar0" value="wtth_result_code"/>
             <Param name="variable0" value="JOB_ID"/>
+            <Param name="destination1" value="telephone_number"/>
             <Param name="outputvar1" value="wtth_result_desc"/>
             <Param name="variable1" value="fixed_telephone_number_new"/>
-            <Param name="variable2" value="password_customer"/>
-            <Param name="variable3" value="action_name"/>
-            <Param name="variable4" value="account_number"/>
-            <Param name="variable5" value="mobile_telephone_number_new"/>
+            <Param name="destination2" value="action_Name"/>
+            <Param name="variable2" value="action_name"/>
          </Action>
          <Next-Node>ModifOK?</Next-Node>
       </Process-Node>
@@ -395,16 +405,15 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.StartJobAndWait</Class-Name>
             <Param name="queue" value="controller_queue"/>
-            <Param name="workflow_name" value="constant:WTTH_IMS_CREATE"/>
+            <Param name="workflow_name" value="constant:WTTH_IMS_ACTIVATE-SUSPEND"/>
             <Param name="destination0" value="controller_JOB_ID"/>
             <Param name="outputvar0" value="wtth_result_code"/>
             <Param name="variable0" value="JOB_ID"/>
+            <Param name="destination1" value="telephone_number"/>
             <Param name="outputvar1" value="wtth_result_desc"/>
             <Param name="variable1" value="fixed_telephone_number_new"/>
-            <Param name="variable2" value="password_customer"/>
-            <Param name="variable3" value="action_name"/>
-            <Param name="variable4" value="account_number"/>
-            <Param name="variable5" value="mobile_telephone_number_new"/>
+            <Param name="destination2" value="action_Name"/>
+            <Param name="variable2" value="action_name"/>
          </Action>
          <Next-Node>ModifOK?</Next-Node>
       </Process-Node>
@@ -584,8 +593,8 @@
       </Position>
       <Position>
          <Name>PutMessage4</Name>
-         <X>865</X>
-         <Y>860</Y>
+         <X>864</X>
+         <Y>751</Y>
          <Width>85</Width>
          <Height>48</Height>
       </Position>
@@ -633,7 +642,7 @@
       </Position>
       <Position>
          <Name>modifyService</Name>
-         <X>760</X>
+         <X>759</X>
          <Y>318</Y>
          <Width>90</Width>
          <Height>48</Height>
