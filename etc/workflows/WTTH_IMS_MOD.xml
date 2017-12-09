@@ -17,13 +17,22 @@
          <Name>StartJobAndWait</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.StartJobAndWait</Class-Name>
+            <Param name="queue" value="controller_queue"/>
             <Param name="workflow_name" value="constant:WTTH_IMS_DELETE"/>
             <Param name="destination0" value="services_JOB_ID"/>
             <Param name="outputvar0" value="wtth_result_code"/>
             <Param name="variable0" value="JOB_ID"/>
-            <Param name="destination1" value="controller_queue"/>
+            <Param name="destination1" value="telephone_number"/>
             <Param name="outputvar1" value="wtth_result_desc"/>
-            <Param name="variable1" value="aqui"/>
+            <Param name="variable1" value="telephone_number"/>
+            <Param name="destination2" value="pwd_value"/>
+            <Param name="variable2" value="pwd_value"/>
+            <Param name="destination3" value="action_Name"/>
+            <Param name="variable3" value="action_Name"/>
+            <Param name="destination4" value="geo_id"/>
+            <Param name="variable4" value="geo_id"/>
+            <Param name="destination5" value="service_class"/>
+            <Param name="variable5" value="service_class"/>
          </Action>
          <Next-Node>PutMessage</Next-Node>
       </Process-Node>
@@ -44,20 +53,29 @@
             <Param name="op1" value="constant:0"/>
             <Param name="op2" value="wtth_result_code"/>
          </Action>
-         <True-Next-Node>StartJobAndWait2</True-Next-Node>
+         <True-Next-Node>StartJobAndWait1</True-Next-Node>
          <False-Next-Node>PutMessage5</False-Next-Node>
       </Rule-Node>
       <Process-Node>
-         <Name>StartJobAndWait2</Name>
+         <Name>StartJobAndWait1</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.StartJobAndWait</Class-Name>
+            <Param name="queue" value="controller_queue"/>
             <Param name="workflow_name" value="constant:WTTH_IMS_CREATE"/>
             <Param name="destination0" value="services_JOB_ID"/>
             <Param name="outputvar0" value="wtth_result_code"/>
             <Param name="variable0" value="JOB_ID"/>
-            <Param name="destination1" value="controller_queue"/>
+            <Param name="destination1" value="telephone_number"/>
             <Param name="outputvar1" value="wtth_result_desc"/>
-            <Param name="variable1" value="aqui"/>
+            <Param name="variable1" value="telephone_number_new"/>
+            <Param name="destination2" value="pwd_value"/>
+            <Param name="variable2" value="pwd_value"/>
+            <Param name="destination3" value="action_Name"/>
+            <Param name="variable3" value="action_Name"/>
+            <Param name="destination4" value="geo_id"/>
+            <Param name="variable4" value="geo_id"/>
+            <Param name="destination5" value="service_class"/>
+            <Param name="variable5" value="service_class"/>
          </Action>
          <Next-Node>Equal1</Next-Node>
       </Process-Node>
@@ -108,6 +126,22 @@
          </Action>
       </Process-Node>
    </Nodes>
+   <Error-Handler>
+      <Name>SyncHandler1</Name>
+      <Class-Name>com.hp.ov.activator.mwfm.component.builtin.SyncHandler</Class-Name>
+      <Param name="job_id" value="controller_JOB_ID"/>
+      <Param name="queue" value="constant:controller__mod_queue"/>
+      <Param name="variable0" value="wtth_result_code"/>
+      <Param name="variable1" value="wtth_result_desc"/>
+   </Error-Handler>
+   <End-Handler>
+      <Name>SyncHandler</Name>
+      <Class-Name>com.hp.ov.activator.mwfm.component.builtin.SyncHandler</Class-Name>
+      <Param name="job_id" value="controller_JOB_ID"/>
+      <Param name="queue" value="constant:controller_mod_queue"/>
+      <Param name="variable0" value="wtth_result_code"/>
+      <Param name="variable1" value="wtth_result_desc"/>
+   </End-Handler>
    <Case-Packet>
       <Variable name="ANNOTATION" type="String"/>
       <Variable name="BREAK_POINT" type="String"/>
@@ -152,14 +186,21 @@
       <Variable name="WORKFLOW_STATE" type="String"/>
       <Variable name="WORKFLOW_TYPE" type="String"/>
       <Variable name="WORKFLOW_VERSION" type="Integer"/>
+      <Variable name="action_Name" type="String"/>
       <Variable name="activation_description" type="String"/>
       <Variable name="activation_major_code" type="Integer"/>
       <Variable name="activation_minor_code" type="Integer"/>
       <Variable name="aqui" type="String"/>
+      <Variable name="controller_JOB_ID" type="Integer"/>
       <Variable name="error_obj" type="Object"/>
+      <Variable name="geo_id" type="String"/>
       <Variable name="message_url" type="String"/>
       <Variable name="module_name" type="String"/>
+      <Variable name="pwd_value" type="String"/>
+      <Variable name="service_class" type="String"/>
       <Variable name="skip_activation" type="Boolean"/>
+      <Variable name="telephone_number" type="String"/>
+      <Variable name="telephone_number_new" type="String"/>
       <Variable name="wtth_result_code" type="Integer"/>
       <Variable name="wtth_result_desc" type="String"/>
       <Variable name="wtth_rollback_result_code" type="String"/>
@@ -217,8 +258,8 @@
       </Position>
       <Position>
          <Name>PutMessage6</Name>
-         <X>720</X>
-         <Y>130</Y>
+         <X>718</X>
+         <Y>114</Y>
          <Width>74</Width>
          <Height>48</Height>
       </Position>
@@ -230,8 +271,8 @@
          <Height>48</Height>
       </Position>
       <Position>
-         <Name>StartJobAndWait2</Name>
-         <X>539</X>
+         <Name>StartJobAndWait1</Name>
+         <X>545</X>
          <Y>16</Y>
          <Width>98</Width>
          <Height>48</Height>
@@ -348,7 +389,7 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
-         <Name>StartJobAndWait2</Name>
+         <Name>StartJobAndWait1</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>

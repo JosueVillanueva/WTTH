@@ -5,9 +5,22 @@
    <Name>WTTH_IMS_ACTIVATE-SUSPEND</Name>
    <Solution>WTTH</Solution>
    <Description>Search Credentials for activate SSW</Description>
-   <Start-Node>VariableMapper1</Start-Node>
+   <Start-Node>VariableMapper6</Start-Node>
    <Nodes>
       <Process-Node disablePersistence="true">
+         <Name>VariableMapper6</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="action_type" value="IMS"/>
+            <Param name="moduleName" value="http_sender_wtth"/>
+            <Param name="rollback" value="0"/>
+            <Param name="ssw_id" value="1"/>
+         </Action>
+         <Next-Node>VariableMapper1</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true" inactive="true">
          <Name>VariableMapper1</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
@@ -36,6 +49,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="OUTRST_value" value="1"/>
+            <Param name="param_table" value="S"/>
          </Action>
          <Next-Node>SearchZystem11</Next-Node>
       </Process-Node>
@@ -388,9 +402,26 @@
             <Param name="op1" value="result_code"/>
             <Param name="op2" value="constant:0"/>
          </Action>
-         <True-Next-Node>MsgSSW711</True-Next-Node>
+         <True-Next-Node>UpdateInventory</True-Next-Node>
          <False-Next-Node>PutMessage161</False-Next-Node>
       </Rule-Node>
+      <Process-Node>
+         <Name>UpdateInventory</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.UpdateInventory</Class-Name>
+            <Param name="bean" value="constant:com.hpe.ov.activator.inventory.Services"/>
+            <Param name="strict_update" value="constant:true"/>
+            <Param name="key_field0" value="constant:serviceId"/>
+            <Param name="key_value0" value="service_id"/>
+            <Param name="key_field1" value="constant:customerId"/>
+            <Param name="key_value1" value="account_number"/>
+            <Param name="key_field2" value="constant:accountStatus"/>
+            <Param name="key_value2" value="param_table"/>
+         </Action>
+         <Next-Node>MsgSSW711</Next-Node>
+      </Process-Node>
       <Process-Node>
          <Name>MsgSSW711</Name>
          <Description>Message to Activate Softswitch</Description>
@@ -445,6 +476,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="OUTRST_value" value="0"/>
+            <Param name="param_table" value="0"/>
          </Action>
          <Next-Node>SearchZystem11</Next-Node>
       </Process-Node>
@@ -452,7 +484,7 @@
    <Error-Handler>
       <Name>SyncHandler</Name>
       <Class-Name>com.hp.ov.activator.mwfm.component.builtin.SyncHandler</Class-Name>
-      <Param name="job_id" value="services_JOB_ID"/>
+      <Param name="job_id" value="controller_JOB_ID"/>
       <Param name="queue" value="constant:controller_queue"/>
       <Param name="variable0" value="wtth_result_code"/>
       <Param name="variable1" value="wtth_result_desc"/>
@@ -460,7 +492,7 @@
    <End-Handler>
       <Name>SyncHandler1</Name>
       <Class-Name>com.hp.ov.activator.mwfm.component.builtin.SyncHandler</Class-Name>
-      <Param name="job_id" value="services_JOB_ID"/>
+      <Param name="job_id" value="controller_JOB_ID"/>
       <Param name="queue" value="constant:controller_queue"/>
       <Param name="variable0" value="wtth_result_code"/>
       <Param name="variable1" value="wtth_result_desc"/>
@@ -510,6 +542,7 @@
       <Variable name="WORKFLOW_STATE" type="String"/>
       <Variable name="WORKFLOW_TYPE" type="String"/>
       <Variable name="WORKFLOW_VERSION" type="Integer"/>
+      <Variable name="account_number" type="String"/>
       <Variable name="action_Name" type="String"/>
       <Variable name="action_type" type="String"/>
       <Variable name="activate_JOB_ID" type="String"/>
@@ -517,6 +550,7 @@
       <Variable name="activation_major_code" type="Integer"/>
       <Variable name="activation_minor_code" type="Integer"/>
       <Variable name="authurl" type="String"/>
+      <Variable name="controller_JOB_ID" type="Integer"/>
       <Variable name="docsis_result_code" type="String"/>
       <Variable name="fault_code" type="String"/>
       <Variable name="fault_string" type="String"/>
@@ -529,6 +563,7 @@
       <Variable name="net_send" type="Object"/>
       <Variable name="output_result" type="String"/>
       <Variable name="outr" type="String"/>
+      <Variable name="param_table" type="String"/>
       <Variable name="passwd" type="String"/>
       <Variable name="password" type="String"/>
       <Variable name="password_enc" type="String"/>
@@ -536,6 +571,7 @@
       <Variable name="result_desc" type="String"/>
       <Variable name="rollback" type="String"/>
       <Variable name="service_class" type="String"/>
+      <Variable name="service_id" type="String"/>
       <Variable name="services_JOB_ID" type="String"/>
       <Variable name="skip_activation" type="Boolean"/>
       <Variable name="ssw_id" type="String"/>
@@ -574,8 +610,8 @@
       </Position>
       <Position>
          <Name>DoNothing11</Name>
-         <X>502</X>
-         <Y>674</Y>
+         <X>594</X>
+         <Y>676</Y>
          <Width>72</Width>
          <Height>48</Height>
       </Position>
@@ -623,8 +659,8 @@
       </Position>
       <Position>
          <Name>Log2.11</Name>
-         <X>405</X>
-         <Y>674</Y>
+         <X>496</X>
+         <Y>669</Y>
          <Width>61</Width>
          <Height>48</Height>
       </Position>
@@ -637,8 +673,8 @@
       </Position>
       <Position>
          <Name>MapResult211</Name>
-         <X>427</X>
-         <Y>581</Y>
+         <X>492</X>
+         <Y>579</Y>
          <Width>78</Width>
          <Height>48</Height>
       </Position>
@@ -651,8 +687,8 @@
       </Position>
       <Position>
          <Name>MapSSW9.11</Name>
-         <X>261</X>
-         <Y>674</Y>
+         <X>399</X>
+         <Y>671</Y>
          <Width>74</Width>
          <Height>48</Height>
       </Position>
@@ -686,22 +722,22 @@
       </Position>
       <Position>
          <Name>MsgHTTP11</Name>
-         <X>544</X>
-         <Y>581</Y>
+         <X>597</X>
+         <Y>577</Y>
          <Width>66</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>MsgSSW1511</Name>
-         <X>330</X>
+         <X>407</X>
          <Y>525</Y>
          <Width>75</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>MsgSSW711</Name>
-         <X>131</X>
-         <Y>674</Y>
+         <X>313</X>
+         <Y>673</Y>
          <Width>69</Width>
          <Height>48</Height>
       </Position>
@@ -756,7 +792,7 @@
       </Position>
       <Position>
          <Name>SSW Available11</Name>
-         <X>522</X>
+         <X>567</X>
          <Y>500</Y>
          <Width>110</Width>
          <Height>24</Height>
@@ -776,6 +812,13 @@
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>UpdateInventory</Name>
+         <X>123</X>
+         <Y>667</Y>
+         <Width>93</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>VariableMapper</Name>
          <X>163</X>
          <Y>78</Y>
@@ -784,7 +827,7 @@
       </Position>
       <Position>
          <Name>VariableMapper1</Name>
-         <X>58</X>
+         <X>57</X>
          <Y>12</Y>
          <Width>90</Width>
          <Height>48</Height>
@@ -839,6 +882,13 @@
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>VariableMapper6</Name>
+         <X>23</X>
+         <Y>91</Y>
+         <Width>90</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>VariableMapper81</Name>
          <X>221</X>
          <Y>461</Y>
@@ -847,8 +897,8 @@
       </Position>
       <Position>
          <Name>XMLMapper111</Name>
-         <X>326</X>
-         <Y>581</Y>
+         <X>393</X>
+         <Y>584</Y>
          <Width>83</Width>
          <Height>48</Height>
       </Position>
@@ -1263,6 +1313,19 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>UpdateInventory</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>VariableMapper</Name>
          <True-Arrow>
             <Type>2</Type>
@@ -1368,6 +1431,19 @@
       </Arrows>
       <Arrows>
          <Name>VariableMapper51</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>VariableMapper6</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
