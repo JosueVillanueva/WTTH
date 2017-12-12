@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Workflow SYSTEM "workflow.dtd">
+
+<Workflow Init-On-Startup="false" Unique="false" auditEnabled="false" auditStateChangeEvent="false" autoAuditEnabled="true" disablePersistence="true" statEnabled="false">
+   <Name>WTTH_DAILY_REPORT</Name>
+   <Solution>WTTH</Solution>
+   <Start-Node>AskFor</Start-Node>
+   <Nodes>
+      <Process-Node>
+         <Name>AskFor</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.AskFor</Class-Name>
+            <Param name="queue" value="variable:WORKFLOW_NAME"/>
+            <Param name="variable0" value="sasa"/>
+         </Action>
+      </Process-Node>
+   </Nodes>
+   <Case-Packet>
+      <Variable name="BREAK_POINT" type="String"/>
+      <Variable name="DEFAULT_ROLE" type="String"/>
+      <Variable name="EMPTY_STRING" type="String"/>
+      <Variable name="EX_STEP_NAME" type="String"/>
+      <Variable name="FILE_URL_PREFIX" type="String"/>
+      <Variable name="HOST_NAME" type="String"/>
+      <Variable name="JOB_ID" type="Integer"/>
+      <Variable name="KILL_ROLE" type="String"/>
+      <Variable name="MASTER_CHILD_JOBS" type="Object"/>
+      <Variable name="NULL" type="Object"/>
+      <Variable name="PRIORITY" type="Integer"/>
+      <Variable name="RESERVATIONS" type="Object"/>
+      <Variable name="RET_TEXT" type="String"/>
+      <Variable name="RET_VALUE" type="Integer"/>
+      <Variable name="RUNTIME" type="Object"/>
+      <Variable name="SCHEDULED_INFO" type="Object"/>
+      <Variable name="SERVICE_ID" type="String"/>
+      <Variable name="SOLUTION_ETC" type="String"/>
+      <Variable name="SOLUTION_NAME" type="String"/>
+      <Variable name="SOLUTION_VAR" type="String"/>
+      <Variable name="SOR_ID" type="Integer"/>
+      <Variable name="START_ROLE" type="String"/>
+      <Variable name="START_TIME" type="Integer"/>
+      <Variable name="STATUS" type="String"/>
+      <Variable name="STEP_NAME" type="String"/>
+      <Variable name="SUBSTEP" type="String"/>
+      <Variable name="THROW_EXCEP" type="Boolean"/>
+      <Variable name="TIMEOUT" type="Boolean"/>
+      <Variable name="TRACE_ROLE" type="String"/>
+      <Variable name="UNIQUE_WORKFLOW" type="Integer"/>
+      <Variable name="WORKFLOW_EXCEPTION" type="Object"/>
+      <Variable name="WORKFLOW_EXECUTION_STATUS" type="String"/>
+      <Variable name="WORKFLOW_NAME" type="String"/>
+      <Variable name="WORKFLOW_ORDER_ID" type="String"/>
+      <Variable name="WORKFLOW_STATE" type="String"/>
+      <Variable name="WORKFLOW_TYPE" type="String"/>
+      <Variable name="WORKFLOW_VERSION" type="Integer"/>
+      <Variable name="activation_description" type="String"/>
+      <Variable name="activation_major_code" type="Integer"/>
+      <Variable name="activation_minor_code" type="Integer"/>
+      <Variable name="message_url" type="String"/>
+      <Variable name="module_name" type="String"/>
+      <Variable name="skip_activation" type="Boolean"/>
+   </Case-Packet>
+   <Initial-Case-Packet/>
+   <Coordinates>
+      <Position>
+         <Name>AskFor</Name>
+         <X>290</X>
+         <Y>156</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Arrows>
+         <Name>AskFor</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+   </Coordinates>
+</Workflow>

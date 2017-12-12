@@ -21,7 +21,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="count_retries" value="0"/>
-            <Param name="number_retries" value="10"/>
+            <Param name="number_retries" value="5"/>
             <Param name="table_name" value="1"/>
          </Action>
          <Next-Node>CreateInventory</Next-Node>
@@ -59,7 +59,7 @@
          <Name>Sleep</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Sleep</Class-Name>
-            <Param name="time" value="constant:500"/>
+            <Param name="time" value="constant:300"/>
          </Action>
          <Next-Node>LessThanOrEqual</Next-Node>
       </Process-Node>
@@ -70,9 +70,19 @@
             <Param name="op1" value="count_retries"/>
             <Param name="op2" value="number_retries"/>
          </Action>
-         <True-Next-Node>CreateInventory</True-Next-Node>
+         <True-Next-Node>Add</True-Next-Node>
          <False-Next-Node>mapError</False-Next-Node>
       </Rule-Node>
+      <Process-Node disablePersistence="true">
+         <Name>Add</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Add</Class-Name>
+            <Param name="op0" value="count_retries"/>
+         </Action>
+         <Next-Node>CreateInventory</Next-Node>
+      </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>mapError</Name>
          <Action>
@@ -187,6 +197,13 @@
    </Initial-Case-Packet>
    <Coordinates>
       <Position>
+         <Name>Add</Name>
+         <X>315</X>
+         <Y>186</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>CreateInventory</Name>
          <X>295</X>
          <Y>103</Y>
@@ -223,8 +240,8 @@
       </Position>
       <Position>
          <Name>insertData</Name>
-         <X>372</X>
-         <Y>226</Y>
+         <X>520</X>
+         <Y>35</Y>
          <Width>68</Width>
          <Height>48</Height>
       </Position>
@@ -249,6 +266,19 @@
          <Width>71</Width>
          <Height>48</Height>
       </Position>
+      <Arrows>
+         <Name>Add</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
       <Arrows>
          <Name>CreateInventory</Name>
          <True-Arrow>

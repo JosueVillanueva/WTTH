@@ -170,8 +170,26 @@
             <Param name="op1" value="wtth_result_code"/>
             <Param name="op2" value="constant:0"/>
          </Action>
-         <True-Next-Node>delete Service</True-Next-Node>
+         <True-Next-Node>delete customer</True-Next-Node>
          <False-Next-Node>mapActionName1</False-Next-Node>
+      </Rule-Node>
+      <Process-Node>
+         <Name>delete customer</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.ExecSQLStatement</Class-Name>
+            <Param name="statement" value="delete from GENSERV_CUSTOMER where account_number = ?"/>
+            <Param name="throw_excep" value="constant:false"/>
+            <Param name="param0" value="account_number"/>
+         </Action>
+         <Next-Node>deleteOK?2</Next-Node>
+      </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>deleteOK?2</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.WasPreviousNodeOK</Class-Name>
+         </Action>
+         <True-Next-Node>delete Service</True-Next-Node>
+         <False-Next-Node>mapError09</False-Next-Node>
       </Rule-Node>
       <Process-Node>
          <Name>delete Service</Name>
@@ -189,7 +207,7 @@
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.WasPreviousNodeOK</Class-Name>
          </Action>
          <True-Next-Node>delete ServiceParam</True-Next-Node>
-         <False-Next-Node>mapError1</False-Next-Node>
+         <False-Next-Node>mapError10</False-Next-Node>
       </Rule-Node>
       <Process-Node>
          <Name>delete ServiceParam</Name>
@@ -329,10 +347,19 @@
          <Next-Node>Error</Next-Node>
       </Process-Node>
       <Process-Node disablePersistence="true">
-         <Name>mapError1</Name>
+         <Name>mapError10</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="wtth_result_code" value="7"/>
+            <Param name="wtth_result_code" value="10"/>
+            <Param name="wtth_result_desc" value="Cannot delete register in database %RET_TEXT%"/>
+         </Action>
+         <Next-Node>mapActionName1</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>mapError09</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="9"/>
             <Param name="wtth_result_desc" value="Cannot delete register in database %RET_TEXT%"/>
          </Action>
          <Next-Node>mapActionName1</Next-Node>
@@ -709,7 +736,7 @@
       </Position>
       <Position>
          <Name>UnlockTable1</Name>
-         <X>1744</X>
+         <X>2002</X>
          <Y>111</Y>
          <Width>86</Width>
          <Height>32</Height>
@@ -723,28 +750,42 @@
       </Position>
       <Position>
          <Name>delete Service</Name>
-         <X>1238</X>
+         <X>1496</X>
          <Y>111</Y>
          <Width>91</Width>
          <Height>32</Height>
       </Position>
       <Position>
          <Name>delete ServiceParam</Name>
-         <X>1484</X>
+         <X>1742</X>
          <Y>111</Y>
          <Width>128</Width>
          <Height>32</Height>
       </Position>
       <Position>
+         <Name>delete customer</Name>
+         <X>1237</X>
+         <Y>111</Y>
+         <Width>102</Width>
+         <Height>32</Height>
+      </Position>
+      <Position>
          <Name>deleteOK?</Name>
-         <X>1379</X>
+         <X>1637</X>
          <Y>114</Y>
          <Width>87</Width>
          <Height>26</Height>
       </Position>
       <Position>
          <Name>deleteOK?1</Name>
-         <X>1622</X>
+         <X>1880</X>
+         <Y>114</Y>
+         <Width>94</Width>
+         <Height>26</Height>
+      </Position>
+      <Position>
+         <Name>deleteOK?2</Name>
+         <X>1378</X>
          <Y>114</Y>
          <Width>94</Width>
          <Height>26</Height>
@@ -793,7 +834,7 @@
       </Position>
       <Position>
          <Name>mapError00</Name>
-         <X>1858</X>
+         <X>2116</X>
          <Y>111</Y>
          <Width>78</Width>
          <Height>32</Height>
@@ -849,16 +890,23 @@
       </Position>
       <Position>
          <Name>mapError08</Name>
-         <X>1630</X>
+         <X>1888</X>
          <Y>173</Y>
          <Width>78</Width>
          <Height>32</Height>
       </Position>
       <Position>
-         <Name>mapError1</Name>
-         <X>1387</X>
-         <Y>173</Y>
-         <Width>71</Width>
+         <Name>mapError09</Name>
+         <X>1386</X>
+         <Y>171</Y>
+         <Width>78</Width>
+         <Height>32</Height>
+      </Position>
+      <Position>
+         <Name>mapError10</Name>
+         <X>1641</X>
+         <Y>172</Y>
+         <Width>78</Width>
          <Height>32</Height>
       </Position>
       <Position>
@@ -1177,6 +1225,19 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>delete customer</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>deleteOK?</Name>
          <True-Arrow>
             <Type>0</Type>
@@ -1191,6 +1252,19 @@
       </Arrows>
       <Arrows>
          <Name>deleteOK?1</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>deleteOK?2</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
@@ -1398,7 +1472,20 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
-         <Name>mapError1</Name>
+         <Name>mapError09</Name>
+         <True-Arrow>
+            <Type>3</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>mapError10</Name>
          <True-Arrow>
             <Type>3</Type>
             <DeltaX>0</DeltaX>

@@ -185,6 +185,7 @@
             <Param name="variable16" value="scope"/>
             <Param name="variable17" value="ssw_id_new"/>
             <Param name="variable18" value="transaction_id_new"/>
+            <Param name="variable19" value="customer"/>
          </Action>
          <Next-Node>ModifOK?</Next-Node>
       </Process-Node>

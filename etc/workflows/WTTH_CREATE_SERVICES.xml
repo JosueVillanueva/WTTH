@@ -138,11 +138,11 @@
             <Param name="op1" value="wtth_result_code"/>
             <Param name="op2" value="constant:0"/>
          </Action>
-         <True-Next-Node>CreateInventory</True-Next-Node>
+         <True-Next-Node>insertServices</True-Next-Node>
          <False-Next-Node>mapActionName1</False-Next-Node>
       </Rule-Node>
       <Process-Node>
-         <Name>CreateInventory</Name>
+         <Name>insertServices</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.CreateInventory</Class-Name>
             <Param name="bean" value="constant:com.hpe.ov.activator.inventory.Services"/>
@@ -172,15 +172,60 @@
       </Rule-Node>
       <Rule-Node disablePersistence="true">
          <Name>action=create?</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
             <Param name="op1" value="action_name"/>
             <Param name="op2" value="constant:CREATE"/>
          </Action>
-         <True-Next-Node>service_wo?</True-Next-Node>
+         <True-Next-Node>insertCustomerbn</True-Next-Node>
          <False-Next-Node>UnlockTable</False-Next-Node>
+      </Rule-Node>
+      <Process-Node inactive="true">
+         <Name>insertCustomerbn</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.CreateInventory</Class-Name>
+            <Param name="bean" value="constant:com.hpe.ov.activator.inventory.Customer"/>
+            <Param name="throw_excep" value="constant:true"/>
+            <Param name="key_field0" value="constant:customerId"/>
+            <Param name="key_value0" value="account_number"/>
+            <Param name="key_field1" value="constant:accountNumber"/>
+            <Param name="key_value1" value="account_number"/>
+            <Param name="key_field2" value="constant:customer_name"/>
+            <Param name="key_value2" value="customer"/>
+            <Param name="key_field3" value="constant:emailCustomer"/>
+            <Param name="key_value3" value="email_customer"/>
+            <Param name="key_field4" value="constant:passwordCustomer"/>
+            <Param name="key_value4" value="password_customer"/>
+            <Param name="key_field5" value="constant:aux1"/>
+            <Param name="key_value5" value="constant:0"/>
+            <Param name="key_field6" value="constant:metada"/>
+            <Param name="key_value6" value="constant:0"/>
+         </Action>
+         <Next-Node>insertCustomerbd</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>insertCustomerbd</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.ExecSQLStatement</Class-Name>
+            <Param name="statement" value="insert into GENSERV_CUSTOMER(customer_id, account_number, customer, email_customer, password_customer, aux1, metadata, isparent__) values (?,?,?, ?,?,&apos;0&apos;,&apos;0&apos;,&apos;y&apos;)"/>
+            <Param name="throw_excep" value="constant:true"/>
+            <Param name="param0" value="account_number"/>
+            <Param name="param1" value="account_number"/>
+            <Param name="param2" value="customer"/>
+            <Param name="param3" value="email_customer"/>
+            <Param name="param4" value="password_customer"/>
+         </Action>
+         <Next-Node>customer?</Next-Node>
+      </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>customer?</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.WasPreviousNodeOK</Class-Name>
+         </Action>
+         <True-Next-Node>service_wo?</True-Next-Node>
+         <False-Next-Node>mapError08</False-Next-Node>
       </Rule-Node>
       <Rule-Node disablePersistence="true">
          <Name>service_wo?</Name>
@@ -399,11 +444,11 @@
          </Action>
       </Process-Node>
       <Process-Node disablePersistence="true">
-         <Name>mapError</Name>
+         <Name>mapError08</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="wtth_result_code" value="7"/>
-            <Param name="wtth_result_desc" value="no se pudo insertar el registro en base de datos."/>
+            <Param name="wtth_result_code" value="8"/>
+            <Param name="wtth_result_desc" value="Cannot insert in customer in database"/>
          </Action>
          <Next-Node>mapActionName1</Next-Node>
       </Process-Node>
@@ -530,6 +575,15 @@
             <Param name="wtth_result_desc" value="UNDO_NO_OK.%wtth_result_desc%"/>
          </Action>
          <Next-Node>Error</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>mapError</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="7"/>
+            <Param name="wtth_result_desc" value="no se pudo insertar el registro en base de datos."/>
+         </Action>
+         <Next-Node>mapActionName1</Next-Node>
       </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>mapActionName</Name>
@@ -722,6 +776,8 @@
       <Variable name="activation_major_code" type="Integer"/>
       <Variable name="activation_minor_code" type="Integer"/>
       <Variable name="controller_JOB_ID" type="Integer"/>
+      <Variable name="customer" type="String"/>
+      <Variable name="customer_name" type="String"/>
       <Variable name="email_customer" type="String"/>
       <Variable name="error_handling_obj" type="Object"/>
       <Variable name="fixed_telephone_number_new" type="String"/>
@@ -748,13 +804,6 @@
       <Variable-Value name="WORKFLOW_VERSION" value="-1"/>
    </Initial-Case-Packet>
    <Coordinates>
-      <Position>
-         <Name>CreateInventory</Name>
-         <X>1080</X>
-         <Y>128</Y>
-         <Width>101</Width>
-         <Height>48</Height>
-      </Position>
       <Position>
          <Name>Error</Name>
          <X>573</X>
@@ -841,35 +890,35 @@
       </Position>
       <Position>
          <Name>PutMessage4</Name>
-         <X>1487</X>
+         <X>1859</X>
          <Y>128</Y>
          <Width>85</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>PutMessage41</Name>
-         <X>1751</X>
+         <X>2119</X>
          <Y>128</Y>
          <Width>92</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>PutMessage411</Name>
-         <X>2012</X>
+         <X>2380</X>
          <Y>128</Y>
          <Width>99</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>PutMessage412</Name>
-         <X>2228</X>
+         <X>2596</X>
          <Y>128</Y>
          <Width>99</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>PutMessage413</Name>
-         <X>2445</X>
+         <X>2813</X>
          <Y>128</Y>
          <Width>99</Width>
          <Height>48</Height>
@@ -897,7 +946,7 @@
       </Position>
       <Position>
          <Name>UnlockTable</Name>
-         <X>2568</X>
+         <X>2936</X>
          <Y>128</Y>
          <Width>79</Width>
          <Height>48</Height>
@@ -924,6 +973,13 @@
          <Height>26</Height>
       </Position>
       <Position>
+         <Name>customer?</Name>
+         <X>1533</X>
+         <Y>139</Y>
+         <Width>89</Width>
+         <Height>26</Height>
+      </Position>
+      <Position>
          <Name>errorFound?</Name>
          <X>953</X>
          <Y>947</Y>
@@ -932,14 +988,14 @@
       </Position>
       <Position>
          <Name>fixed_tn?</Name>
-         <X>2122</X>
+         <X>2490</X>
          <Y>139</Y>
          <Width>81</Width>
          <Height>26</Height>
       </Position>
       <Position>
          <Name>geo_loc_id?</Name>
-         <X>1616</X>
+         <X>1984</X>
          <Y>139</Y>
          <Width>97</Width>
          <Height>26</Height>
@@ -959,36 +1015,57 @@
          <Height>26</Height>
       </Position>
       <Position>
+         <Name>insertCustomerbd</Name>
+         <X>1389</X>
+         <Y>128</Y>
+         <Width>111</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>insertCustomerbn</Name>
+         <X>1389</X>
+         <Y>44</Y>
+         <Width>111</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>insertGeoLocId</Name>
-         <X>1617</X>
+         <X>1985</X>
          <Y>220</Y>
          <Width>94</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>insertMobileTN</Name>
-         <X>2339</X>
+         <X>2707</X>
          <Y>46</Y>
          <Width>95</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>insertSSWId</Name>
-         <X>1910</X>
+         <X>2278</X>
          <Y>46</Y>
          <Width>81</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>insertServiceWo</Name>
-         <X>1415</X>
+         <X>1787</X>
          <Y>46</Y>
          <Width>103</Width>
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>insertServices</Name>
+         <X>1080</X>
+         <Y>128</Y>
+         <Width>90</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>insertfixedTN</Name>
-         <X>2120</X>
+         <X>2488</X>
          <Y>220</Y>
          <Width>85</Width>
          <Height>48</Height>
@@ -1003,20 +1080,20 @@
       <Position>
          <Name>mapActionName1</Name>
          <X>955</X>
-         <Y>220</Y>
+         <Y>238</Y>
          <Width>110</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>mapError</Name>
          <X>1246</X>
-         <Y>220</Y>
+         <Y>190</Y>
          <Width>64</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>mapError00</Name>
-         <X>2690</X>
+         <X>3058</X>
          <Y>129</Y>
          <Width>78</Width>
          <Height>48</Height>
@@ -1071,6 +1148,13 @@
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>mapError08</Name>
+         <X>1538</X>
+         <Y>238</Y>
+         <Width>78</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>mapErrorDesc</Name>
          <X>958</X>
          <Y>996</Y>
@@ -1079,7 +1163,7 @@
       </Position>
       <Position>
          <Name>mobile_tn?</Name>
-         <X>2340</X>
+         <X>2708</X>
          <Y>139</Y>
          <Width>92</Width>
          <Height>26</Height>
@@ -1100,7 +1184,7 @@
       </Position>
       <Position>
          <Name>service_wo?</Name>
-         <X>1352</X>
+         <X>1724</X>
          <Y>139</Y>
          <Width>100</Width>
          <Height>26</Height>
@@ -1114,24 +1198,11 @@
       </Position>
       <Position>
          <Name>ssw_id?</Name>
-         <X>1913</X>
+         <X>2281</X>
          <Y>139</Y>
          <Width>75</Width>
          <Height>26</Height>
       </Position>
-      <Arrows>
-         <Name>CreateInventory</Name>
-         <True-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </True-Arrow>
-         <False-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </False-Arrow>
-      </Arrows>
       <Arrows>
          <Name>Error</Name>
          <True-Arrow>
@@ -1445,6 +1516,19 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>customer?</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>errorFound?</Name>
          <True-Arrow>
             <Type>0</Type>
@@ -1510,6 +1594,32 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>insertCustomerbd</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>insertCustomerbn</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>insertGeoLocId</Name>
          <True-Arrow>
             <Type>2</Type>
@@ -1562,6 +1672,19 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>insertServices</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>insertfixedTN</Name>
          <True-Arrow>
             <Type>2</Type>
@@ -1603,7 +1726,7 @@
       <Arrows>
          <Name>mapError</Name>
          <True-Arrow>
-            <Type>0</Type>
+            <Type>3</Type>
             <DeltaX>0</DeltaX>
             <DeltaY>0</DeltaY>
          </True-Arrow>
@@ -1708,6 +1831,19 @@
          <Name>mapError07</Name>
          <True-Arrow>
             <Type>3</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>mapError08</Name>
+         <True-Arrow>
+            <Type>0</Type>
             <DeltaX>0</DeltaX>
             <DeltaY>0</DeltaY>
          </True-Arrow>
