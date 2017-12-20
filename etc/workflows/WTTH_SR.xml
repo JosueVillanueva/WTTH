@@ -38,8 +38,8 @@
          <Name>mapTables</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="table_ims_to_mov" value="lrt_ims_to_mov"/>
-            <Param name="table_mov_to_ims" value="lrt_mov_to_ims"/>
+            <Param name="table_ims_to_mov" value="IMS_to_Movil"/>
+            <Param name="table_mov_to_ims" value="Movil_to_IMS"/>
          </Action>
          <Next-Node>MapPaths</Next-Node>
       </Process-Node>
@@ -47,6 +47,7 @@
          <Name>MapPaths</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="path_gz" value="%SOLUTION_ETC%/template_files/WTTHColombia/SALIDAS/"/>
             <Param name="path_xml_ims_to_mov" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/WTTHColombia/SALIDAS/%table_ims_to_mov%.xml"/>
             <Param name="path_xml_mov_to_ims" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/WTTHColombia/SALIDAS/%table_mov_to_ims%.xml"/>
             <Param name="path_xml_sftp" value="%SOLUTION_ETC%/template_files/WTTHColombia/SALIDAS/"/>
@@ -55,7 +56,7 @@
             <Param name="path_xsl_mov_to_ims" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/WTTHColombia/XSLs/WTTH_mov_to_ims_b.xsl"/>
             <Param name="path_xsl_sftp" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/WTTHColombia/XSLs/sftp.xsl"/>
             <Param name="path_xsl_update_tables" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/WTTHColombia/XSLs/WTTH_update_tables.xsl"/>
-            <Param name="remote_file_path_sftp" value="/home"/>
+            <Param name="remote_file_path_sftp" value="/code/lrt"/>
          </Action>
          <Next-Node>Switch</Next-Node>
       </Process-Node>
@@ -159,7 +160,7 @@
             <Param name="op1" value="count_ne"/>
             <Param name="op2" value="network_element_obj#"/>
          </Action>
-         <True-Next-Node>updateIms2MovComm</True-Next-Node>
+         <True-Next-Node>PutMessage16</True-Next-Node>
          <False-Next-Node>mapSftp1</False-Next-Node>
       </Rule-Node>
       <Process-Node disablePersistence="true">
@@ -271,6 +272,37 @@
             <Param name="param2" value="mobile_telephone_number_new"/>
          </Action>
          <Next-Node>addLine</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>PutMessage14</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="salida %s"/>
+            <Param name="queue" value="variable:WORKFLOW_NAME"/>
+            <Param name="param0" value="salida"/>
+         </Action>
+         <Next-Node>start count ne</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>PutMessage15</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="salida2 %s"/>
+            <Param name="queue" value="variable:WORKFLOW_NAME"/>
+            <Param name="param0" value="salida2"/>
+         </Action>
+         <Next-Node>gzMov2Ims</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>PutMessage16</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="table_ims_to_mov %s table_mov_to_ims %s"/>
+            <Param name="queue" value="variable:WORKFLOW_NAME"/>
+            <Param name="param0" value="table_ims_to_mov"/>
+            <Param name="param1" value="table_mov_to_ims"/>
+         </Action>
+         <Next-Node>updateIms2MovComm</Next-Node>
       </Process-Node>
       <Process-Node inactive="true">
          <Name>PutMessage2</Name>
@@ -437,6 +469,15 @@
          </Action>
          <Next-Node>number_retries valid?</Next-Node>
       </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>VariableMapper2</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="file_name_ims_to_mov" value="%table_ims_to_mov%.xml"/>
+            <Param name="file_name_mov_to_ims" value="%table_mov_to_ims%.xml"/>
+         </Action>
+         <Next-Node>gzIms2Mov</Next-Node>
+      </Process-Node>
       <Process-Node>
          <Name>addLine</Name>
          <Action>
@@ -529,7 +570,7 @@
          <Name>countRetry</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="count_retry_upd" value="0"/>
+            <Param name="count_retry_upd" value="3"/>
          </Action>
          <Next-Node>updateImsToMov</Next-Node>
       </Process-Node>
@@ -574,8 +615,6 @@
       </Process-Node>
       <Process-Node>
          <Name>getImsToMov</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.QueryInventory</Class-Name>
             <Param name="bean" value="constant:com.hpe.ov.activator.inventory.IMStoMov"/>
@@ -588,10 +627,30 @@
          </Action>
          <Next-Node>imsToMov?</Next-Node>
       </Process-Node>
+      <Process-Node>
+         <Name>gzIms2Mov</Name>
+         <Description>gzip -9 IMS_to_movil.xml</Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.ExecuteExternal</Class-Name>
+            <Param name="cmd_line" value="gzip -f -9 IMS_to_Movil.xml"/>
+            <Param name="cwd" value="path_gz"/>
+            <Param name="output_var" value="salida2"/>
+         </Action>
+         <Next-Node>PutMessage15</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>gzMov2Ims</Name>
+         <Description>comprimir archivo</Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.ExecuteExternal</Class-Name>
+            <Param name="cmd_line" value="gzip -f -9 Movil_to_IMS.xml"/>
+            <Param name="cwd" value="path_gz"/>
+            <Param name="output_var" value="salida"/>
+         </Action>
+         <Next-Node>PutMessage14</Next-Node>
+      </Process-Node>
       <Rule-Node disablePersistence="true">
          <Name>imsToMov?</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
             <Param name="op1" value="ims_to_mov_obj#"/>
@@ -683,8 +742,6 @@
       </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>mapError09</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="wtth_result_code" value="309"/>
@@ -722,10 +779,12 @@
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="commands_sftp" value="put %path_xml_ims_to_mov%"/>
             <Param name="host_sftp" value="%network_element_obj[count_ne].url%"/>
+            <Param name="local_file_path_sftp" value="%SOLUTION_ETC%/template_files/WTTHColombia/SALIDAS/"/>
             <Param name="number_retries" value="3"/>
             <Param name="pass_sftp" value="%network_element_obj[count_ne].password%"/>
             <Param name="pause_between_retries" value="300"/>
             <Param name="port" value="%network_element_obj[count_ne].portNumber%"/>
+            <Param name="remote_file_name_sftp" value="%table_ims_to_mov%.xml"/>
             <Param name="timeout" value="5000"/>
             <Param name="user_sftp" value="%network_element_obj[count_ne].userName%"/>
          </Action>
@@ -743,10 +802,10 @@
          <Name>mapSftpParams1</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="local_file_name_sftp" value="%table_ims_to_mov%.xml"/>
+            <Param name="local_file_name_sftp" value="%table_ims_to_mov%.xml.gz"/>
             <Param name="local_file_path_sftp" value="%SOLUTION_ETC%/template_files/WTTHColombia/SALIDAS/"/>
             <Param name="path_xml_sftp" value="%FILE_URL_PREFIX%/%path_xml_sftp%sftp_%table_ims_to_mov%.xml"/>
-            <Param name="remote_file_name_sftp" value="%table_ims_to_mov%.xml"/>
+            <Param name="remote_file_name_sftp" value="%table_ims_to_mov%.xml.gz"/>
             <Param name="sftp_operation" value="put"/>
             <Param name="url_sftp" value="%host_sftp%:%port%"/>
          </Action>
@@ -756,10 +815,10 @@
          <Name>mapSftpParams11</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="local_file_name_sftp" value="%table_mov_to_ims%.xml"/>
+            <Param name="local_file_name_sftp" value="%table_mov_to_ims%.xml.gz"/>
             <Param name="local_file_path_sftp" value="%SOLUTION_ETC%/template_files/WTTHColombia/SALIDAS/"/>
             <Param name="path_xml_sftp" value="%FILE_URL_PREFIX%/%path_xml_sftp%sftp_%table_mov_to_ims%.xml"/>
-            <Param name="remote_file_name_sftp" value="%table_mov_to_ims%.xml"/>
+            <Param name="remote_file_name_sftp" value="%table_mov_to_ims%.xml.gz"/>
             <Param name="sftp_operation" value="put"/>
          </Action>
          <Next-Node>TransformXML1</Next-Node>
@@ -875,7 +934,7 @@
          </Action>
          <Next-Node>countRetry</Next-Node>
       </Process-Node>
-      <Process-Node inactive="true">
+      <Process-Node>
          <Name>updateImsToMov</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Activate</Class-Name>
@@ -921,7 +980,7 @@
             <Param name="output_url" value="path_xml_mov_to_ims"/>
             <Param name="xsl_url" value="path_xsl_mov_to_ims"/>
          </Action>
-         <Next-Node>start count ne</Next-Node>
+         <Next-Node>VariableMapper2</Next-Node>
       </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>xmlMovToImsRb</Name>
@@ -1018,10 +1077,14 @@
       <Variable name="create_date" type="String"/>
       <Variable name="current_date" type="String"/>
       <Variable name="docsis_result_code" type="String"/>
+      <Variable name="file_name_ims_to_mov" type="String"/>
+      <Variable name="file_name_mov_to_ims" type="String"/>
       <Variable name="fixed_number" type="String"/>
       <Variable name="fixed_number_array" type="String"/>
       <Variable name="fixed_numbers" type="String"/>
       <Variable name="fixed_telephone_number_new" type="String"/>
+      <Variable name="gz_ims_to_mov" type="String"/>
+      <Variable name="gz_mov_to_ims" type="String"/>
       <Variable name="host_sftp" type="String"/>
       <Variable name="ims_to_mov_obj" type="Object"/>
       <Variable name="ims_to_mov_obj_rb" type="Object"/>
@@ -1037,6 +1100,7 @@
       <Variable name="network_element_obj" type="Object"/>
       <Variable name="number_retries" type="Integer"/>
       <Variable name="pass_sftp" type="String"/>
+      <Variable name="path_gz" type="String"/>
       <Variable name="path_xml_ims_to_mov" type="String"/>
       <Variable name="path_xml_mov_to_ims" type="String"/>
       <Variable name="path_xml_sftp" type="String"/>
@@ -1058,6 +1122,8 @@
       <Variable name="route_concat_mov_to_ims" type="String"/>
       <Variable name="route_ims_to_mov" type="String"/>
       <Variable name="route_mov_to_ims" type="String"/>
+      <Variable name="salida" type="String"/>
+      <Variable name="salida2" type="String"/>
       <Variable name="separator" type="String"/>
       <Variable name="services_JOB_ID" type="Integer"/>
       <Variable name="sftp_commands" type="String"/>
@@ -1238,6 +1304,27 @@
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>PutMessage14</Name>
+         <X>1416</X>
+         <Y>168</Y>
+         <Width>92</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>PutMessage15</Name>
+         <X>1317</X>
+         <Y>42</Y>
+         <Width>92</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>PutMessage16</Name>
+         <X>2947</X>
+         <Y>103</Y>
+         <Width>92</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>PutMessage2</Name>
          <X>1012</X>
          <Y>209</Y>
@@ -1350,6 +1437,13 @@
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>VariableMapper2</Name>
+         <X>1310</X>
+         <Y>229</Y>
+         <Width>107</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>addLine</Name>
          <X>434</X>
          <Y>305</Y>
@@ -1445,6 +1539,20 @@
          <X>263</X>
          <Y>303</Y>
          <Width>87</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>gzIms2Mov</Name>
+         <X>1326</X>
+         <Y>134</Y>
+         <Width>74</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>gzMov2Ims</Name>
+         <X>1425</X>
+         <Y>85</Y>
+         <Width>74</Width>
          <Height>48</Height>
       </Position>
       <Position>
@@ -1555,7 +1663,7 @@
       <Position>
          <Name>mapSftpParams1</Name>
          <X>1836</X>
-         <Y>305</Y>
+         <Y>304</Y>
          <Width>108</Width>
          <Height>48</Height>
       </Position>
@@ -1680,7 +1788,7 @@
       </Position>
       <Position>
          <Name>xmlMovToImsRb</Name>
-         <X>1517</X>
+         <X>1491</X>
          <Y>965</Y>
          <Width>104</Width>
          <Height>48</Height>
@@ -1972,6 +2080,45 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>PutMessage14</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>PutMessage15</Name>
+         <True-Arrow>
+            <Type>2</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>PutMessage16</Name>
+         <True-Arrow>
+            <Type>2</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>PutMessage2</Name>
          <True-Arrow>
             <Type>0</Type>
@@ -2218,6 +2365,19 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>VariableMapper2</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>addLine</Name>
          <True-Arrow>
             <Type>0</Type>
@@ -2388,6 +2548,32 @@
       </Arrows>
       <Arrows>
          <Name>getImsToMov</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>gzIms2Mov</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>gzMov2Ims</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>

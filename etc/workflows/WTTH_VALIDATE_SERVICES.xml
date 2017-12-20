@@ -122,8 +122,41 @@
             <Param name="param1" value="xml_message"/>
             <Param name="param2" value="action_name"/>
          </Action>
-         <Next-Node>mapErrorCode00</Next-Node>
+         <Next-Node>fixedtn?</Next-Node>
       </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>fixedtn?</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.IsTrue</Class-Name>
+            <Param name="op1" value="fixed_telephone_number_new"/>
+         </Action>
+         <True-Next-Node>mobiletn?</True-Next-Node>
+         <False-Next-Node>mapErrorCode02</False-Next-Node>
+      </Rule-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>mobiletn?</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.IsTrue</Class-Name>
+            <Param name="op1" value="mobile_telephone_number_new"/>
+         </Action>
+         <True-Next-Node>account_number?</True-Next-Node>
+         <False-Next-Node>mapErrorCode03</False-Next-Node>
+      </Rule-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>account_number?</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.IsTrue</Class-Name>
+            <Param name="op1" value="account_number"/>
+         </Action>
+         <True-Next-Node>mapErrorCode00</True-Next-Node>
+         <False-Next-Node>mapErrorCode04</False-Next-Node>
+      </Rule-Node>
       <Process-Node disablePersistence="true">
          <Name>mapErrorCode00</Name>
          <Action>
@@ -131,6 +164,39 @@
             <Param name="wtth_result_code" value="0"/>
             <Param name="wtth_result_desc" value="Transaction Succesful"/>
          </Action>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>mapErrorCode04</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="4"/>
+            <Param name="wtth_result_desc" value="Account number is empty"/>
+         </Action>
+         <Next-Node>Error</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>Error</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.DoNothing</Class-Name>
+         </Action>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>mapErrorCode03</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="3"/>
+            <Param name="wtth_result_desc" value="Mobile telephone number is empty"/>
+         </Action>
+         <Next-Node>Error</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>mapErrorCode02</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="2"/>
+            <Param name="wtth_result_desc" value="Fixed thelephone number is empty"/>
+         </Action>
+         <Next-Node>Error</Next-Node>
       </Process-Node>
       <Process-Node inactive="true">
          <Name>PutMessage3</Name>
@@ -245,12 +311,6 @@
          </Action>
          <Next-Node>Error</Next-Node>
       </Process-Node>
-      <Process-Node disablePersistence="true">
-         <Name>Error</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.DoNothing</Class-Name>
-         </Action>
-      </Process-Node>
       <Process-Node>
          <Name>PutMessage</Name>
          <Action>
@@ -326,6 +386,7 @@
       <Param name="destination25" value="transaction_id_old"/>
       <Param name="variable25" value="transaction_id_old"/>
       <Param name="variable26" value="wtth_result_desc"/>
+      <Param name="variable27" value="wtth_result_desc"/>
    </End-Handler>
    <Case-Packet>
       <Variable name="ANNOTATION" type="String"/>
@@ -432,7 +493,7 @@
       </Position>
       <Position>
          <Name>MapServices</Name>
-         <X>1020</X>
+         <X>902</X>
          <Y>48</Y>
          <Width>82</Width>
          <Height>48</Height>
@@ -440,14 +501,14 @@
       <Position>
          <Name>MapServices1</Name>
          <X>781</X>
-         <Y>114</Y>
+         <Y>115</Y>
          <Width>89</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>MapServices11</Name>
-         <X>1139</X>
-         <Y>114</Y>
+         <X>1183</X>
+         <Y>115</Y>
          <Width>96</Width>
          <Height>48</Height>
       </Position>
@@ -467,21 +528,21 @@
       </Position>
       <Position>
          <Name>PutMessage21</Name>
-         <X>1235</X>
-         <Y>114</Y>
+         <X>1305</X>
+         <Y>115</Y>
          <Width>92</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>PutMessage3</Name>
          <X>582</X>
-         <Y>114</Y>
+         <Y>115</Y>
          <Width>85</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>PutMessage31</Name>
-         <X>938</X>
+         <X>937</X>
          <Y>199</Y>
          <Width>92</Width>
          <Height>48</Height>
@@ -496,7 +557,7 @@
       <Position>
          <Name>Start</Name>
          <X>185</X>
-         <Y>114</Y>
+         <Y>115</Y>
          <Width>61</Width>
          <Height>48</Height>
       </Position>
@@ -509,22 +570,22 @@
       </Position>
       <Position>
          <Name>TransformXML11</Name>
-         <X>1039</X>
-         <Y>114</Y>
+         <X>1055</X>
+         <Y>115</Y>
          <Width>108</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>Validate XML</Name>
          <X>362</X>
-         <Y>114</Y>
+         <Y>115</Y>
          <Width>84</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>Validate XML1</Name>
          <X>679</X>
-         <Y>114</Y>
+         <Y>115</Y>
          <Width>91</Width>
          <Height>48</Height>
       </Position>
@@ -536,25 +597,67 @@
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>account_number?</Name>
+         <X>1647</X>
+         <Y>126</Y>
+         <Width>131</Width>
+         <Height>26</Height>
+      </Position>
+      <Position>
+         <Name>fixedtn?</Name>
+         <X>1417</X>
+         <Y>126</Y>
+         <Width>74</Width>
+         <Height>26</Height>
+      </Position>
+      <Position>
          <Name>mapErrorCode00</Name>
-         <X>1343</X>
-         <Y>114</Y>
+         <X>1799</X>
+         <Y>115</Y>
          <Width>107</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>mapErrorCode01</Name>
-         <X>931</X>
+         <X>930</X>
          <Y>304</Y>
+         <Width>107</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>mapErrorCode02</Name>
+         <X>1401</X>
+         <Y>201</Y>
+         <Width>107</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>mapErrorCode03</Name>
+         <X>1531</X>
+         <Y>200</Y>
+         <Width>107</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>mapErrorCode04</Name>
+         <X>1659</X>
+         <Y>201</Y>
          <Width>107</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>mapPaths</Name>
          <X>267</X>
-         <Y>114</Y>
+         <Y>115</Y>
          <Width>66</Width>
          <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>mobiletn?</Name>
+         <X>1542</X>
+         <Y>126</Y>
+         <Width>85</Width>
+         <Height>26</Height>
       </Position>
       <Position>
          <Name>set isCF</Name>
@@ -786,6 +889,32 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>account_number?</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>fixedtn?</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>mapErrorCode00</Name>
          <True-Arrow>
             <Type>0</Type>
@@ -812,7 +941,59 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>mapErrorCode02</Name>
+         <True-Arrow>
+            <Type>3</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>mapErrorCode03</Name>
+         <True-Arrow>
+            <Type>3</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>mapErrorCode04</Name>
+         <True-Arrow>
+            <Type>3</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>mapPaths</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>mobiletn?</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>

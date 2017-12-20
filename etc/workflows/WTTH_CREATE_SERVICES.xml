@@ -92,10 +92,11 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.StartJobAndWait</Class-Name>
             <Param name="queue" value="controller_queue"/>
-            <Param name="workflow_name" value="constant:WTTH_NNC_CREATE"/>
+            <Param name="workflow_name" value="constant:WTTH_NNC"/>
             <Param name="destination0" value="services_JOB_ID"/>
             <Param name="outputvar0" value="wtth_result_code"/>
             <Param name="variable0" value="JOB_ID"/>
+            <Param name="destination1" value="customer_id"/>
             <Param name="outputvar1" value="wtth_result_desc"/>
             <Param name="variable1" value="fixed_telephone_number_new"/>
             <Param name="variable2" value="password_customer"/>
@@ -205,8 +206,6 @@
       </Process-Node>
       <Process-Node>
          <Name>insertCustomerbd</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.ExecSQLStatement</Class-Name>
             <Param name="statement" value="insert into GENSERV_CUSTOMER(customer_id, account_number, customer, email_customer, password_customer, aux1, metadata, isparent__) values (?,?,?, ?,?,&apos;0&apos;,&apos;0&apos;,&apos;y&apos;)"/>

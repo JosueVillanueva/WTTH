@@ -129,8 +129,9 @@
             <Param name="destination0" value="services_JOB_ID"/>
             <Param name="outputvar0" value="wtth_result_code"/>
             <Param name="variable0" value="JOB_ID"/>
+            <Param name="destination1" value="customer_id"/>
             <Param name="variable1" value="fixed_telephone_number_new"/>
-            <Param name="variable2" value="password_customer"/>
+            <Param name="variable2" value="mobile_telephone_number_new"/>
             <Param name="variable3" value="action_name"/>
             <Param name="variable4" value="account_number"/>
             <Param name="variable5" value="mobile_telephone_number_new"/>

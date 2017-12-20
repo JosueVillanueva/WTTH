@@ -4,29 +4,54 @@
 <Workflow Init-On-Startup="false" Unique="false" auditEnabled="false" auditStateChangeEvent="false" autoAuditEnabled="true" disablePersistence="true" statEnabled="false">
    <Name>WTTH_DAILY_REPORT</Name>
    <Solution>WTTH</Solution>
-   <Start-Node>AskFor</Start-Node>
+   <Start-Node>VariableMapper</Start-Node>
    <Nodes>
-      <Process-Node>
-         <Name>AskFor</Name>
-         <Description></Description>
-         <State></State>
+      <Process-Node disablePersistence="true">
+         <Name>VariableMapper</Name>
          <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.AskFor</Class-Name>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="local_path" value="%SOLUTION_ETC%/template_files/WTTHColombia/SALIDAS/"/>
+            <Param name="path_file_properties" value="%SOLUTION_ETC%/template_files/reportes.properties"/>
+            <Param name="report_type" value="servicioswtth"/>
+         </Action>
+         <Next-Node>CustomReport</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>CustomReport</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.custom.ReportesClaroColombiaWTTH</Class-Name>
+            <Param name="local_path" value="variable:local_path"/>
+            <Param name="path_file_properties" value="variable:path_file_properties"/>
+            <Param name="report_type" value="variable:report_type"/>
+         </Action>
+         <Next-Node>PutMessage</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>PutMessage</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="result code %s description %s"/>
             <Param name="queue" value="variable:WORKFLOW_NAME"/>
-            <Param name="variable0" value="sasa"/>
+            <Param name="param0" value="report_result_code"/>
+            <Param name="param1" value="report_result_desc"/>
          </Action>
       </Process-Node>
    </Nodes>
    <Case-Packet>
+      <Variable name="ANNOTATION" type="String"/>
       <Variable name="BREAK_POINT" type="String"/>
       <Variable name="DEFAULT_ROLE" type="String"/>
       <Variable name="EMPTY_STRING" type="String"/>
+      <Variable name="ETC" type="String"/>
       <Variable name="EX_STEP_NAME" type="String"/>
       <Variable name="FILE_URL_PREFIX" type="String"/>
       <Variable name="HOST_NAME" type="String"/>
       <Variable name="JOB_ID" type="Integer"/>
+      <Variable name="KILLED" type="Boolean"/>
       <Variable name="KILL_ROLE" type="String"/>
+      <Variable name="MACRO_OUTPUT" type="Object"/>
       <Variable name="MASTER_CHILD_JOBS" type="Object"/>
+      <Variable name="MUTEX" type="Boolean"/>
       <Variable name="NULL" type="Object"/>
       <Variable name="PRIORITY" type="Integer"/>
       <Variable name="RESERVATIONS" type="Object"/>
@@ -48,6 +73,7 @@
       <Variable name="TIMEOUT" type="Boolean"/>
       <Variable name="TRACE_ROLE" type="String"/>
       <Variable name="UNIQUE_WORKFLOW" type="Integer"/>
+      <Variable name="VAR" type="String"/>
       <Variable name="WORKFLOW_EXCEPTION" type="Object"/>
       <Variable name="WORKFLOW_EXECUTION_STATUS" type="String"/>
       <Variable name="WORKFLOW_NAME" type="String"/>
@@ -58,21 +84,73 @@
       <Variable name="activation_description" type="String"/>
       <Variable name="activation_major_code" type="Integer"/>
       <Variable name="activation_minor_code" type="Integer"/>
+      <Variable name="local_path" type="String"/>
       <Variable name="message_url" type="String"/>
       <Variable name="module_name" type="String"/>
+      <Variable name="path_file_properties" type="String"/>
+      <Variable name="report_result_code" type="Integer"/>
+      <Variable name="report_result_desc" type="String"/>
+      <Variable name="report_type" type="String"/>
       <Variable name="skip_activation" type="Boolean"/>
+      <Variable name="test" type="String"/>
+      <Variable name="test1" type="Boolean"/>
    </Case-Packet>
-   <Initial-Case-Packet/>
+   <Initial-Case-Packet>
+      <Variable-Value name="FILE_URL_PREFIX" value="file:///"/>
+      <Variable-Value name="SOLUTION_NAME" value="WTTH"/>
+      <Variable-Value name="WORKFLOW_NAME" value="WTTH_DAILY_REPORT"/>
+      <Variable-Value name="WORKFLOW_VERSION" value="-1"/>
+   </Initial-Case-Packet>
    <Coordinates>
       <Position>
-         <Name>AskFor</Name>
-         <X>290</X>
-         <Y>156</Y>
-         <Width>61</Width>
+         <Name>CustomReport</Name>
+         <X>411</X>
+         <Y>85</Y>
+         <Width>91</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>PutMessage</Name>
+         <X>537</X>
+         <Y>85</Y>
+         <Width>78</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>VariableMapper</Name>
+         <X>275</X>
+         <Y>85</Y>
+         <Width>100</Width>
          <Height>48</Height>
       </Position>
       <Arrows>
-         <Name>AskFor</Name>
+         <Name>CustomReport</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>PutMessage</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>VariableMapper</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
