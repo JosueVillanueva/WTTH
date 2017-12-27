@@ -1,0 +1,624 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Workflow SYSTEM "workflow.dtd">
+
+<Workflow Init-On-Startup="false" Unique="false" auditEnabled="true" auditStateChangeEvent="false" autoAuditEnabled="true" disablePersistence="false" statEnabled="true">
+   <Name>WTTH_VIEW_SERVICES</Name>
+   <Solution>WTTH</Solution>
+   <Start-Node>VariableMapper</Start-Node>
+   <Nodes>
+      <Process-Node disablePersistence="true" inactive="true">
+         <Name>VariableMapper</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="account_number" value="15786833"/>
+            <Param name="controller_JOB_ID" value="%JOB_ID%"/>
+         </Action>
+         <Next-Node>PutMessage3</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>PutMessage3</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="######## ¡¡Starting check services!! ########"/>
+            <Param name="queue" value="WTTH_CHECK"/>
+         </Action>
+         <Next-Node>QueryInventory</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>QueryInventory</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.QueryInventory</Class-Name>
+            <Param name="bean" value="constant:com.hpe.ov.activator.inventory.Services"/>
+            <Param name="find_by_method" value="constant:findByAccountnumber"/>
+            <Param name="return_array" value="constant:true"/>
+            <Param name="variable" value="services_obj"/>
+            <Param name="key_value0" value="account_number"/>
+         </Action>
+         <Next-Node>Equal</Next-Node>
+      </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>Equal</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
+            <Param name="op1" value="services_obj#"/>
+            <Param name="op2" value="constant:0"/>
+         </Action>
+         <True-Next-Node>VariableMapper2</True-Next-Node>
+         <False-Next-Node>VariableMapper3</False-Next-Node>
+      </Rule-Node>
+      <Process-Node disablePersistence="true">
+         <Name>VariableMapper2</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="301"/>
+            <Param name="wtth_result_desc" value="Not services found for this account number: %account_number%"/>
+         </Action>
+         <Next-Node>PutMessage2</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>PutMessage2</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="wtth_code: %s ---- wtth_desc: %s"/>
+            <Param name="queue" value="WTTH_CHECK"/>
+            <Param name="param0" value="wtth_result_code"/>
+            <Param name="param1" value="wtth_result_desc"/>
+         </Action>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>VariableMapper3</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="account_status" value="%services_obj[0].accountStatus%"/>
+            <Param name="service_id" value="%services_obj[0].serviceid%"/>
+            <Param name="service_type" value="%services_obj[0].serviceType%"/>
+         </Action>
+         <Next-Node>QueryInventory2</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>QueryInventory2</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.QueryInventory</Class-Name>
+            <Param name="bean" value="constant:com.hpe.ov.activator.inventory.ServiceParams"/>
+            <Param name="find_by_method" value="constant:findAll"/>
+            <Param name="variable" value="params_obj"/>
+            <Param name="where" value="constant:SERVICE_ID = &apos;%s&apos; AND CUSTOMER_ID = &apos;%s&apos;"/>
+            <Param name="param0" value="service_id"/>
+            <Param name="param1" value="account_number"/>
+         </Action>
+         <Next-Node>Equal2</Next-Node>
+      </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>Equal2</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
+            <Param name="op1" value="params_obj#"/>
+            <Param name="op2" value="constant:0"/>
+         </Action>
+         <True-Next-Node>VariableMapper21</True-Next-Node>
+         <False-Next-Node>ForEach</False-Next-Node>
+      </Rule-Node>
+      <Process-Node disablePersistence="true">
+         <Name>VariableMapper21</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="302"/>
+            <Param name="wtth_result_desc" value="UNDO_OK Not params found for this service: %service_id%"/>
+         </Action>
+         <Next-Node>PutMessage2</Next-Node>
+      </Process-Node>
+      <Rule-Node>
+         <Name>ForEach</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.ForEach</Class-Name>
+            <Param name="element" value="params_elemt"/>
+            <Param name="list" value="params_obj"/>
+            <Param name="remaining" value="params_remaining"/>
+         </Action>
+         <True-Next-Node>GenericJavaHashMap</True-Next-Node>
+         <False-Next-Node>GenericJavaHashMap2</False-Next-Node>
+      </Rule-Node>
+      <Process-Node>
+         <Name>GenericJavaHashMap</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.custom.node.GenericJavaHashMap</Class-Name>
+            <Param name="hpsa_context" value="params_array"/>
+            <Param name="operation" value="constant:put"/>
+            <Param name="key0" value="params_elemt.paramName"/>
+            <Param name="result0" value="params_array"/>
+            <Param name="value0" value="params_elemt.paramValue"/>
+         </Action>
+         <Next-Node>ForEach</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>GenericJavaHashMap2</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.custom.node.GenericJavaHashMap</Class-Name>
+            <Param name="hpsa_context" value="params_array"/>
+            <Param name="operation" value="constant:get"/>
+            <Param name="key0" value="constant:service_wo"/>
+            <Param name="result0" value="service_woresult"/>
+            <Param name="key1" value="constant:geographical_location_id"/>
+            <Param name="result1" value="geo_id"/>
+            <Param name="key2" value="constant:ssw_id"/>
+            <Param name="result2" value="ssw_id"/>
+            <Param name="key3" value="constant:fixed_telephone_number"/>
+            <Param name="result3" value="fixed_telephone"/>
+            <Param name="key4" value="constant:mobile_telephone_number"/>
+            <Param name="result4" value="mobile_telephone"/>
+         </Action>
+         <Next-Node>VariableMapper5</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>VariableMapper5</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="template_name" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/WTTHColombia/XSLs/check_services.xsl"/>
+            <Param name="wtth_result_code" value="0"/>
+            <Param name="wtth_result_desc" value="DO_OK Successfully!"/>
+         </Action>
+         <Next-Node>TransformXML</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>TransformXML</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.TransformXML</Class-Name>
+            <Param name="output_var" value="xml_result"/>
+            <Param name="use_solution_dir" value="constant:false"/>
+            <Param name="xsl_url" value="template_name"/>
+         </Action>
+         <Next-Node>VariableMapper4</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>VariableMapper4</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_desc" value="xml_response: %xml_result%"/>
+         </Action>
+         <Next-Node>PutMessage</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>PutMessage</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="xml response: %s"/>
+            <Param name="queue" value="WTTH_CHECK"/>
+            <Param name="param0" value="xml_result"/>
+         </Action>
+      </Process-Node>
+   </Nodes>
+   <Error-Handler>
+      <Name>SyncHandler1</Name>
+      <Class-Name>com.hp.ov.activator.mwfm.component.builtin.SyncHandler</Class-Name>
+      <Param name="job_id" value="controller_JOB_ID"/>
+      <Param name="queue" value="constant:controller_queue"/>
+      <Param name="variable0" value="wtth_result_code"/>
+      <Param name="variable1" value="wtth_result_desc"/>
+   </Error-Handler>
+   <End-Handler>
+      <Name>SyncHandler</Name>
+      <Class-Name>com.hp.ov.activator.mwfm.component.builtin.SyncHandler</Class-Name>
+      <Param name="job_id" value="controller_JOB_ID"/>
+      <Param name="queue" value="constant:controller_queue"/>
+      <Param name="variable0" value="wtth_result_code"/>
+      <Param name="variable1" value="wtth_result_desc"/>
+   </End-Handler>
+   <Case-Packet>
+      <Variable name="ANNOTATION" type="String"/>
+      <Variable name="BREAK_POINT" type="String"/>
+      <Variable name="DEFAULT_ROLE" type="String"/>
+      <Variable name="EMPTY_STRING" type="String"/>
+      <Variable name="ETC" type="String"/>
+      <Variable name="EX_STEP_NAME" type="String"/>
+      <Variable name="FILE_URL_PREFIX" type="String"/>
+      <Variable name="HOST_NAME" type="String"/>
+      <Variable name="JOB_ID" type="Integer"/>
+      <Variable name="KILLED" type="Boolean"/>
+      <Variable name="KILL_ROLE" type="String"/>
+      <Variable name="MACRO_OUTPUT" type="Object"/>
+      <Variable name="MASTER_CHILD_JOBS" type="Object"/>
+      <Variable name="MUTEX" type="Boolean"/>
+      <Variable name="NULL" type="Object"/>
+      <Variable name="PRIORITY" type="Integer"/>
+      <Variable name="RESERVATIONS" type="Object"/>
+      <Variable name="RET_TEXT" type="String"/>
+      <Variable name="RET_VALUE" type="Integer"/>
+      <Variable name="RUNTIME" type="Object"/>
+      <Variable name="SCHEDULED_INFO" type="Object"/>
+      <Variable name="SERVICE_ID" type="String"/>
+      <Variable name="SOLUTION_ETC" type="String"/>
+      <Variable name="SOLUTION_NAME" type="String"/>
+      <Variable name="SOLUTION_VAR" type="String"/>
+      <Variable name="SOR_ID" type="Integer"/>
+      <Variable name="START_ROLE" type="String"/>
+      <Variable name="START_TIME" type="Integer"/>
+      <Variable name="STATUS" type="String"/>
+      <Variable name="STEP_NAME" type="String"/>
+      <Variable name="SUBSTEP" type="String"/>
+      <Variable name="THROW_EXCEP" type="Boolean"/>
+      <Variable name="TIMEOUT" type="Boolean"/>
+      <Variable name="TRACE_ROLE" type="String"/>
+      <Variable name="UNIQUE_WORKFLOW" type="Integer"/>
+      <Variable name="VAR" type="String"/>
+      <Variable name="WORKFLOW_EXCEPTION" type="Object"/>
+      <Variable name="WORKFLOW_EXECUTION_STATUS" type="String"/>
+      <Variable name="WORKFLOW_NAME" type="String"/>
+      <Variable name="WORKFLOW_ORDER_ID" type="String"/>
+      <Variable name="WORKFLOW_STATE" type="String"/>
+      <Variable name="WORKFLOW_TYPE" type="String"/>
+      <Variable name="WORKFLOW_VERSION" type="Integer"/>
+      <Variable name="account_number" type="String"/>
+      <Variable name="account_status" type="String"/>
+      <Variable name="activation_description" type="String"/>
+      <Variable name="activation_major_code" type="Integer"/>
+      <Variable name="activation_minor_code" type="Integer"/>
+      <Variable name="controller_JOB_ID" type="Integer"/>
+      <Variable name="fixed_telephone" type="String"/>
+      <Variable name="geo_id" type="String"/>
+      <Variable name="message_url" type="String"/>
+      <Variable name="mobile_telephone" type="String"/>
+      <Variable name="module_name" type="String"/>
+      <Variable name="params_array" type="Object"/>
+      <Variable name="params_elemt" type="Object"/>
+      <Variable name="params_obj" type="Object"/>
+      <Variable name="params_remaining" type="Object"/>
+      <Variable name="service_id" type="String"/>
+      <Variable name="service_type" type="String"/>
+      <Variable name="service_woresult" type="String"/>
+      <Variable name="services_obj" type="Object"/>
+      <Variable name="skip_activation" type="Boolean"/>
+      <Variable name="ssw_id" type="String"/>
+      <Variable name="template_name" type="String"/>
+      <Variable name="wtth_result_code" type="String"/>
+      <Variable name="wtth_result_desc" type="String"/>
+      <Variable name="xml_result" type="String"/>
+   </Case-Packet>
+   <Initial-Case-Packet>
+      <Variable-Value name="FILE_URL_PREFIX" value="file:///"/>
+      <Variable-Value name="SOLUTION_NAME" value="WTTH"/>
+      <Variable-Value name="WORKFLOW_NAME" value="WTTH_VIEW_SERVICES"/>
+      <Variable-Value name="WORKFLOW_VERSION" value="-1"/>
+   </Initial-Case-Packet>
+   <Coordinates>
+      <Position>
+         <Name>Equal</Name>
+         <X>313</X>
+         <Y>40</Y>
+         <Width>56</Width>
+         <Height>24</Height>
+      </Position>
+      <Position>
+         <Name>Equal2</Name>
+         <X>675</X>
+         <Y>40</Y>
+         <Width>62</Width>
+         <Height>24</Height>
+      </Position>
+      <Position>
+         <Name>ForEach</Name>
+         <X>821</X>
+         <Y>40</Y>
+         <Width>69</Width>
+         <Height>24</Height>
+      </Position>
+      <Position>
+         <Name>GenericJavaHashMap</Name>
+         <X>987</X>
+         <Y>28</Y>
+         <Width>113</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>GenericJavaHashMap2</Name>
+         <X>796</X>
+         <Y>107</Y>
+         <Width>119</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>PutMessage</Name>
+         <X>627</X>
+         <Y>302</Y>
+         <Width>68</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>PutMessage2</Name>
+         <X>459</X>
+         <Y>109</Y>
+         <Width>74</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>PutMessage3</Name>
+         <X>97</X>
+         <Y>27</Y>
+         <Width>74</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>QueryInventory</Name>
+         <X>182</X>
+         <Y>28</Y>
+         <Width>88</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>QueryInventory2</Name>
+         <X>536</X>
+         <Y>28</Y>
+         <Width>94</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>TransformXML</Name>
+         <X>821</X>
+         <Y>240</Y>
+         <Width>78</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>VariableMapper</Name>
+         <X>0</X>
+         <Y>27</Y>
+         <Width>84</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>VariableMapper2</Name>
+         <X>296</X>
+         <Y>109</Y>
+         <Width>90</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>VariableMapper21</Name>
+         <X>658</X>
+         <Y>109</Y>
+         <Width>96</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>VariableMapper3</Name>
+         <X>404</X>
+         <Y>28</Y>
+         <Width>90</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>VariableMapper4</Name>
+         <X>821</X>
+         <Y>302</Y>
+         <Width>90</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>VariableMapper5</Name>
+         <X>809</X>
+         <Y>173</Y>
+         <Width>90</Width>
+         <Height>48</Height>
+      </Position>
+      <Arrows>
+         <Name>Equal</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Equal2</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>ForEach</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>GenericJavaHashMap</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>GenericJavaHashMap2</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>PutMessage</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>PutMessage2</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>PutMessage3</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>QueryInventory</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>QueryInventory2</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>TransformXML</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>VariableMapper</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>VariableMapper2</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>VariableMapper21</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>VariableMapper3</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>VariableMapper4</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>VariableMapper5</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+   </Coordinates>
+</Workflow>

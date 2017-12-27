@@ -9,8 +9,6 @@
    <Nodes>
       <Process-Node disablePersistence="true">
          <Name>VariableMapper6</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="action_type" value="IMS"/>
@@ -326,19 +324,18 @@
             <Param name="param0" value="result_code"/>
             <Param name="param1" value="result_desc"/>
          </Action>
-         <Next-Node>Equal1</Next-Node>
+         <Next-Node>VariableMapper5</Next-Node>
       </Process-Node>
-      <Rule-Node disablePersistence="true">
-         <Name>Equal1</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
-            <Param name="op1" value="rollback"/>
-            <Param name="op2" value="constant:1"/>
-         </Action>
-         <True-Next-Node>MapSSW9.11121</True-Next-Node>
-         <False-Next-Node>PutMessage</False-Next-Node>
-      </Rule-Node>
       <Process-Node disablePersistence="true">
+         <Name>VariableMapper5</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="%result_code%"/>
+            <Param name="wtth_result_desc" value="%result_desc%"/>
+         </Action>
+         <Next-Node>MapSSW9.11121</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true" inactive="true">
          <Name>MapSSW9.11121</Name>
          <Description>Map Variables for activate Softswitch</Description>
          <Action>
@@ -346,53 +343,6 @@
             <Param name="wtth_result_desc" value="UNDO_NO_OK %wtth_result_desc%"/>
          </Action>
          <Next-Node>DoNothing</Next-Node>
-      </Process-Node>
-      <Process-Node>
-         <Name>PutMessage</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
-            <Param name="message" value="INICIANDO ROLLBACK!"/>
-            <Param name="queue" value="SSW_WTTH"/>
-         </Action>
-         <Next-Node>VariableMapper5</Next-Node>
-      </Process-Node>
-      <Process-Node disablePersistence="true">
-         <Name>VariableMapper5</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="rollback" value="1"/>
-            <Param name="wtth_result_code" value="%result_code%"/>
-            <Param name="wtth_result_desc" value="%result_desc%"/>
-         </Action>
-         <Next-Node>Equal2</Next-Node>
-      </Process-Node>
-      <Rule-Node disablePersistence="true">
-         <Name>Equal2</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
-            <Param name="op1" value="action_Name"/>
-            <Param name="op2" value="constant:SUSPEND"/>
-         </Action>
-         <True-Next-Node>VariableMapper3</True-Next-Node>
-         <False-Next-Node>VariableMapper4</False-Next-Node>
-      </Rule-Node>
-      <Process-Node disablePersistence="true">
-         <Name>VariableMapper3</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="action_Name" value="REACTIVATE"/>
-            <Param name="OUTRST_value" value="0"/>
-         </Action>
-         <Next-Node>SearchZystem11</Next-Node>
-      </Process-Node>
-      <Process-Node disablePersistence="true">
-         <Name>VariableMapper4</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="action_Name" value="SUSPEND"/>
-            <Param name="OUTRST_value" value="1"/>
-         </Action>
-         <Next-Node>SearchZystem11</Next-Node>
       </Process-Node>
       <Rule-Node disablePersistence="true">
          <Name>MapDataOK?11</Name>
@@ -407,8 +357,6 @@
       </Rule-Node>
       <Process-Node>
          <Name>UpdateInventory</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.UpdateInventory</Class-Name>
             <Param name="bean" value="constant:com.hpe.ov.activator.inventory.Services"/>
@@ -623,20 +571,6 @@
          <Height>24</Height>
       </Position>
       <Position>
-         <Name>Equal1</Name>
-         <X>134</X>
-         <Y>402</Y>
-         <Width>62</Width>
-         <Height>24</Height>
-      </Position>
-      <Position>
-         <Name>Equal2</Name>
-         <X>134</X>
-         <Y>219</Y>
-         <Width>62</Width>
-         <Height>24</Height>
-      </Position>
-      <Position>
          <Name>Equal21</Name>
          <X>617</X>
          <Y>265</Y>
@@ -749,13 +683,6 @@
          <Height>48</Height>
       </Position>
       <Position>
-         <Name>PutMessage</Name>
-         <X>131</X>
-         <Y>335</Y>
-         <Width>68</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
          <Name>PutMessage111</Name>
          <X>753</X>
          <Y>163</Y>
@@ -840,24 +767,10 @@
          <Height>48</Height>
       </Position>
       <Position>
-         <Name>VariableMapper3</Name>
-         <X>244</X>
-         <Y>207</Y>
-         <Width>90</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
          <Name>VariableMapper31</Name>
          <X>795</X>
          <Y>383</Y>
          <Width>96</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>VariableMapper4</Name>
-         <X>245</X>
-         <Y>150</Y>
-         <Width>90</Width>
          <Height>48</Height>
       </Position>
       <Position>
@@ -869,8 +782,8 @@
       </Position>
       <Position>
          <Name>VariableMapper5</Name>
-         <X>120</X>
-         <Y>259</Y>
+         <X>123</X>
+         <Y>388</Y>
          <Width>90</Width>
          <Height>48</Height>
       </Position>
@@ -957,32 +870,6 @@
          </True-Arrow>
          <False-Arrow>
             <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </False-Arrow>
-      </Arrows>
-      <Arrows>
-         <Name>Equal1</Name>
-         <True-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </True-Arrow>
-         <False-Arrow>
-            <Type>0</Type>
-            <DeltaX>114</DeltaX>
-            <DeltaY>96</DeltaY>
-         </False-Arrow>
-      </Arrows>
-      <Arrows>
-         <Name>Equal2</Name>
-         <True-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </True-Arrow>
-         <False-Arrow>
-            <Type>3</Type>
             <DeltaX>0</DeltaX>
             <DeltaY>0</DeltaY>
          </False-Arrow>
@@ -1196,19 +1083,6 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
-         <Name>PutMessage</Name>
-         <True-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </True-Arrow>
-         <False-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </False-Arrow>
-      </Arrows>
-      <Arrows>
          <Name>PutMessage111</Name>
          <True-Arrow>
             <Type>3</Type>
@@ -1365,35 +1239,9 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
-         <Name>VariableMapper3</Name>
-         <True-Arrow>
-            <Type>2</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </True-Arrow>
-         <False-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </False-Arrow>
-      </Arrows>
-      <Arrows>
          <Name>VariableMapper31</Name>
          <True-Arrow>
             <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </True-Arrow>
-         <False-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </False-Arrow>
-      </Arrows>
-      <Arrows>
-         <Name>VariableMapper4</Name>
-         <True-Arrow>
-            <Type>2</Type>
             <DeltaX>0</DeltaX>
             <DeltaY>0</DeltaY>
          </True-Arrow>
