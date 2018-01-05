@@ -61,7 +61,6 @@
             <Param name="outputvar23" value="transaction_id_new"/>
             <Param name="outputvar24" value="transaction_id_old"/>
             <Param name="outputvar25" value="xml_message"/>
-            <Param name="outputvar26" value="wtth_result_desc"/>
          </Action>
          <Next-Node>PutMessage61</Next-Node>
       </Process-Node>
@@ -121,7 +120,6 @@
       </Process-Node>
       <Switch-Node disablePersistence="true">
          <Name>action_name?</Name>
-         <Description>5=MODIFYCALLFEATURES</Description>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.SwitchCase</Class-Name>
             <Param name="key" value="action_name"/>
@@ -130,18 +128,16 @@
             <Param name="case2" value="constant:REACTIVATE"/>
             <Param name="case3" value="constant:SUSPEND"/>
             <Param name="case4" value="constant:CREATE"/>
-            <Param name="case5" value="constant:ACTIVATECALLFEATURES"/>
+            <Param name="case5" value="constant:MODIFYCALLFEATURES"/>
             <Param name="case6" value="constant:DELETE"/>
-            <Param name="case7" value="constant:DEACTIVATECALLFEATURES"/>
          </Action>
          <Switch name="case0">printCheck</Switch>
          <Switch name="case1">printModify</Switch>
          <Switch name="case2">printReactivate</Switch>
          <Switch name="case3">printSuspend</Switch>
          <Switch name="case4">printCreate</Switch>
-         <Switch name="case6">Delete</Switch>
          <Switch name="case5">printModifyCF</Switch>
-         <Switch name="case7">printModifyCF1</Switch>
+         <Switch name="case6">Delete</Switch>
          <Default>Default</Default>
       </Switch-Node>
       <Process-Node disablePersistence="true">
@@ -189,7 +185,6 @@
             <Param name="variable16" value="scope"/>
             <Param name="variable17" value="ssw_id_new"/>
             <Param name="variable18" value="transaction_id_new"/>
-            <Param name="variable19" value="customer"/>
          </Action>
          <Next-Node>ModifOK?</Next-Node>
       </Process-Node>
@@ -320,26 +315,17 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.StartJobAndWait</Class-Name>
             <Param name="queue" value="controller_queue"/>
-            <Param name="workflow_name" value="constant:WTTH_ACTIVATE_CALL_FEATURES"/>
+            <Param name="workflow_name" value="constant:WTTH_IMS_CREATE_DUMMY"/>
             <Param name="destination0" value="controller_JOB_ID"/>
             <Param name="outputvar0" value="wtth_result_code"/>
             <Param name="variable0" value="JOB_ID"/>
             <Param name="outputvar1" value="wtth_result_desc"/>
-            <Param name="variable1" value="xml_message"/>
-         </Action>
-         <Next-Node>ModifOK?</Next-Node>
-      </Process-Node>
-      <Process-Node>
-         <Name>modifyServiceCF1</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.StartJobAndWait</Class-Name>
-            <Param name="queue" value="controller_queue"/>
-            <Param name="workflow_name" value="constant:WTTH_DEACTIVATE_CALL_FEATURES"/>
-            <Param name="destination0" value="controller_JOB_ID"/>
-            <Param name="outputvar0" value="wtth_result_code"/>
-            <Param name="variable0" value="JOB_ID"/>
-            <Param name="outputvar1" value="wtth_result_desc"/>
-            <Param name="variable1" value="xml_message"/>
+            <Param name="variable1" value="fixed_telephone_number_new"/>
+            <Param name="variable2" value="password_customer"/>
+            <Param name="variable3" value="action_name"/>
+            <Param name="variable4" value="account_number"/>
+            <Param name="variable5" value="mobile_telephone_number_new"/>
+            <Param name="variable6" value="xml_message"/>
          </Action>
          <Next-Node>ModifOK?</Next-Node>
       </Process-Node>
@@ -378,15 +364,6 @@
             <Param name="queue" value="variable:WORKFLOW_NAME"/>
          </Action>
          <Next-Node>modifyServiceCF</Next-Node>
-      </Process-Node>
-      <Process-Node>
-         <Name>printModifyCF1</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
-            <Param name="message" value="Option ModifyCF"/>
-            <Param name="queue" value="variable:WORKFLOW_NAME"/>
-         </Action>
-         <Next-Node>modifyServiceCF1</Next-Node>
       </Process-Node>
       <Process-Node>
          <Name>printReactivate</Name>
@@ -532,8 +509,8 @@
    <Coordinates>
       <Position>
          <Name>CreateService</Name>
-         <X>1361</X>
-         <Y>319</Y>
+         <X>1253</X>
+         <Y>318</Y>
          <Width>90</Width>
          <Height>48</Height>
       </Position>
@@ -546,14 +523,14 @@
       </Position>
       <Position>
          <Name>Delete</Name>
-         <X>1480</X>
+         <X>1372</X>
          <Y>242</Y>
          <Width>61</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>DeleteService</Name>
-         <X>1467</X>
+         <X>1359</X>
          <Y>318</Y>
          <Width>88</Width>
          <Height>48</Height>
@@ -678,13 +655,6 @@
          <Height>48</Height>
       </Position>
       <Position>
-         <Name>modifyServiceCF1</Name>
-         <X>1224</X>
-         <Y>320</Y>
-         <Width>112</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
          <Name>printCheck</Name>
          <X>680</X>
          <Y>242</Y>
@@ -693,7 +663,7 @@
       </Position>
       <Position>
          <Name>printCreate</Name>
-         <X>1369</X>
+         <X>1261</X>
          <Y>242</Y>
          <Width>74</Width>
          <Height>48</Height>
@@ -710,13 +680,6 @@
          <X>1114</X>
          <Y>242</Y>
          <Width>88</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>printModifyCF1</Name>
-         <X>1233</X>
-         <Y>244</Y>
-         <Width>95</Width>
          <Height>48</Height>
       </Position>
       <Position>
@@ -1029,12 +992,6 @@
                <DeltaX>0</DeltaX>
                <DeltaY>0</DeltaY>
             </Case-Arrow>
-            <Case-Arrow>
-               <Name>case7</Name>
-               <Type>2</Type>
-               <DeltaX>0</DeltaX>
-               <DeltaY>0</DeltaY>
-            </Case-Arrow>
          </Switch-Arrow>
       </Arrows>
       <Arrows>
@@ -1090,19 +1047,6 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
-         <Name>modifyServiceCF1</Name>
-         <True-Arrow>
-            <Type>3</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </True-Arrow>
-         <False-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </False-Arrow>
-      </Arrows>
-      <Arrows>
          <Name>printCheck</Name>
          <True-Arrow>
             <Type>0</Type>
@@ -1143,19 +1087,6 @@
       </Arrows>
       <Arrows>
          <Name>printModifyCF</Name>
-         <True-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </True-Arrow>
-         <False-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </False-Arrow>
-      </Arrows>
-      <Arrows>
-         <Name>printModifyCF1</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>

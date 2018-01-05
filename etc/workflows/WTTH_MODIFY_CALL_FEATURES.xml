@@ -31,7 +31,7 @@
          <Name>VariableMapper1</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="action_Name" value="DEACTIVATECALLFEATURES"/>
+            <Param name="action_Name" value="MODIFYCALLFEATURES"/>
             <Param name="action_type" value="IMS"/>
             <Param name="AGCFName_value" value="nosequeseaesto"/>
             <Param name="geo_id" value="BOG"/>
@@ -680,8 +680,8 @@
          <Name>MapResult211</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="last_result_code" value="/SOAP-ENV:Envelope/SOAP-ENV:Body/m:MOD_SBRResponse/m:Result/m:ResultCode"/>
-            <Param name="last_result_desc" value="/SOAP-ENV:Envelope/SOAP-ENV:Body/m:MOD_SBRResponse/m:Result/m:ResultDesc"/>
+            <Param name="last_result_code" value="/SOAP-ENV:Envelope/SOAP-ENV:Body/m:%which_xml%Response/m:Result/m:ResultCode"/>
+            <Param name="last_result_desc" value="/SOAP-ENV:Envelope/SOAP-ENV:Body/m:%which_xml%Response/m:Result/m:ResultDesc"/>
          </Action>
          <Next-Node>XMLMapper111</Next-Node>
       </Process-Node>
@@ -698,8 +698,8 @@
          <Name>MapResult21111</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="last_result_code" value="/SOAP-ENV:Envelope/SOAP-ENV:Body/m:MOD_SBRResponse/m:Result/m:ResultCode"/>
-            <Param name="last_result_desc" value="/SOAP-ENV:Envelope/SOAP-ENV:Body/m:MOD_SBRResponse/m:Result/m:ResultDesc"/>
+            <Param name="last_result_code" value="/SOAP-ENV:Envelope/SOAP-ENV:Body/m:%which_xml%Response/m:Result/m:ResultCode"/>
+            <Param name="last_result_desc" value="/SOAP-ENV:Envelope/SOAP-ENV:Body/m:%which_xml%Response/m:Result/m:ResultDesc"/>
          </Action>
          <Next-Node>XMLMapper11111</Next-Node>
       </Process-Node>
@@ -1185,6 +1185,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="which_xml" value="RPL_CFU"/>
+            <Param name="which_xml_s" value="REG_CFU"/>
          </Action>
          <Next-Node>Equal</Next-Node>
       </Process-Node>
@@ -1193,6 +1194,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="which_xml" value="REG_CFU"/>
+            <Param name="which_xml_s" value="RPL_CFU"/>
          </Action>
          <Next-Node>Equal1</Next-Node>
       </Process-Node>
@@ -1201,6 +1203,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="which_xml" value="RPL_CFNR"/>
+            <Param name="which_xml_s" value="REG_CFNR"/>
          </Action>
          <Next-Node>Equal</Next-Node>
       </Process-Node>
@@ -1209,6 +1212,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="which_xml" value="REG_CFNR"/>
+            <Param name="which_xml_s" value="RPL_CFNR"/>
          </Action>
          <Next-Node>Equal1</Next-Node>
       </Process-Node>
@@ -1217,6 +1221,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="which_xml" value="RPL_CLIR"/>
+            <Param name="which_xml_s" value="REG_CLIR"/>
          </Action>
          <Next-Node>Equal</Next-Node>
       </Process-Node>
@@ -1225,6 +1230,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="which_xml" value="REG_CLIR"/>
+            <Param name="which_xml_s" value="RPL_CLIR"/>
          </Action>
          <Next-Node>Equal1</Next-Node>
       </Process-Node>
@@ -1233,6 +1239,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="which_xml" value="RPL_COLR"/>
+            <Param name="which_xml_s" value="REG_COLR"/>
          </Action>
          <Next-Node>Equal</Next-Node>
       </Process-Node>
@@ -1241,6 +1248,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="which_xml" value="REG_COLR"/>
+            <Param name="which_xml_s" value="RPL_COLR"/>
          </Action>
          <Next-Node>Equal1</Next-Node>
       </Process-Node>
@@ -1249,6 +1257,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="which_xml" value="RPL_DSTR"/>
+            <Param name="which_xml_s" value="REG_DSTR"/>
          </Action>
          <Next-Node>Equal</Next-Node>
       </Process-Node>
@@ -1257,6 +1266,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="which_xml" value="REG_DSTR"/>
+            <Param name="which_xml_s" value="RPL_DSTR"/>
          </Action>
          <Next-Node>Equal1</Next-Node>
       </Process-Node>
@@ -1265,6 +1275,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="which_xml" value="RPL_SIC"/>
+            <Param name="which_xml_s" value="REG_SIC"/>
          </Action>
          <Next-Node>Equal</Next-Node>
       </Process-Node>
@@ -1273,6 +1284,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="which_xml" value="REG_SIC"/>
+            <Param name="which_xml_s" value="RPL_SIC"/>
          </Action>
          <Next-Node>Equal1</Next-Node>
       </Process-Node>
@@ -1281,6 +1293,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="which_xml" value="RPL_CFS"/>
+            <Param name="which_xml_s" value="REG_CFS"/>
          </Action>
          <Next-Node>Equal</Next-Node>
       </Process-Node>
@@ -1289,6 +1302,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="which_xml" value="REG_CFS"/>
+            <Param name="which_xml_s" value="RPL_CFS"/>
          </Action>
          <Next-Node>Equal1</Next-Node>
       </Process-Node>
@@ -1297,6 +1311,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="which_xml" value="RPL_SPEED_DIAL"/>
+            <Param name="which_xml_s" value="REG_SPEED_DIAL"/>
          </Action>
          <Next-Node>Equal</Next-Node>
       </Process-Node>
@@ -1305,6 +1320,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="which_xml" value="REG_SPEED_DIAL"/>
+            <Param name="which_xml_s" value="RPL_SPEED_DIAL"/>
          </Action>
          <Next-Node>Equal1</Next-Node>
       </Process-Node>
@@ -1313,6 +1329,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="which_xml" value="RPL_HOTLINE"/>
+            <Param name="which_xml_s" value="REG_HOTLINE"/>
          </Action>
          <Next-Node>Equal</Next-Node>
       </Process-Node>
@@ -1321,6 +1338,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="which_xml" value="REG_HOTLINE"/>
+            <Param name="which_xml_s" value="RPL_HOTLINE"/>
          </Action>
          <Next-Node>Equal1</Next-Node>
       </Process-Node>
@@ -1329,7 +1347,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="xml_text" value="%FILE_URL_PREFIX%%SOLUTION_ETC%\template_files\WTTHColombia\XMLs\SALIDAS_callfeatures\WTTH_%template_type%_%feature_code%.xml"/>
-            <Param name="xsl_template" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/WTTHColombia/XSLs/WTTH_%template_type%_REGCOMSS_CALLFEATURES.xsl"/>
+            <Param name="xsl_template" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/WTTHColombia/XSLs/WTTH_DEACT_REGCOMSS_CALLFEATURES.xsl"/>
          </Action>
          <Next-Node>TransformXML</Next-Node>
       </Process-Node>
@@ -1337,8 +1355,9 @@
          <Name>VariableMapper311</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="which_xml" value="%which_xml_s%"/>
             <Param name="xml_text" value="%FILE_URL_PREFIX%%SOLUTION_ETC%\template_files\WTTHColombia\XMLs\SALIDAS_callfeatures\WTTH_%template_type%_%feature_code%_REGCOMSS.xml"/>
-            <Param name="xsl_template" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/WTTHColombia/XSLs/WTTH_%template_type%_MODSBR_CALLFEATURES.xsl"/>
+            <Param name="xsl_template" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/WTTHColombia/XSLs/WTTH_ACT_REGCOMSS_CALLFEATURES.xsl"/>
          </Action>
          <Next-Node>TransformXML1</Next-Node>
       </Process-Node>
@@ -1347,7 +1366,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="xml_text" value="%FILE_URL_PREFIX%%SOLUTION_ETC%\template_files\WTTHColombia\XMLs\SALIDAS_callfeatures\WTTH_%template_type%_%feature_code%_REGCOMSS.xml"/>
-            <Param name="xsl_template" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/WTTHColombia/XSLs/WTTH_%template_type%_MODSBR_CALLFEATURES.xsl"/>
+            <Param name="xsl_template" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/WTTHColombia/XSLs/WTTH_ACT_REGCOMSS_CALLFEATURES.xsl"/>
          </Action>
          <Next-Node>TransformXML11</Next-Node>
       </Process-Node>
@@ -1355,8 +1374,9 @@
          <Name>VariableMapper312</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="which_xml" value="%which_xml_s%"/>
             <Param name="xml_text" value="%FILE_URL_PREFIX%%SOLUTION_ETC%\template_files\WTTHColombia\XMLs\SALIDAS_callfeatures\WTTH_%template_type%_%feature_code%.xml"/>
-            <Param name="xsl_template" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/WTTHColombia/XSLs/WTTH_%template_type%_REGCOMSS_CALLFEATURES.xsl"/>
+            <Param name="xsl_template" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/WTTHColombia/XSLs/WTTH_DEACT_REGCOMSS_CALLFEATURES.xsl"/>
          </Action>
          <Next-Node>TransformXML2</Next-Node>
       </Process-Node>
@@ -1397,6 +1417,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="which_xml" value="RPL_SS"/>
+            <Param name="which_xml_s" value="REG_COMSS"/>
          </Action>
          <Next-Node>Equal</Next-Node>
       </Process-Node>
@@ -1405,6 +1426,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="which_xml" value="REG_COMSS"/>
+            <Param name="which_xml_s" value="RPL_SS"/>
          </Action>
          <Next-Node>Equal1</Next-Node>
       </Process-Node>
@@ -1506,7 +1528,8 @@
          <Name>VariableMapper8</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="which_xml" value="RPL"/>
+            <Param name="which_xml" value="RPL_CBA"/>
+            <Param name="which_xml_s" value="REG_CBA"/>
          </Action>
          <Next-Node>Equal</Next-Node>
       </Process-Node>
@@ -1551,6 +1574,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="which_xml" value="REG_CBA"/>
+            <Param name="which_xml_s" value="RPL_CBA"/>
          </Action>
          <Next-Node>Equal1</Next-Node>
       </Process-Node>
@@ -1559,6 +1583,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="which_xml" value="RPL_CFB"/>
+            <Param name="which_xml_s" value="REG_CFB"/>
          </Action>
          <Next-Node>Equal</Next-Node>
       </Process-Node>
@@ -1567,6 +1592,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="which_xml" value="REG_CFB"/>
+            <Param name="which_xml_s" value="RPL_CFB"/>
          </Action>
          <Next-Node>Equal1</Next-Node>
       </Process-Node>
@@ -1756,6 +1782,7 @@
       <Variable name="user" type="String"/>
       <Variable name="username" type="String"/>
       <Variable name="which_xml" type="String"/>
+      <Variable name="which_xml_s" type="String"/>
       <Variable name="ws_response" type="String"/>
       <Variable name="wtth_result_code" type="String"/>
       <Variable name="wtth_result_desc" type="String"/>
@@ -2412,7 +2439,7 @@
       </Position>
       <Position>
          <Name>TransformXML1</Name>
-         <X>361</X>
+         <X>360</X>
          <Y>910</Y>
          <Width>84</Width>
          <Height>48</Height>
@@ -2440,8 +2467,8 @@
       </Position>
       <Position>
          <Name>VariableMapper10</Name>
-         <X>562</X>
-         <Y>374</Y>
+         <X>560</X>
+         <Y>373</Y>
          <Width>96</Width>
          <Height>48</Height>
       </Position>
@@ -2776,8 +2803,8 @@
       </Position>
       <Position>
          <Name>VariableMapper9</Name>
-         <X>363</X>
-         <Y>373</Y>
+         <X>364</X>
+         <Y>371</Y>
          <Width>90</Width>
          <Height>48</Height>
       </Position>
