@@ -1,0 +1,20 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:con="http://configmgmt.service.ws.ems.acmepacket.com/">
+	<soapenv:Header/>
+	<soapenv:Body>
+		<con:deleteConfigElement>
+			<targetName>sbclab</targetName>
+			<wsConfigElement>
+				<attributeList>
+					<name>registerHost</name>
+					<value>ims.claro.com.co</value>
+				</attributeList>
+				<attributeList>
+					<name>registerUser</name>
+					<value>%fixed_number%</value>
+				</attributeList>
+				<elementTypePath>surrogateAgent</elementTypePath>
+				<type>surrogateAgent</type>
+			</wsConfigElement>
+		</con:deleteConfigElement>
+	</soapenv:Body>
+</soapenv:Envelope>

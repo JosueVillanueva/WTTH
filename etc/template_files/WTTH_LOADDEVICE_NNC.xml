@@ -1,0 +1,8 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dev="http://devicemgmt.service.ws.ems.acmepacket.com/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <dev:loadDevice>
+         <targetName>sbclab</targetName>
+      </dev:loadDevice>
+   </soapenv:Body>
+</soapenv:Envelope>

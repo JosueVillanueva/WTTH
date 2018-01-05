@@ -1,0 +1,9 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:adm="http://adminmgmt.service.ws.ems.acmepacket.com/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <adm:login>
+         <username>%username_nnc%</username>
+         <password>%password_nnc%</password>
+      </adm:login>
+   </soapenv:Body>
+</soapenv:Envelope>
