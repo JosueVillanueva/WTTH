@@ -4,15 +4,20 @@
 <Workflow Init-On-Startup="false" Unique="false" auditEnabled="false" auditStateChangeEvent="false" autoAuditEnabled="true" disablePersistence="true" statEnabled="false">
    <Name>LOCK_FILE_TABLE</Name>
    <Solution>WTTH</Solution>
-   <Start-Node>PrintStart</Start-Node>
+   <Start-Node>Logstart</Start-Node>
    <Nodes>
       <Process-Node>
-         <Name>PrintStart</Name>
+         <Name>Logstart</Name>
          <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
-            <Param name="message" value="START %s"/>
-            <Param name="queue" value="variable:WORKFLOW_NAME"/>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="INFORMATIVE"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="#################Start %s Action %s fixed_number %s parent_JOB_ID %s#######################"/>
             <Param name="param0" value="WORKFLOW_NAME"/>
+            <Param name="param1" value="action_name"/>
+            <Param name="param2" value="fixed_telephone_number_new"/>
+            <Param name="param3" value="services_JOB_ID"/>
          </Action>
          <Next-Node>start count</Next-Node>
       </Process-Node>
@@ -20,8 +25,8 @@
          <Name>start count</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="count_retries" value="0"/>
-            <Param name="number_retries" value="5"/>
+            <Param name="count_retries" value="1"/>
+            <Param name="number_retries" value="10"/>
             <Param name="table_name" value="1"/>
          </Action>
          <Next-Node>CreateInventory</Next-Node>
@@ -33,10 +38,11 @@
             <Param name="bean" value="constant:com.hpe.ov.activator.inventory.LockFileTable"/>
             <Param name="bean_variable" value="lock_file_table_obj"/>
             <Param name="strict_create" value="constant:true"/>
+            <Param name="throw_excep" value="constant:false"/>
             <Param name="key_field0" value="constant:lockTableName"/>
             <Param name="key_value0" value="table_name"/>
             <Param name="key_field1" value="constant:jobId"/>
-            <Param name="key_value1" value="JOB_ID"/>
+            <Param name="key_value1" value="table_name"/>
          </Action>
          <Next-Node>WasPreviousNodeOK</Next-Node>
       </Process-Node>
@@ -54,12 +60,27 @@
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="wtth_result_code" value="0"/>
          </Action>
+         <Next-Node>LogEnd</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>LogEnd</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="INFORMATIVE"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="fixed_telephone_number_new %s services_job_id %s wtth_error_code %s wtth_error_desc %s"/>
+            <Param name="param0" value="fixed_telephone_number_new"/>
+            <Param name="param1" value="services_JOB_ID"/>
+            <Param name="param2" value="wtth_error_code"/>
+            <Param name="param3" value="wtth_error_desc"/>
+         </Action>
       </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>Sleep</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Sleep</Class-Name>
-            <Param name="time" value="constant:300"/>
+            <Param name="time" value="constant:500"/>
          </Action>
          <Next-Node>LessThanOrEqual</Next-Node>
       </Process-Node>
@@ -70,9 +91,22 @@
             <Param name="op1" value="count_retries"/>
             <Param name="op2" value="number_retries"/>
          </Action>
-         <True-Next-Node>Add</True-Next-Node>
+         <True-Next-Node>Log11</True-Next-Node>
          <False-Next-Node>mapError</False-Next-Node>
       </Rule-Node>
+      <Process-Node>
+         <Name>Log11</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="INFORMATIVE"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="fixed_telephone_number_new %s services_job_id %s"/>
+            <Param name="param0" value="fixed_telephone_number_new"/>
+            <Param name="param1" value="services_JOB_ID"/>
+         </Action>
+         <Next-Node>Add</Next-Node>
+      </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>Add</Name>
          <Action>
@@ -88,17 +122,21 @@
             <Param name="wtth_result_code" value="404"/>
             <Param name="wtth_result_desc" value="number of retries an limit"/>
          </Action>
+         <Next-Node>LogError</Next-Node>
       </Process-Node>
-      <Process-Node inactive="true">
-         <Name>insertData</Name>
+      <Process-Node>
+         <Name>LogError</Name>
          <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.ExecSQLStatement</Class-Name>
-            <Param name="statement" value="insert into LOCK_FILE_TABLE_TMP values(&apos;lrt_ims_to_mov&apos;,?,&apos;y&apos;)"/>
-            <Param name="throw_excep" value="constant:false"/>
-            <Param name="param0" value="services_JOB_ID"/>
-            <Param name="param1" value="y"/>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="INFORMATIVE"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="fixed_telephone_number_new %s services_job_id %s wtth_error_code %s wtth_error_desc %s"/>
+            <Param name="param0" value="fixed_telephone_number_new"/>
+            <Param name="param1" value="services_JOB_ID"/>
+            <Param name="param2" value="wtth_error_code"/>
+            <Param name="param3" value="wtth_error_desc"/>
          </Action>
-         <Next-Node>WasPreviousNodeOK</Next-Node>
       </Process-Node>
    </Nodes>
    <Error-Handler>
@@ -174,6 +212,7 @@
       <Variable name="activation_major_code" type="Integer"/>
       <Variable name="activation_minor_code" type="Integer"/>
       <Variable name="count_retries" type="Integer"/>
+      <Variable name="fixed_telephone_number_new" type="String"/>
       <Variable name="lock_file_table_obj" type="Object"/>
       <Variable name="lock_file_table_obk" type="Object"/>
       <Variable name="message_url" type="String"/>
@@ -196,14 +235,14 @@
    <Coordinates>
       <Position>
          <Name>Add</Name>
-         <X>315</X>
+         <X>505</X>
          <Y>176</Y>
          <Width>61</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>CreateInventory</Name>
-         <X>295</X>
+         <X>485</X>
          <Y>103</Y>
          <Width>101</Width>
          <Height>48</Height>
@@ -211,15 +250,36 @@
       <Position>
          <Name>LessThanOrEqual</Name>
          <X>677</X>
-         <Y>296</Y>
+         <Y>330</Y>
          <Width>129</Width>
          <Height>26</Height>
       </Position>
       <Position>
-         <Name>PrintStart</Name>
-         <X>70</X>
+         <Name>Log11</Name>
+         <X>505</X>
+         <Y>246</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>LogEnd</Name>
+         <X>949</X>
          <Y>103</Y>
-         <Width>64</Width>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>LogError</Name>
+         <X>711</X>
+         <Y>563</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Logstart</Name>
+         <X>71</X>
+         <Y>103</Y>
+         <Width>61</Width>
          <Height>48</Height>
       </Position>
       <Position>
@@ -235,13 +295,6 @@
          <Y>114</Y>
          <Width>148</Width>
          <Height>26</Height>
-      </Position>
-      <Position>
-         <Name>insertData</Name>
-         <X>520</X>
-         <Y>35</Y>
-         <Width>68</Width>
-         <Height>48</Height>
       </Position>
       <Position>
          <Name>mapError</Name>
@@ -304,7 +357,46 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
-         <Name>PrintStart</Name>
+         <Name>Log11</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>LogEnd</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>LogError</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Logstart</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
@@ -331,19 +423,6 @@
       </Arrows>
       <Arrows>
          <Name>WasPreviousNodeOK</Name>
-         <True-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </True-Arrow>
-         <False-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </False-Arrow>
-      </Arrows>
-      <Arrows>
-         <Name>insertData</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>

@@ -7,7 +7,7 @@
    <Description>DeleteNNC</Description>
    <Start-Node>PutMessage</Start-Node>
    <Nodes>
-      <Process-Node>
+      <Process-Node inactive="true">
          <Name>PutMessage</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
@@ -15,6 +15,22 @@
             <Param name="queue" value="variable:WORKFLOW_NAME"/>
             <Param name="param0" value="WORKFLOW_NAME"/>
             <Param name="param1" value="account_number"/>
+         </Action>
+         <Next-Node>LogStart</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>LogStart</Name>
+         <Description></Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="INFORMATIVE"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="#################Start %s Action %s fixed_number %s JOB_ID %s#######################"/>
+            <Param name="param0" value="WORKFLOW_NAME"/>
+            <Param name="param1" value="action_name"/>
+            <Param name="param2" value="fixed_telephone_number_new"/>
+            <Param name="param3" value="controller_JOB_ID"/>
          </Action>
          <Next-Node>get Services</Next-Node>
       </Process-Node>
@@ -65,7 +81,7 @@
          </Action>
          <Next-Node>printError</Next-Node>
       </Process-Node>
-      <Process-Node>
+      <Process-Node inactive="true">
          <Name>printError</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
@@ -73,6 +89,22 @@
             <Param name="queue" value="variable:WORKFLOW_NAME"/>
             <Param name="param0" value="wtth_result_code"/>
             <Param name="param1" value="wtth_result_desc"/>
+         </Action>
+         <Next-Node>LogError</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>LogError</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="ERROR"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="-action_name[%s] -fixed_number[%s] -wtth_result_code[%s] -wtth_result_desc[%s] -parent_JOB_ID[%s]"/>
+            <Param name="param0" value="action_name"/>
+            <Param name="param1" value="fixed_telephone_number_new"/>
+            <Param name="param2" value="wtth_result_code"/>
+            <Param name="param3" value="wtth_result_desc"/>
+            <Param name="param4" value="controller_JOB_ID"/>
          </Action>
       </Process-Node>
       <Process-Node>
@@ -84,8 +116,42 @@
             <Param name="destination0" value="services_JOB_ID"/>
             <Param name="variable0" value="JOB_ID"/>
          </Action>
-         <Next-Node>NNC</Next-Node>
+         <Next-Node>IMS</Next-Node>
       </Process-Node>
+      <Process-Node>
+         <Name>IMS</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.StartJobAndWait</Class-Name>
+            <Param name="queue" value="controller_queue"/>
+            <Param name="workflow_name" value="constant:WTTH_IMS_DELETE"/>
+            <Param name="destination0" value="services_JOB_ID"/>
+            <Param name="outputvar0" value="wtth_result_code"/>
+            <Param name="variable0" value="JOB_ID"/>
+            <Param name="destination1" value="telephone_number"/>
+            <Param name="outputvar1" value="wtth_result_desc"/>
+            <Param name="variable1" value="fixed_telephone_number_new"/>
+            <Param name="destination2" value="pwd_value"/>
+            <Param name="variable2" value="password_customer"/>
+            <Param name="destination3" value="action_Name"/>
+            <Param name="variable3" value="action_name"/>
+            <Param name="variable4" value="account_number"/>
+            <Param name="destination5" value="geo_id"/>
+            <Param name="variable5" value="geographical_location_id"/>
+            <Param name="destination6" value="service_class"/>
+            <Param name="variable6" value="service_id_new"/>
+         </Action>
+         <Next-Node>imsOK?</Next-Node>
+      </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>imsOK?</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
+            <Param name="op1" value="wtth_result_code"/>
+            <Param name="op2" value="constant:0"/>
+         </Action>
+         <True-Next-Node>NNC</True-Next-Node>
+         <False-Next-Node>mapError01</False-Next-Node>
+      </Rule-Node>
       <Process-Node>
          <Name>NNC</Name>
          <Action>
@@ -96,11 +162,11 @@
             <Param name="outputvar0" value="wtth_result_code"/>
             <Param name="variable0" value="JOB_ID"/>
             <Param name="destination1" value="customer_id"/>
+            <Param name="outputvar1" value="wtth_result_desc"/>
             <Param name="variable1" value="fixed_telephone_number_new"/>
             <Param name="variable2" value="mobile_telephone_number_new"/>
             <Param name="variable3" value="action_name"/>
             <Param name="variable4" value="account_number"/>
-            <Param name="variable5" value="mobile_telephone_number_new"/>
          </Action>
          <Next-Node>NNCOK?</Next-Node>
       </Process-Node>
@@ -209,6 +275,22 @@
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="wtth_result_code" value="0"/>
             <Param name="wtth_result_desc" value="OK. Transaction executed succesful"/>
+         </Action>
+         <Next-Node>LogEnd</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>LogEnd</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="INFORMATIVE"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="-action_name[%s] -fixed_number[%s] -wtth_result_code[%s] -wtth_result_desc[%s] -parent_JOB_ID[%s]"/>
+            <Param name="param0" value="action_name"/>
+            <Param name="param1" value="fixed_telephone_number_new"/>
+            <Param name="param2" value="wtth_result_code"/>
+            <Param name="param3" value="wtth_result_desc"/>
+            <Param name="param4" value="controller_JOB_ID"/>
          </Action>
       </Process-Node>
       <Process-Node disablePersistence="true">
@@ -391,29 +473,13 @@
          </Action>
          <Next-Node>Error</Next-Node>
       </Process-Node>
-      <Process-Node>
-         <Name>IMS</Name>
+      <Process-Node disablePersistence="true" inactive="true">
+         <Name>mapError01</Name>
          <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.StartJobAndWait</Class-Name>
-            <Param name="queue" value="controller_queue"/>
-            <Param name="workflow_name" value="constant:WTTH_IMS_DELETE"/>
-            <Param name="destination0" value="services_JOB_ID"/>
-            <Param name="outputvar0" value="wtth_result_code"/>
-            <Param name="variable0" value="JOB_ID"/>
-            <Param name="destination1" value="telephone_number"/>
-            <Param name="outputvar1" value="wtth_result_desc"/>
-            <Param name="variable1" value="fixed_telephone_number_new"/>
-            <Param name="destination2" value="pwd_value"/>
-            <Param name="variable2" value="password_customer"/>
-            <Param name="destination3" value="action_Name"/>
-            <Param name="variable3" value="action_name"/>
-            <Param name="variable4" value="account_number"/>
-            <Param name="destination5" value="geo_id"/>
-            <Param name="variable5" value="geographical_location_id"/>
-            <Param name="destination6" value="service_class"/>
-            <Param name="variable6" value="service_id_new"/>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="%wtth_result_code%"/>
          </Action>
-         <Next-Node>imsOK?</Next-Node>
+         <Next-Node>Error</Next-Node>
       </Process-Node>
       <Process-Node>
          <Name>PutMessage21</Name>
@@ -471,24 +537,6 @@
          <True-Next-Node>noMapErrorDesc11</True-Next-Node>
          <False-Next-Node>mapErrorDesc11</False-Next-Node>
       </Rule-Node>
-      <Rule-Node disablePersistence="true">
-         <Name>imsOK?</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
-            <Param name="op1" value="wtth_result_code"/>
-            <Param name="op2" value="constant:0"/>
-         </Action>
-         <True-Next-Node>NNC</True-Next-Node>
-         <False-Next-Node>mapError01</False-Next-Node>
-      </Rule-Node>
-      <Process-Node disablePersistence="true" inactive="true">
-         <Name>mapError01</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="wtth_result_code" value="%wtth_result_code%"/>
-         </Action>
-         <Next-Node>Error</Next-Node>
-      </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>mapErrorDesc1</Name>
          <Action>
@@ -646,28 +694,49 @@
       </Position>
       <Position>
          <Name>IMSDelOK?</Name>
-         <X>872</X>
+         <X>867</X>
          <Y>266</Y>
-         <Width>82</Width>
-         <Height>24</Height>
+         <Width>92</Width>
+         <Height>26</Height>
       </Position>
       <Position>
          <Name>IMSDelOK?_</Name>
-         <X>1128</X>
+         <X>1123</X>
          <Y>435</Y>
-         <Width>88</Width>
-         <Height>24</Height>
+         <Width>99</Width>
+         <Height>26</Height>
       </Position>
       <Position>
          <Name>LockTable1</Name>
-         <X>494</X>
+         <X>489</X>
          <Y>111</Y>
-         <Width>63</Width>
+         <Width>74</Width>
+         <Height>32</Height>
+      </Position>
+      <Position>
+         <Name>LogEnd</Name>
+         <X>2213</X>
+         <Y>111</Y>
+         <Width>61</Width>
+         <Height>32</Height>
+      </Position>
+      <Position>
+         <Name>LogError</Name>
+         <X>667</X>
+         <Y>789</Y>
+         <Width>61</Width>
+         <Height>32</Height>
+      </Position>
+      <Position>
+         <Name>LogStart</Name>
+         <X>147</X>
+         <Y>111</Y>
+         <Width>61</Width>
          <Height>32</Height>
       </Position>
       <Position>
          <Name>NNC</Name>
-         <X>763</X>
+         <X>764</X>
          <Y>111</Y>
          <Width>61</Width>
          <Height>32</Height>
@@ -681,44 +750,44 @@
       </Position>
       <Position>
          <Name>NNCDelOK?</Name>
-         <X>1129</X>
+         <X>1125</X>
          <Y>354</Y>
-         <Width>85</Width>
-         <Height>24</Height>
+         <Width>94</Width>
+         <Height>26</Height>
       </Position>
       <Position>
          <Name>NNCOK?</Name>
-         <X>878</X>
+         <X>875</X>
          <Y>114</Y>
-         <Width>70</Width>
-         <Height>24</Height>
+         <Width>76</Width>
+         <Height>26</Height>
       </Position>
       <Position>
          <Name>PutMessage</Name>
-         <X>53</X>
+         <X>49</X>
          <Y>111</Y>
-         <Width>68</Width>
+         <Width>78</Width>
          <Height>32</Height>
       </Position>
       <Position>
          <Name>PutMessage21</Name>
-         <X>1978</X>
+         <X>1973</X>
          <Y>415</Y>
-         <Width>80</Width>
+         <Width>92</Width>
          <Height>32</Height>
       </Position>
       <Position>
          <Name>QueryInventory1</Name>
-         <X>846</X>
+         <X>842</X>
          <Y>561</Y>
-         <Width>94</Width>
+         <Width>104</Width>
          <Height>32</Height>
       </Position>
       <Position>
          <Name>QueryInventory11</Name>
-         <X>1579</X>
+         <X>1574</X>
          <Y>457</Y>
-         <Width>100</Width>
+         <Width>111</Width>
          <Height>32</Height>
       </Position>
       <Position>
@@ -730,227 +799,227 @@
       </Position>
       <Position>
          <Name>SROK?</Name>
-         <X>1141</X>
+         <X>1138</X>
          <Y>114</Y>
-         <Width>62</Width>
-         <Height>24</Height>
+         <Width>68</Width>
+         <Height>26</Height>
       </Position>
       <Position>
          <Name>UnlockTable1</Name>
-         <X>2009</X>
+         <X>2003</X>
          <Y>111</Y>
-         <Width>73</Width>
+         <Width>86</Width>
          <Height>32</Height>
       </Position>
       <Position>
          <Name>UnlockTable11</Name>
-         <X>658</X>
+         <X>651</X>
          <Y>682</Y>
-         <Width>79</Width>
+         <Width>93</Width>
          <Height>32</Height>
       </Position>
       <Position>
          <Name>delete Service</Name>
-         <X>1503</X>
+         <X>1497</X>
+         <Y>111</Y>
+         <Width>91</Width>
+         <Height>32</Height>
+      </Position>
+      <Position>
+         <Name>delete ServiceParam</Name>
+         <X>1743</X>
+         <Y>111</Y>
+         <Width>128</Width>
+         <Height>32</Height>
+      </Position>
+      <Position>
+         <Name>delete customer</Name>
+         <X>1238</X>
+         <Y>111</Y>
+         <Width>102</Width>
+         <Height>32</Height>
+      </Position>
+      <Position>
+         <Name>deleteOK?</Name>
+         <X>1637</X>
+         <Y>114</Y>
+         <Width>87</Width>
+         <Height>26</Height>
+      </Position>
+      <Position>
+         <Name>deleteOK?1</Name>
+         <X>1880</X>
+         <Y>114</Y>
+         <Width>94</Width>
+         <Height>26</Height>
+      </Position>
+      <Position>
+         <Name>deleteOK?2</Name>
+         <X>1378</X>
+         <Y>114</Y>
+         <Width>94</Width>
+         <Height>26</Height>
+      </Position>
+      <Position>
+         <Name>errorFound?1</Name>
+         <X>839</X>
+         <Y>610</Y>
+         <Width>107</Width>
+         <Height>26</Height>
+      </Position>
+      <Position>
+         <Name>errorFound?11</Name>
+         <X>1705</X>
+         <Y>409</Y>
+         <Width>114</Width>
+         <Height>26</Height>
+      </Position>
+      <Position>
+         <Name>get Services</Name>
+         <X>243</X>
+         <Y>111</Y>
+         <Width>80</Width>
+         <Height>32</Height>
+      </Position>
+      <Position>
+         <Name>imsOK?</Name>
+         <X>661</X>
+         <Y>114</Y>
+         <Width>72</Width>
+         <Height>26</Height>
+      </Position>
+      <Position>
+         <Name>mapActionName</Name>
+         <X>863</X>
+         <Y>149</Y>
+         <Width>103</Width>
+         <Height>32</Height>
+      </Position>
+      <Position>
+         <Name>mapActionName1</Name>
+         <X>1118</X>
+         <Y>234</Y>
+         <Width>110</Width>
+         <Height>32</Height>
+      </Position>
+      <Position>
+         <Name>mapError00</Name>
+         <X>2117</X>
          <Y>111</Y>
          <Width>78</Width>
          <Height>32</Height>
       </Position>
       <Position>
-         <Name>delete ServiceParam</Name>
-         <X>1752</X>
-         <Y>111</Y>
-         <Width>108</Width>
-         <Height>32</Height>
-      </Position>
-      <Position>
-         <Name>delete customer</Name>
-         <X>1245</X>
-         <Y>111</Y>
-         <Width>87</Width>
-         <Height>32</Height>
-      </Position>
-      <Position>
-         <Name>deleteOK?</Name>
-         <X>1641</X>
-         <Y>114</Y>
-         <Width>79</Width>
-         <Height>24</Height>
-      </Position>
-      <Position>
-         <Name>deleteOK?1</Name>
-         <X>1884</X>
-         <Y>114</Y>
-         <Width>85</Width>
-         <Height>24</Height>
-      </Position>
-      <Position>
-         <Name>deleteOK?2</Name>
-         <X>1382</X>
-         <Y>114</Y>
-         <Width>85</Width>
-         <Height>24</Height>
-      </Position>
-      <Position>
-         <Name>errorFound?1</Name>
-         <X>845</X>
-         <Y>610</Y>
-         <Width>95</Width>
-         <Height>24</Height>
-      </Position>
-      <Position>
-         <Name>errorFound?11</Name>
-         <X>1711</X>
-         <Y>409</Y>
-         <Width>101</Width>
-         <Height>24</Height>
-      </Position>
-      <Position>
-         <Name>get Services</Name>
-         <X>222</X>
-         <Y>111</Y>
-         <Width>69</Width>
-         <Height>32</Height>
-      </Position>
-      <Position>
-         <Name>imsOK?</Name>
-         <X>665</X>
-         <Y>114</Y>
-         <Width>64</Width>
-         <Height>24</Height>
-      </Position>
-      <Position>
-         <Name>mapActionName</Name>
-         <X>870</X>
-         <Y>149</Y>
-         <Width>87</Width>
-         <Height>32</Height>
-      </Position>
-      <Position>
-         <Name>mapActionName1</Name>
-         <X>1126</X>
-         <Y>234</Y>
-         <Width>93</Width>
-         <Height>32</Height>
-      </Position>
-      <Position>
-         <Name>mapError00</Name>
-         <X>2122</X>
-         <Y>111</Y>
-         <Width>66</Width>
-         <Height>32</Height>
-      </Position>
-      <Position>
          <Name>mapError01</Name>
-         <X>664</X>
+         <X>658</X>
          <Y>210</Y>
-         <Width>66</Width>
+         <Width>78</Width>
          <Height>32</Height>
       </Position>
       <Position>
          <Name>mapError02</Name>
-         <X>880</X>
+         <X>875</X>
          <Y>306</Y>
-         <Width>66</Width>
+         <Width>78</Width>
          <Height>32</Height>
       </Position>
       <Position>
          <Name>mapError03</Name>
-         <X>1139</X>
+         <X>1134</X>
          <Y>470</Y>
-         <Width>66</Width>
+         <Width>78</Width>
          <Height>32</Height>
       </Position>
       <Position>
          <Name>mapError04</Name>
-         <X>744</X>
+         <X>739</X>
          <Y>263</Y>
-         <Width>66</Width>
+         <Width>78</Width>
          <Height>32</Height>
       </Position>
       <Position>
          <Name>mapError05</Name>
-         <X>880</X>
+         <X>875</X>
          <Y>351</Y>
-         <Width>66</Width>
+         <Width>78</Width>
          <Height>32</Height>
       </Position>
       <Position>
          <Name>mapError06</Name>
-         <X>880</X>
+         <X>875</X>
          <Y>432</Y>
-         <Width>66</Width>
+         <Width>78</Width>
          <Height>32</Height>
       </Position>
       <Position>
          <Name>mapError07</Name>
-         <X>350</X>
+         <X>345</X>
          <Y>236</Y>
-         <Width>66</Width>
+         <Width>78</Width>
          <Height>32</Height>
       </Position>
       <Position>
          <Name>mapError08</Name>
-         <X>1894</X>
+         <X>1889</X>
          <Y>173</Y>
-         <Width>66</Width>
+         <Width>78</Width>
          <Height>32</Height>
       </Position>
       <Position>
          <Name>mapError09</Name>
-         <X>1392</X>
+         <X>1387</X>
          <Y>171</Y>
-         <Width>66</Width>
+         <Width>78</Width>
          <Height>32</Height>
       </Position>
       <Position>
          <Name>mapError10</Name>
-         <X>1647</X>
+         <X>1642</X>
          <Y>172</Y>
-         <Width>66</Width>
+         <Width>78</Width>
          <Height>32</Height>
       </Position>
       <Position>
          <Name>mapErrorDesc1</Name>
-         <X>852</X>
+         <X>845</X>
          <Y>647</Y>
-         <Width>83</Width>
+         <Width>98</Width>
          <Height>32</Height>
       </Position>
       <Position>
          <Name>mapErrorDesc11</Name>
-         <X>1705</X>
+         <X>1698</X>
          <Y>512</Y>
-         <Width>89</Width>
+         <Width>105</Width>
          <Height>32</Height>
       </Position>
       <Position>
          <Name>noMapErrorDesc1</Name>
-         <X>1008</X>
+         <X>1001</X>
          <Y>605</Y>
-         <Width>95</Width>
+         <Width>111</Width>
          <Height>32</Height>
       </Position>
       <Position>
          <Name>noMapErrorDesc11</Name>
-         <X>1854</X>
+         <X>1846</X>
          <Y>399</Y>
-         <Width>101</Width>
+         <Width>118</Width>
          <Height>32</Height>
       </Position>
       <Position>
          <Name>printError</Name>
-         <X>667</X>
+         <X>665</X>
          <Y>735</Y>
-         <Width>61</Width>
+         <Width>65</Width>
          <Height>32</Height>
       </Position>
       <Position>
          <Name>services?</Name>
-         <X>346</X>
+         <X>342</X>
          <Y>114</Y>
-         <Width>74</Width>
-         <Height>24</Height>
+         <Width>82</Width>
+         <Height>26</Height>
       </Position>
       <Arrows>
          <Name>Error</Name>
@@ -1032,6 +1101,45 @@
       </Arrows>
       <Arrows>
          <Name>LockTable1</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>LogEnd</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>LogError</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>LogStart</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>

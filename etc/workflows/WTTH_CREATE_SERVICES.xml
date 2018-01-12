@@ -7,7 +7,7 @@
    <Description>DeleteNNC</Description>
    <Start-Node>PutMessage</Start-Node>
    <Nodes>
-      <Process-Node>
+      <Process-Node inactive="true">
          <Name>PutMessage</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
@@ -16,6 +16,21 @@
             <Param name="param0" value="WORKFLOW_NAME"/>
             <Param name="param1" value="service_wo"/>
             <Param name="param2" value="ssw_id_new"/>
+         </Action>
+         <Next-Node>LogStart</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>LogStart</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="INFORMATIVE"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="#################Start %s Action %s fixed_number %s parent_JOB_ID %s#######################"/>
+            <Param name="param0" value="WORKFLOW_NAME"/>
+            <Param name="param1" value="action_name"/>
+            <Param name="param2" value="fixed_telephone_number_new"/>
+            <Param name="param3" value="controller_JOB_ID"/>
          </Action>
          <Next-Node>get Services</Next-Node>
       </Process-Node>
@@ -50,9 +65,44 @@
             <Param name="workflow_name" value="constant:LOCK_FILE_TABLE"/>
             <Param name="destination0" value="services_JOB_ID"/>
             <Param name="variable0" value="JOB_ID"/>
+            <Param name="variable1" value="fixed_telephone_number_new"/>
          </Action>
-         <Next-Node>NNC</Next-Node>
+         <Next-Node>IMS</Next-Node>
       </Process-Node>
+      <Process-Node>
+         <Name>IMS</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.StartJobAndWait</Class-Name>
+            <Param name="queue" value="controller_queue"/>
+            <Param name="workflow_name" value="constant:WTTH_IMS_CREATE"/>
+            <Param name="destination0" value="services_JOB_ID"/>
+            <Param name="outputvar0" value="wtth_result_code"/>
+            <Param name="variable0" value="JOB_ID"/>
+            <Param name="destination1" value="telephone_number"/>
+            <Param name="outputvar1" value="wtth_result_desc"/>
+            <Param name="variable1" value="fixed_telephone_number_new"/>
+            <Param name="destination2" value="pwd_value"/>
+            <Param name="variable2" value="password_customer"/>
+            <Param name="destination3" value="action_Name"/>
+            <Param name="variable3" value="action_name"/>
+            <Param name="variable4" value="account_number"/>
+            <Param name="destination5" value="geo_id"/>
+            <Param name="variable5" value="geographical_location_id"/>
+            <Param name="destination6" value="service_class"/>
+            <Param name="variable6" value="service_id_new"/>
+         </Action>
+         <Next-Node>imsOK?</Next-Node>
+      </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>imsOK?</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
+            <Param name="op1" value="wtth_result_code"/>
+            <Param name="op2" value="constant:0"/>
+         </Action>
+         <True-Next-Node>NNC</True-Next-Node>
+         <False-Next-Node>mapError01</False-Next-Node>
+      </Rule-Node>
       <Process-Node>
          <Name>NNC</Name>
          <Action>
@@ -221,7 +271,7 @@
          </Action>
          <Next-Node>PutMessage4</Next-Node>
       </Process-Node>
-      <Process-Node>
+      <Process-Node inactive="true">
          <Name>PutMessage4</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
@@ -261,7 +311,7 @@
          </Action>
          <Next-Node>PutMessage41</Next-Node>
       </Process-Node>
-      <Process-Node>
+      <Process-Node inactive="true">
          <Name>PutMessage41</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
@@ -301,7 +351,7 @@
          </Action>
          <Next-Node>PutMessage411</Next-Node>
       </Process-Node>
-      <Process-Node>
+      <Process-Node inactive="true">
          <Name>PutMessage411</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
@@ -341,7 +391,7 @@
          </Action>
          <Next-Node>PutMessage412</Next-Node>
       </Process-Node>
-      <Process-Node>
+      <Process-Node inactive="true">
          <Name>PutMessage412</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
@@ -381,7 +431,7 @@
          </Action>
          <Next-Node>PutMessage413</Next-Node>
       </Process-Node>
-      <Process-Node>
+      <Process-Node inactive="true">
          <Name>PutMessage413</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
@@ -405,6 +455,22 @@
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="wtth_result_code" value="0"/>
             <Param name="wtth_result_desc" value="OK. Transaction executed succesful"/>
+         </Action>
+         <Next-Node>LogEnd</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>LogEnd</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="INFORMATIVE"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="-action_name[%s] -fixed_number[%s] -wtth_result_code[%s] -wtth_result_desc[%s] -parent_JOB_ID[%s]"/>
+            <Param name="param0" value="action_name"/>
+            <Param name="param1" value="fixed_telephone_number_new"/>
+            <Param name="param2" value="wtth_result_code"/>
+            <Param name="param3" value="wtth_result_desc"/>
+            <Param name="param4" value="controller_JOB_ID"/>
          </Action>
       </Process-Node>
       <Process-Node disablePersistence="true">
@@ -432,10 +498,11 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.StartJobAndWait</Class-Name>
             <Param name="queue" value="controller_queue"/>
-            <Param name="workflow_name" value="constant:WTTH_NNC_CREATE"/>
+            <Param name="workflow_name" value="constant:WTTH_NNC_BAJA"/>
             <Param name="destination0" value="services_JOB_ID"/>
             <Param name="outputvar0" value="wtth_result_code"/>
             <Param name="variable0" value="JOB_ID"/>
+            <Param name="destination1" value="customer_id"/>
             <Param name="outputvar1" value="wtth_result_desc"/>
             <Param name="variable1" value="fixed_telephone_number_new"/>
             <Param name="variable2" value="password_customer"/>
@@ -512,7 +579,7 @@
          </Action>
          <Next-Node>printError</Next-Node>
       </Process-Node>
-      <Process-Node>
+      <Process-Node inactive="true">
          <Name>printError</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
@@ -520,6 +587,22 @@
             <Param name="queue" value="variable:WORKFLOW_NAME"/>
             <Param name="param0" value="wtth_result_code"/>
             <Param name="param1" value="wtth_result_desc"/>
+         </Action>
+         <Next-Node>LogError</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>LogError</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="ERROR"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="-action_name[%s] -fixed_number[%s] -wtth_result_code[%s] -wtth_result_desc[%s] -parent_JOB_ID[%s]"/>
+            <Param name="param0" value="action_name"/>
+            <Param name="param1" value="fixed_telephone_number_new"/>
+            <Param name="param2" value="wtth_result_code"/>
+            <Param name="param3" value="wtth_result_desc"/>
+            <Param name="param4" value="controller_JOB_ID"/>
          </Action>
       </Process-Node>
       <Process-Node disablePersistence="true">
@@ -612,6 +695,14 @@
          <Next-Node>Error</Next-Node>
       </Process-Node>
       <Process-Node disablePersistence="true">
+         <Name>mapError01</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="%wtth_result_code%"/>
+         </Action>
+         <Next-Node>Error</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
          <Name>mapError07</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
@@ -619,30 +710,6 @@
             <Param name="wtth_result_desc" value="Service already exist"/>
          </Action>
          <Next-Node>Error</Next-Node>
-      </Process-Node>
-      <Process-Node>
-         <Name>IMS</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.StartJobAndWait</Class-Name>
-            <Param name="queue" value="controller_queue"/>
-            <Param name="workflow_name" value="constant:WTTH_IMS_CREATE"/>
-            <Param name="destination0" value="services_JOB_ID"/>
-            <Param name="outputvar0" value="wtth_result_code"/>
-            <Param name="variable0" value="JOB_ID"/>
-            <Param name="destination1" value="telephone_number"/>
-            <Param name="outputvar1" value="wtth_result_desc"/>
-            <Param name="variable1" value="fixed_telephone_number_new"/>
-            <Param name="destination2" value="pwd_value"/>
-            <Param name="variable2" value="password_customer"/>
-            <Param name="destination3" value="action_Name"/>
-            <Param name="variable3" value="action_name"/>
-            <Param name="variable4" value="account_number"/>
-            <Param name="destination5" value="geo_id"/>
-            <Param name="variable5" value="geographical_location_id"/>
-            <Param name="destination6" value="service_class"/>
-            <Param name="variable6" value="service_id_new"/>
-         </Action>
-         <Next-Node>imsOK?</Next-Node>
       </Process-Node>
       <Process-Node>
          <Name>QueryInventory</Name>
@@ -667,24 +734,6 @@
          <True-Next-Node>noMapErrorDesc</True-Next-Node>
          <False-Next-Node>mapErrorDesc</False-Next-Node>
       </Rule-Node>
-      <Rule-Node disablePersistence="true">
-         <Name>imsOK?</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
-            <Param name="op1" value="wtth_result_code"/>
-            <Param name="op2" value="constant:0"/>
-         </Action>
-         <True-Next-Node>NNC</True-Next-Node>
-         <False-Next-Node>mapError01</False-Next-Node>
-      </Rule-Node>
-      <Process-Node disablePersistence="true">
-         <Name>mapError01</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="wtth_result_code" value="%wtth_result_code%"/>
-         </Action>
-         <Next-Node>Error</Next-Node>
-      </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>mapErrorDesc</Name>
          <Action>
@@ -852,6 +901,27 @@
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>LogEnd</Name>
+         <X>3151</X>
+         <Y>128</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>LogError</Name>
+         <X>573</X>
+         <Y>1068</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>LogStart</Name>
+         <X>121</X>
+         <Y>128</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>NNC</Name>
          <X>670</X>
          <Y>128</Y>
@@ -881,7 +951,7 @@
       </Position>
       <Position>
          <Name>PutMessage</Name>
-         <X>39</X>
+         <X>29</X>
          <Y>128</Y>
          <Width>78</Width>
          <Height>48</Height>
@@ -1000,7 +1070,7 @@
       </Position>
       <Position>
          <Name>get Services</Name>
-         <X>160</X>
+         <X>194</X>
          <Y>128</Y>
          <Width>80</Width>
          <Height>48</Height>
@@ -1092,7 +1162,7 @@
       <Position>
          <Name>mapError00</Name>
          <X>3058</X>
-         <Y>129</Y>
+         <Y>128</Y>
          <Width>78</Width>
          <Height>48</Height>
       </Position>
@@ -1281,6 +1351,45 @@
       </Arrows>
       <Arrows>
          <Name>LockTable</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>LogEnd</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>LogError</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>LogStart</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
