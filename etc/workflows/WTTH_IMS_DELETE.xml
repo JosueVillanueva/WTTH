@@ -5,8 +5,18 @@
    <Name>WTTH_IMS_DELETE</Name>
    <Solution>WTTH</Solution>
    <Description>Get Code Country of Telephone Number</Description>
-   <Start-Node>VariableMapper1</Start-Node>
+   <Start-Node>PutMessage3</Start-Node>
    <Nodes>
+      <Process-Node inactive="true">
+         <Name>PutMessage3</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="numero: %s"/>
+            <Param name="queue" value="alsdmlasd"/>
+            <Param name="param0" value="action_Name"/>
+         </Action>
+         <Next-Node>VariableMapper1</Next-Node>
+      </Process-Node>
       <Process-Node disablePersistence="true" inactive="true">
          <Name>VariableMapper1</Name>
          <Action>
@@ -93,14 +103,27 @@
       </Process-Node>
       <Process-Node>
          <Name>Java1</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.JavaNode</Class-Name>
             <Param name="in_scope" value="telephone_number"/>
             <Param name="javacode" value="constant:public String toTelephone() {return telephone_number.substring(1);}"/>
             <Param name="method" value="constant:toTelephone"/>
             <Param name="output_var" value="telephone_WO_c"/>
+         </Action>
+         <Next-Node>PutMessage32</Next-Node>
+      </Process-Node>
+      <Process-Node inactive="true">
+         <Name>PutMessage32</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="country_code: %s, city_code: %s, COP: %s, telephone: %s, telephone_WO_c: %s"/>
+            <Param name="queue" value="alsdmlasd"/>
+            <Param name="param0" value="telephone_number"/>
+            <Param name="param1" value="country_code"/>
+            <Param name="param2" value="ciyCode"/>
+            <Param name="param3" value="COP_value"/>
+            <Param name="param4" value="telephone"/>
+            <Param name="param5" value="telephone_WO_c"/>
          </Action>
          <Next-Node>SearchZystem11</Next-Node>
       </Process-Node>
@@ -128,7 +151,7 @@
          <True-Next-Node>PutMessage121</True-Next-Node>
          <False-Next-Node>MapSSW1211</False-Next-Node>
       </Rule-Node>
-      <Process-Node>
+      <Process-Node inactive="true">
          <Name>PutMessage121</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
@@ -203,7 +226,7 @@
          <Name>Equal21</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
-            <Param name="op1" value="template_obj"/>
+            <Param name="op1" value="template_obj#"/>
             <Param name="op2" value="constant:0"/>
          </Action>
          <True-Next-Node>MapSSW9.113</True-Next-Node>
@@ -238,13 +261,13 @@
          <Name>Equal31</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
-            <Param name="op1" value="methods_obj"/>
+            <Param name="op1" value="methods_obj#"/>
             <Param name="op2" value="constant:0"/>
          </Action>
          <True-Next-Node>PutMessage141</True-Next-Node>
          <False-Next-Node>VariableMapper51</False-Next-Node>
       </Rule-Node>
-      <Process-Node>
+      <Process-Node inactive="true">
          <Name>PutMessage141</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
@@ -345,15 +368,16 @@
             <Param name="use_solution_dir" value="constant:false"/>
             <Param name="xsl_url" value="xsl_template"/>
          </Action>
-         <Next-Node>MsgXML11</Next-Node>
+         <Next-Node>Log</Next-Node>
       </Process-Node>
       <Process-Node>
-         <Name>MsgXML11</Name>
-         <Description>Message to Activate Softswitch</Description>
+         <Name>Log</Name>
          <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
-            <Param name="message" value="XML Enviado: %s"/>
-            <Param name="queue" value="SSW_WTTH"/>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="INFORMATIVE"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="XML Enviado: %s"/>
             <Param name="param0" value="output_result"/>
          </Action>
          <Next-Node>HTTPRequest11</Next-Node>
@@ -377,18 +401,18 @@
             <Param name="op1" value="RET_VALUE"/>
             <Param name="op2" value="constant:0"/>
          </Action>
-         <True-Next-Node>MsgHTTP11</True-Next-Node>
+         <True-Next-Node>Log2</True-Next-Node>
          <False-Next-Node>MapSSW9.115</False-Next-Node>
       </Rule-Node>
       <Process-Node>
-         <Name>MsgHTTP11</Name>
-         <Description>Message to Activate Softswitch</Description>
+         <Name>Log2</Name>
          <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
-            <Param name="message" value="%s - XML Respuesta: %s"/>
-            <Param name="queue" value="SSW_WTTH"/>
-            <Param name="param0" value="account_number"/>
-            <Param name="param1" value="ws_response"/>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="INFORMATIVE"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="XML Respuesta: %s"/>
+            <Param name="param0" value="ws_response"/>
          </Action>
          <Next-Node>MapResult211</Next-Node>
       </Process-Node>
@@ -413,18 +437,18 @@
             <Param name="validate" value="false"/>
             <Param name="xml_var" value="ws_response"/>
          </Action>
-         <Next-Node>MsgSSW1511</Next-Node>
+         <Next-Node>Log3</Next-Node>
       </Process-Node>
       <Process-Node>
-         <Name>MsgSSW1511</Name>
-         <Description>Message to Activate Softswitch</Description>
+         <Name>Log3</Name>
          <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
-            <Param name="message" value="%s - ResultCode: %s, ResultDesc: %s"/>
-            <Param name="queue" value="SSW_WTTH"/>
-            <Param name="param0" value="account_number"/>
-            <Param name="param1" value="result_code"/>
-            <Param name="param2" value="result_desc"/>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="INFORMATIVE"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="ResultCode: %s, ResultDesc: %s"/>
+            <Param name="param0" value="result_code"/>
+            <Param name="param1" value="result_desc"/>
          </Action>
          <Next-Node>Equal51</Next-Node>
       </Process-Node>
@@ -457,7 +481,7 @@
          </Action>
          <Next-Node>PutMessage</Next-Node>
       </Process-Node>
-      <Process-Node>
+      <Process-Node inactive="true">
          <Name>PutMessage</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
@@ -629,14 +653,16 @@
             <Param name="op2" value="constant:0"/>
          </Action>
          <True-Next-Node>VariableMapper73211</True-Next-Node>
-         <False-Next-Node>PutMessage171</False-Next-Node>
+         <False-Next-Node>Log5</False-Next-Node>
       </Rule-Node>
       <Process-Node>
-         <Name>PutMessage171</Name>
+         <Name>Log5</Name>
          <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
-            <Param name="message" value="Iniciando logica de reintentos"/>
-            <Param name="queue" value="SSW_WTTH"/>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="WARNING"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="Iniciando logica de Rollback"/>
          </Action>
          <Next-Node>Add41</Next-Node>
       </Process-Node>
@@ -683,6 +709,55 @@
          <Name>DoNothing11</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.DoNothing</Class-Name>
+         </Action>
+         <Next-Node>EndWorkFlowTime111</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>EndWorkFlowTime111</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.DateConverter</Class-Name>
+            <Param name="in_current_time" value="0"/>
+            <Param name="result" value="end_wf_time"/>
+            <Param name="return_date_millis" value="0"/>
+         </Action>
+         <Next-Node>Assign211</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>Assign211</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Assign</Class-Name>
+            <Param name="value" value="end_wf_time"/>
+            <Param name="variable" value="end_wf_millis"/>
+         </Action>
+         <Next-Node>Multiply111</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>Multiply111</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Multiply</Class-Name>
+            <Param name="op0" value="difference_start_end_time"/>
+            <Param name="op1" value="START_TIME"/>
+         </Action>
+         <Next-Node>Add111</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>Add111</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Add</Class-Name>
+            <Param name="op0" value="difference_start_end_time"/>
+            <Param name="op1" value="end_wf_millis"/>
+         </Action>
+         <Next-Node>Log121</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>Log121</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="INFORMATIVE"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="Transaction DELETE IMS full time: %s"/>
+            <Param name="param0" value="difference_start_end_time"/>
          </Action>
       </Process-Node>
       <Process-Node disablePersistence="true">
@@ -734,15 +809,16 @@
             <Param name="use_solution_dir" value="constant:false"/>
             <Param name="xsl_url" value="xsl_template"/>
          </Action>
-         <Next-Node>MsgXML111</Next-Node>
+         <Next-Node>Log6</Next-Node>
       </Process-Node>
       <Process-Node>
-         <Name>MsgXML111</Name>
-         <Description>Message to Activate Softswitch</Description>
+         <Name>Log6</Name>
          <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
-            <Param name="message" value="XML Enviado: %s"/>
-            <Param name="queue" value="SSW_WTTH"/>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="WARNING"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="Rollback - XML Enviado: %s"/>
             <Param name="param0" value="output_result"/>
          </Action>
          <Next-Node>HTTPRequest111</Next-Node>
@@ -765,18 +841,18 @@
             <Param name="op1" value="RET_VALUE"/>
             <Param name="op2" value="constant:0"/>
          </Action>
-         <True-Next-Node>MsgHTTP111</True-Next-Node>
+         <True-Next-Node>Log7</True-Next-Node>
          <False-Next-Node>PutMessage181</False-Next-Node>
       </Rule-Node>
       <Process-Node>
-         <Name>MsgHTTP111</Name>
-         <Description>Message to Activate Softswitch</Description>
+         <Name>Log7</Name>
          <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
-            <Param name="message" value="%s - XML Respuesta: %s"/>
-            <Param name="queue" value="SSW_WTTH"/>
-            <Param name="param0" value="account_number"/>
-            <Param name="param1" value="ws_response"/>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="WARNING"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="Rollback - XML Respuesta: %s"/>
+            <Param name="param0" value="ws_response"/>
          </Action>
          <Next-Node>MapResult2111</Next-Node>
       </Process-Node>
@@ -799,18 +875,18 @@
             <Param name="validate" value="false"/>
             <Param name="xml_var" value="ws_response"/>
          </Action>
-         <Next-Node>MsgSSW15111</Next-Node>
+         <Next-Node>Log8</Next-Node>
       </Process-Node>
       <Process-Node>
-         <Name>MsgSSW15111</Name>
-         <Description>Message to Activate Softswitch</Description>
+         <Name>Log8</Name>
          <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
-            <Param name="message" value="%s - ResultCode: %s, ResultDesc: %s"/>
-            <Param name="queue" value="SSW_WTTH"/>
-            <Param name="param0" value="account_number"/>
-            <Param name="param1" value="result_code"/>
-            <Param name="param2" value="result_desc"/>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="WARNING"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="Rollback - ResultCode: %s, ResultDesc: %s"/>
+            <Param name="param0" value="result_code"/>
+            <Param name="param1" value="result_desc"/>
          </Action>
          <Next-Node>MapDataOK?111</Next-Node>
       </Process-Node>
@@ -822,19 +898,18 @@
             <Param name="op1" value="result_code"/>
             <Param name="op2" value="constant:0"/>
          </Action>
-         <True-Next-Node>MsgSSW7111</True-Next-Node>
+         <True-Next-Node>Log9</True-Next-Node>
          <False-Next-Node>MapSSW9.11111</False-Next-Node>
       </Rule-Node>
       <Process-Node>
-         <Name>MsgSSW7111</Name>
-         <Description>Message to Activate Softswitch</Description>
+         <Name>Log9</Name>
          <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
-            <Param name="message" value="Rollback successfully. Cause: %s Array_position: %s. Method_counter:%s"/>
-            <Param name="queue" value="SSW_WTTH"/>
-            <Param name="param0" value="result_code"/>
-            <Param name="param1" value="array_position"/>
-            <Param name="param2" value="method_counter"/>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="WARNING"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="Rollback successfully. Cause: %s "/>
+            <Param name="param0" value="result_desc"/>
          </Action>
          <Next-Node>MapSSW9.111</Next-Node>
       </Process-Node>
@@ -907,17 +982,18 @@
             <Param name="op1" value="result_code"/>
             <Param name="op2" value="constant:0"/>
          </Action>
-         <True-Next-Node>MsgSSW711</True-Next-Node>
+         <True-Next-Node>Log4</True-Next-Node>
          <False-Next-Node>MapSSW9.1156</False-Next-Node>
       </Rule-Node>
       <Process-Node>
-         <Name>MsgSSW711</Name>
-         <Description>Message to Activate Softswitch</Description>
+         <Name>Log4</Name>
          <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
-            <Param name="message" value="Activation Successfully. Cause: %s"/>
-            <Param name="queue" value="SSW_WTTH"/>
-            <Param name="param0" value="result_code"/>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="INFORMATIVE"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="Delete Successfully. Cause: %s"/>
+            <Param name="param0" value="result_desc"/>
          </Action>
          <Next-Node>MapSSW9.11</Next-Node>
       </Process-Node>
@@ -1010,6 +1086,111 @@
          </Action>
          <Next-Node>DoNothing11</Next-Node>
       </Process-Node>
+      <Process-Node>
+         <Name>MsgHTTP11</Name>
+         <Description>Message to Activate Softswitch</Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="%s - XML Respuesta: %s"/>
+            <Param name="queue" value="SSW_WTTH"/>
+            <Param name="param0" value="account_number"/>
+            <Param name="param1" value="ws_response"/>
+         </Action>
+         <Next-Node>MapResult211</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>MsgHTTP111</Name>
+         <Description>Message to Activate Softswitch</Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="%s - XML Respuesta: %s"/>
+            <Param name="queue" value="SSW_WTTH"/>
+            <Param name="param0" value="account_number"/>
+            <Param name="param1" value="ws_response"/>
+         </Action>
+         <Next-Node>MapResult2111</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>MsgSSW1511</Name>
+         <Description>Message to Activate Softswitch</Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="ResultCode: %s, ResultDesc: %s"/>
+            <Param name="queue" value="SSW_WTTH"/>
+            <Param name="param0" value="account_number"/>
+            <Param name="param1" value="result_code"/>
+            <Param name="param2" value="result_desc"/>
+         </Action>
+         <Next-Node>Equal51</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>MsgSSW15111</Name>
+         <Description>Message to Activate Softswitch</Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="%s - ResultCode: %s, ResultDesc: %s"/>
+            <Param name="queue" value="SSW_WTTH"/>
+            <Param name="param0" value="account_number"/>
+            <Param name="param1" value="result_code"/>
+            <Param name="param2" value="result_desc"/>
+         </Action>
+         <Next-Node>MapDataOK?111</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>MsgSSW711</Name>
+         <Description>Message to Activate Softswitch</Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="Activation Successfully. Cause: %s"/>
+            <Param name="queue" value="SSW_WTTH"/>
+            <Param name="param0" value="result_code"/>
+         </Action>
+         <Next-Node>MapSSW9.11</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>MsgSSW7111</Name>
+         <Description>Message to Activate Softswitch</Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="Rollback successfully. Cause: %s Array_position: %s. Method_counter:%s"/>
+            <Param name="queue" value="SSW_WTTH"/>
+            <Param name="param0" value="result_code"/>
+            <Param name="param1" value="array_position"/>
+            <Param name="param2" value="method_counter"/>
+         </Action>
+         <Next-Node>MapSSW9.111</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>MsgXML11</Name>
+         <Description>Message to Activate Softswitch</Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="XML Enviado: %s"/>
+            <Param name="queue" value="SSW_WTTH"/>
+            <Param name="param0" value="output_result"/>
+         </Action>
+         <Next-Node>HTTPRequest11</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>MsgXML111</Name>
+         <Description>Message to Activate Softswitch</Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="XML Enviado: %s"/>
+            <Param name="queue" value="SSW_WTTH"/>
+            <Param name="param0" value="output_result"/>
+         </Action>
+         <Next-Node>HTTPRequest111</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>PutMessage171</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="Iniciando logica de reintentos"/>
+            <Param name="queue" value="SSW_WTTH"/>
+         </Action>
+         <Next-Node>Add41</Next-Node>
+      </Process-Node>
    </Nodes>
    <Error-Handler>
       <Name>SyncHandler</Name>
@@ -1018,6 +1199,13 @@
       <Param name="queue" value="controller_queue"/>
       <Param name="variable0" value="wtth_result_code"/>
       <Param name="variable1" value="wtth_result_desc"/>
+   </Error-Handler>
+   <Error-Handler>
+      <Name>LogHandler</Name>
+      <Class-Name>com.hp.ov.activator.mwfm.component.builtin.LogHandler</Class-Name>
+      <Param name="component_name" value="WTTH"/>
+      <Param name="log_level" value="ERROR"/>
+      <Param name="log_message" value="hubo un errorsito"/>
    </Error-Handler>
    <End-Handler>
       <Name>SyncHandler1</Name>
@@ -1096,7 +1284,10 @@
       <Variable name="controller_queue" type="String"/>
       <Variable name="costumer_id" type="String"/>
       <Variable name="country_code" type="String"/>
+      <Variable name="difference_start_end_time" type="Integer"/>
       <Variable name="docsis_result_code" type="String"/>
+      <Variable name="end_wf_millis" type="Integer"/>
+      <Variable name="end_wf_time" type="String"/>
       <Variable name="fault_code" type="String"/>
       <Variable name="fault_string" type="String"/>
       <Variable name="geo_id" type="String"/>
@@ -1151,13 +1342,22 @@
       <Variable-Value name="WORKFLOW_NAME" value="WTTH_IMS_DELETE"/>
       <Variable-Value name="WORKFLOW_VERSION" value="-1"/>
       <Variable-Value name="controller_queue" value="controller_queue"/>
+      <Variable-Value name="difference_start_end_time" value="-1"/>
       <Variable-Value name="method_counter" value="0"/>
+      <Variable-Value name="wtth_result_code" value="-1"/>
    </Initial-Case-Packet>
    <Coordinates>
       <Position>
          <Name>Add1</Name>
          <X>752</X>
          <Y>597</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Add111</Name>
+         <X>1724</X>
+         <Y>659</Y>
          <Width>61</Width>
          <Height>48</Height>
       </Position>
@@ -1179,6 +1379,13 @@
          <Name>Add41</Name>
          <X>860</X>
          <Y>970</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Assign211</Name>
+         <X>1613</X>
+         <Y>581</Y>
          <Width>61</Width>
          <Height>48</Height>
       </Position>
@@ -1215,6 +1422,13 @@
          <X>1484</X>
          <Y>660</Y>
          <Width>72</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>EndWorkFlowTime111</Name>
+         <X>1589</X>
+         <Y>663</Y>
+         <Width>115</Width>
          <Height>48</Height>
       </Position>
       <Position>
@@ -1296,7 +1510,7 @@
       </Position>
       <Position>
          <Name>GetsCOP11</Name>
-         <X>750</X>
+         <X>835</X>
          <Y>85</Y>
          <Width>65</Width>
          <Height>48</Height>
@@ -1324,8 +1538,29 @@
       </Position>
       <Position>
          <Name>Java1</Name>
-         <X>704</X>
+         <X>789</X>
          <Y>164</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Log</Name>
+         <X>1056</X>
+         <Y>664</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Log121</Name>
+         <X>1723</X>
+         <Y>734</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Log2</Name>
+         <X>850</X>
+         <Y>826</Y>
          <Width>61</Width>
          <Height>48</Height>
       </Position>
@@ -1333,6 +1568,55 @@
          <Name>Log2.11</Name>
          <X>640</X>
          <Y>597</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Log3</Name>
+         <X>428</X>
+         <Y>890</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Log4</Name>
+         <X>550</X>
+         <Y>717</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Log5</Name>
+         <X>860</X>
+         <Y>1032</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Log6</Name>
+         <X>1303</X>
+         <Y>1071</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Log7</Name>
+         <X>1169</X>
+         <Y>1245</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Log8</Name>
+         <X>871</X>
+         <Y>1345</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Log9</Name>
+         <X>819</X>
+         <Y>1193</Y>
          <Width>61</Width>
          <Height>48</Height>
       </Position>
@@ -1443,15 +1727,15 @@
       </Position>
       <Position>
          <Name>MsgHTTP11</Name>
-         <X>853</X>
-         <Y>824</Y>
+         <X>1025</X>
+         <Y>817</Y>
          <Width>66</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>MsgHTTP111</Name>
-         <X>1165</X>
-         <Y>1229</Y>
+         <X>1347</X>
+         <Y>1232</Y>
          <Width>72</Width>
          <Height>48</Height>
       </Position>
@@ -1464,50 +1748,57 @@
       </Position>
       <Position>
          <Name>MsgSSW1511</Name>
-         <X>416</X>
-         <Y>891</Y>
+         <X>550</X>
+         <Y>823</Y>
          <Width>75</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>MsgSSW15111</Name>
-         <X>863</X>
-         <Y>1341</Y>
+         <X>712</X>
+         <Y>1339</Y>
          <Width>81</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>MsgSSW711</Name>
-         <X>539</X>
-         <Y>718</Y>
+         <X>683</X>
+         <Y>712</Y>
          <Width>69</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>MsgSSW7111</Name>
-         <X>815</X>
-         <Y>1187</Y>
+         <X>661</X>
+         <Y>1188</Y>
          <Width>75</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>MsgXML11</Name>
-         <X>1057</X>
-         <Y>665</Y>
+         <X>1048</X>
+         <Y>587</Y>
          <Width>61</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>MsgXML111</Name>
-         <X>1297</X>
-         <Y>1070</Y>
+         <X>1293</X>
+         <Y>1008</Y>
          <Width>66</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Multiply111</Name>
+         <X>1718</X>
+         <Y>581</Y>
+         <Width>64</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>NumberTelephone1</Name>
          <X>566</X>
-         <Y>15</Y>
+         <Y>16</Y>
          <Width>103</Width>
          <Height>48</Height>
       </Position>
@@ -1555,8 +1846,8 @@
       </Position>
       <Position>
          <Name>PutMessage171</Name>
-         <X>847</X>
-         <Y>1029</Y>
+         <X>719</X>
+         <Y>946</Y>
          <Width>86</Width>
          <Height>48</Height>
       </Position>
@@ -1589,6 +1880,13 @@
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>PutMessage3</Name>
+         <X>84</X>
+         <Y>79</Y>
+         <Width>74</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>PutMessage31</Name>
          <X>1184</X>
          <Y>580</Y>
@@ -1600,6 +1898,13 @@
          <X>1479</X>
          <Y>1003</Y>
          <Width>86</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>PutMessage32</Name>
+         <X>696</X>
+         <Y>164</Y>
+         <Width>80</Width>
          <Height>48</Height>
       </Position>
       <Position>
@@ -1716,8 +2021,8 @@
       </Position>
       <Position>
          <Name>VariableMapper22</Name>
-         <X>201</X>
-         <Y>19</Y>
+         <X>195</X>
+         <Y>14</Y>
          <Width>96</Width>
          <Height>48</Height>
       </Position>
@@ -1819,6 +2124,19 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>Add111</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>Add21</Name>
          <True-Arrow>
             <Type>0</Type>
@@ -1848,6 +2166,19 @@
          <Name>Add41</Name>
          <True-Arrow>
             <Type>3</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Assign211</Name>
+         <True-Arrow>
+            <Type>0</Type>
             <DeltaX>0</DeltaX>
             <DeltaY>0</DeltaY>
          </True-Arrow>
@@ -1911,6 +2242,19 @@
       </Arrows>
       <Arrows>
          <Name>DoNothing11</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>EndWorkFlowTime111</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
@@ -2131,7 +2475,137 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>Log</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Log121</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Log2</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>Log2.11</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Log3</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Log4</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Log5</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Log6</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Log7</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Log8</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Log9</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
@@ -2456,6 +2930,19 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>Multiply111</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>NumberTelephone1</Name>
          <True-Arrow>
             <Type>0</Type>
@@ -2612,6 +3099,19 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>PutMessage3</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>PutMessage31</Name>
          <True-Arrow>
             <Type>0</Type>
@@ -2628,6 +3128,19 @@
          <Name>PutMessage311</Name>
          <True-Arrow>
             <Type>3</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>PutMessage32</Name>
+         <True-Arrow>
+            <Type>0</Type>
             <DeltaX>0</DeltaX>
             <DeltaY>0</DeltaY>
          </True-Arrow>

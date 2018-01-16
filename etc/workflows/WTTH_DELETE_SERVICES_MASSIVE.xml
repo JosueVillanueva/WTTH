@@ -4,6 +4,7 @@
 <Workflow Init-On-Startup="false" Unique="false" auditEnabled="true" auditStateChangeEvent="false" autoAuditEnabled="true" disablePersistence="false" statEnabled="true">
    <Name>WTTH_DELETE_SERVICES_MASSIVE</Name>
    <Solution>WTTH</Solution>
+   <Description>Last message of Docsis procedure</Description>
    <Start-Node>VariableMapper</Start-Node>
    <Nodes>
       <Process-Node disablePersistence="true">
@@ -31,7 +32,7 @@
          </Action>
          <Next-Node>PutMessage3</Next-Node>
       </Process-Node>
-      <Process-Node>
+      <Process-Node inactive="true">
          <Name>PutMessage3</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
@@ -48,9 +49,20 @@
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Not</Class-Name>
             <Param name="op1" value="files"/>
          </Action>
-         <True-Next-Node>END!!1</True-Next-Node>
+         <True-Next-Node>Log</True-Next-Node>
          <False-Next-Node>PutMessage2</False-Next-Node>
       </Rule-Node>
+      <Process-Node>
+         <Name>Log</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="INFORMATIVE"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="Not files to read"/>
+         </Action>
+         <Next-Node>END!!1</Next-Node>
+      </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>END!!1</Name>
          <Action>
@@ -58,7 +70,7 @@
          </Action>
          <Next-Node>PutMessage</Next-Node>
       </Process-Node>
-      <Process-Node>
+      <Process-Node inactive="true">
          <Name>PutMessage</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
@@ -66,7 +78,7 @@
             <Param name="queue" value="error"/>
          </Action>
       </Process-Node>
-      <Process-Node>
+      <Process-Node inactive="true">
          <Name>PutMessage2</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
@@ -84,7 +96,7 @@
             <Param name="remaining" value="files_remain"/>
          </Action>
          <True-Next-Node>Switch1</True-Next-Node>
-         <False-Next-Node>END!!1</False-Next-Node>
+         <False-Next-Node>Log1</False-Next-Node>
       </Rule-Node>
       <Switch-Node disablePersistence="true">
          <Name>Switch1</Name>
@@ -96,9 +108,20 @@
          </Action>
          <Switch name="case0">DoNothing</Switch>
          <Switch name="case1">DoNothing</Switch>
-         <Default>INIT1</Default>
+         <Default>Log11</Default>
       </Switch-Node>
-      <Process-Node>
+      <Process-Node inactive="true">
+         <Name>Log1</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="INFORMATIVE"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="Finish the massive delete"/>
+         </Action>
+         <Next-Node>END!!1</Next-Node>
+      </Process-Node>
+      <Process-Node inactive="true">
          <Name>Delete OK1</Name>
          <Description>Last message of Docsis procedure</Description>
          <Action>
@@ -108,9 +131,9 @@
             <Param name="param0" value="account_number"/>
             <Param name="param1" value="out_message"/>
          </Action>
-         <Next-Node>more accounts?1</Next-Node>
+         <Next-Node>Java</Next-Node>
       </Process-Node>
-      <Process-Node>
+      <Process-Node inactive="true">
          <Name>Delete error1</Name>
          <Description>Last message of Docsis procedure</Description>
          <Action>
@@ -120,7 +143,7 @@
             <Param name="param0" value="account_number"/>
             <Param name="param1" value="out_message"/>
          </Action>
-         <Next-Node>more accounts?1</Next-Node>
+         <Next-Node>Java</Next-Node>
       </Process-Node>
       <Process-Node>
          <Name>DeleteService1</Name>
@@ -182,15 +205,13 @@
       </Rule-Node>
       <Rule-Node disablePersistence="true">
          <Name>Equal2</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
             <Param name="op1" value="wtth_result_code"/>
             <Param name="op2" value="constant:0"/>
          </Action>
-         <True-Next-Node>Delete OK1</True-Next-Node>
-         <False-Next-Node>Delete error1</False-Next-Node>
+         <True-Next-Node>Log111</True-Next-Node>
+         <False-Next-Node>Log1111</False-Next-Node>
       </Rule-Node>
       <Rule-Node disablePersistence="true">
          <Name>Equal21</Name>
@@ -251,6 +272,69 @@
          <Next-Node>get file accounts1</Next-Node>
       </Process-Node>
       <Process-Node>
+         <Name>Java</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.JavaNode</Class-Name>
+            <Param name="in_scope" value="results,resultado"/>
+            <Param name="javacode" value="constant:public String mensaje(){return results + &quot;\n&quot; + resultado; }"/>
+            <Param name="method" value="constant:mensaje"/>
+            <Param name="output_var" value="results"/>
+            <Param name="strict_scope" value="true"/>
+         </Action>
+         <Next-Node>more accounts?1</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>Log11</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="INFORMATIVE"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="Delete massive init (%s)"/>
+            <Param name="param0" value="file"/>
+         </Action>
+         <Next-Node>get file accounts1</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>Log111</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="INFORMATIVE"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="%s - Delete OK - (%s)"/>
+            <Param name="param0" value="account_number"/>
+            <Param name="param1" value="wtth_result_desc"/>
+         </Action>
+         <Next-Node>VariableMapper4</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>Log1111</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="INFORMATIVE"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="%s - Delete Error - (%s)"/>
+            <Param name="param0" value="account_number"/>
+            <Param name="param1" value="wtth_result_desc"/>
+         </Action>
+         <Next-Node>VariableMapper3</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>Log12</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="INFORMATIVE"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="Finish the massive delete"/>
+         </Action>
+         <Next-Node>DoNothing</Next-Node>
+      </Process-Node>
+      <Process-Node>
          <Name>PutMessage21</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
@@ -261,10 +345,8 @@
          </Action>
          <Next-Node>more accounts?1</Next-Node>
       </Process-Node>
-      <Process-Node>
+      <Process-Node inactive="true">
          <Name>PutMessage4</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
             <Param name="message" value="parametros: telefono fijo: %s. telefono_mobil: %s. geo_id: %s"/>
@@ -275,10 +357,8 @@
          </Action>
          <Next-Node>DeleteService1</Next-Node>
       </Process-Node>
-      <Process-Node>
+      <Process-Node inactive="true">
          <Name>PutMessage5</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
             <Param name="message" value="Params_element_name: %s Params_element_value: %s"/>
@@ -335,6 +415,14 @@
          <Next-Node>move inprogress to processed1</Next-Node>
       </Process-Node>
       <Process-Node disablePersistence="true">
+         <Name>VariableMapper2</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="results" value="%results% \n \r %resultado%"/>
+         </Action>
+         <Next-Node>more accounts?1</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
          <Name>VariableMapper21</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
@@ -362,6 +450,14 @@
          <Next-Node>PutMessage21</Next-Node>
       </Process-Node>
       <Process-Node disablePersistence="true">
+         <Name>VariableMapper3</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="resultado" value="%account_number% - Delete Error - (%wtth_result_desc%)"/>
+         </Action>
+         <Next-Node>Delete error1</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
          <Name>VariableMapper31</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
@@ -371,6 +467,33 @@
             <Param name="service_type" value="%services_obj[0].serviceType%"/>
          </Action>
          <Next-Node>QueryInventory21</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>VariableMapper4</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="resultado" value="%account_number% - Delete OK - (%wtth_result_desc%)"/>
+         </Action>
+         <Next-Node>Delete OK1</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>VariableMapper5</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="name_file" value="/var/tmp/Cancelaciones/Results/Result_%file%"/>
+         </Action>
+         <Next-Node>WriteFile2</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>WriteFile2</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.WriteFile</Class-Name>
+            <Param name="file" value="name_file"/>
+            <Param name="variable" value="results"/>
+         </Action>
+         <Next-Node>Log12</Next-Node>
       </Process-Node>
       <Rule-Node disablePersistence="true">
          <Name>file no ok?1</Name>
@@ -426,7 +549,7 @@
             <Param name="destination" value="file_proc"/>
             <Param name="file" value="file_prog"/>
          </Action>
-         <Next-Node>END1</Next-Node>
+         <Next-Node>VariableMapper5</Next-Node>
       </Process-Node>
    </Nodes>
    <Case-Packet>
@@ -493,6 +616,7 @@
       <Variable name="message_url" type="String"/>
       <Variable name="mobile_telephone_number_new" type="String"/>
       <Variable name="module_name" type="String"/>
+      <Variable name="name_file" type="String"/>
       <Variable name="params_array" type="Object"/>
       <Variable name="params_elemt" type="Object"/>
       <Variable name="params_obj" type="Object"/>
@@ -502,6 +626,8 @@
       <Variable name="path_in" type="String"/>
       <Variable name="path_proc" type="String"/>
       <Variable name="path_prog" type="String"/>
+      <Variable name="resultado" type="String"/>
+      <Variable name="results" type="String"/>
       <Variable name="service_id_new" type="String"/>
       <Variable name="service_type" type="String"/>
       <Variable name="services_obj" type="Object"/>
@@ -518,15 +644,15 @@
    <Coordinates>
       <Position>
          <Name>Delete OK1</Name>
-         <X>369</X>
-         <Y>720</Y>
+         <X>384</X>
+         <Y>684</Y>
          <Width>64</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>Delete error1</Name>
-         <X>250</X>
-         <Y>707</Y>
+         <X>249</X>
+         <Y>679</Y>
          <Width>74</Width>
          <Height>48</Height>
       </Position>
@@ -546,15 +672,15 @@
       </Position>
       <Position>
          <Name>END!!1</Name>
-         <X>691</X>
-         <Y>76</Y>
+         <X>714</X>
+         <Y>101</Y>
          <Width>61</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>END1</Name>
-         <X>64</X>
-         <Y>462</Y>
+         <X>99</X>
+         <Y>458</Y>
          <Width>61</Width>
          <Height>48</Height>
       </Position>
@@ -611,6 +737,55 @@
          <Name>INIT1</Name>
          <X>506</X>
          <Y>322</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Java</Name>
+         <X>320</X>
+         <Y>612</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Log</Name>
+         <X>662</X>
+         <Y>37</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Log1</Name>
+         <X>642</X>
+         <Y>179</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Log11</Name>
+         <X>416</X>
+         <Y>326</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Log111</Name>
+         <X>382</X>
+         <Y>798</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Log1111</Name>
+         <X>259</X>
+         <Y>798</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Log12</Name>
+         <X>20</X>
+         <Y>323</Y>
          <Width>61</Width>
          <Height>48</Height>
       </Position>
@@ -706,6 +881,13 @@
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>VariableMapper2</Name>
+         <X>340</X>
+         <Y>547</Y>
+         <Width>90</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>VariableMapper21</Name>
          <X>705</X>
          <Y>790</Y>
@@ -727,10 +909,38 @@
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>VariableMapper3</Name>
+         <X>238</X>
+         <Y>738</Y>
+         <Width>90</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>VariableMapper31</Name>
          <X>488</X>
          <Y>853</Y>
          <Width>96</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>VariableMapper4</Name>
+         <X>372</X>
+         <Y>740</Y>
+         <Width>90</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>VariableMapper5</Name>
+         <X>3</X>
+         <Y>462</Y>
+         <Width>90</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>WriteFile2</Name>
+         <X>22</X>
+         <Y>391</Y>
+         <Width>61</Width>
          <Height>48</Height>
       </Position>
       <Position>
@@ -965,6 +1175,97 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>Java</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Log</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Log1</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Log11</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Log111</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Log1111</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Log12</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>No files?1</Name>
          <True-Arrow>
             <Type>2</Type>
@@ -1153,6 +1454,19 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>VariableMapper2</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>VariableMapper21</Name>
          <True-Arrow>
             <Type>0</Type>
@@ -1192,7 +1506,59 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>VariableMapper3</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>VariableMapper31</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>VariableMapper4</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>VariableMapper5</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>WriteFile2</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>

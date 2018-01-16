@@ -1,0 +1,1337 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Workflow SYSTEM "workflow.dtd">
+
+<Workflow Init-On-Startup="false" Unique="false" auditEnabled="true" auditStateChangeEvent="false" autoAuditEnabled="true" disablePersistence="false" statEnabled="true">
+   <Name>WTTH_MOD_CALL_FEATURES</Name>
+   <Solution>WTTH</Solution>
+   <Description>Get Code City of Telephone Number</Description>
+   <Start-Node>VariableMapper21</Start-Node>
+   <Nodes>
+      <Process-Node disablePersistence="true">
+         <Name>VariableMapper21</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="action_type" value="IMS"/>
+            <Param name="message_url" value="file:C:\HP\OpenView\ServiceActivator\solutions\WTTH\etc\template_files\call_features_example.xml"/>
+            <Param name="moduleName" value="http_sender_wtth"/>
+            <Param name="ssw_id" value="1"/>
+         </Action>
+         <Next-Node>ReadFile</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true" inactive="true">
+         <Name>ReadFile</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.ReadFile</Class-Name>
+            <Param name="destination" value="xml_message"/>
+            <Param name="file" value="constant:/opt/OV/ServiceActivator/solutions/WTTH/etc/template_files/call_features_example.xml"/>
+         </Action>
+         <Next-Node>VariableMapper1</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true" inactive="true">
+         <Name>VariableMapper1</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="action_Name" value="MODIFYCALLFEATURES"/>
+            <Param name="action_type" value="IMS"/>
+            <Param name="AGCFName_value" value="nosequeseaesto"/>
+            <Param name="geo_id" value="BOG"/>
+            <Param name="moduleName" value="http_sender_wtth"/>
+            <Param name="service_class" value="WTH"/>
+            <Param name="ssw_id" value="1"/>
+            <Param name="telephone_number" value="+5713931655"/>
+            <Param name="template_type" value="DEACT"/>
+         </Action>
+         <Next-Node>Log11</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>Log11</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="INFORMATIVE"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="XML - Message: %s"/>
+            <Param name="param0" value="xml_message"/>
+         </Action>
+         <Next-Node>CodeCountry11</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true" inactive="true">
+         <Name>CodeCountry11</Name>
+         <Description>Get Code Country of Telephone Number</Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.JavaNode</Class-Name>
+            <Param name="in_scope" value="telephone_number"/>
+            <Param name="javacode" value="constant:public String toCodeCountry() {return telephone_number.substring(0, 3);}"/>
+            <Param name="method" value="constant:toCodeCountry"/>
+            <Param name="output_var" value="country_code"/>
+         </Action>
+         <Next-Node>CodeCity11</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true" inactive="true">
+         <Name>CodeCity11</Name>
+         <Description>Get Code City of Telephone Number</Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.JavaNode</Class-Name>
+            <Param name="in_scope" value="telephone_number"/>
+            <Param name="javacode" value="constant:public String toCodeCity() {return telephone_number.substring(3, 4);}"/>
+            <Param name="method" value="constant:toCodeCity"/>
+            <Param name="output_var" value="ciy_code"/>
+         </Action>
+         <Next-Node>Java1</Next-Node>
+      </Process-Node>
+      <Process-Node inactive="true">
+         <Name>Java1</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.JavaNode</Class-Name>
+            <Param name="in_scope" value="telephone_number"/>
+            <Param name="javacode" value="constant:public String toTelephone() {return telephone_number.substring(1);}"/>
+            <Param name="method" value="constant:toTelephone"/>
+            <Param name="output_var" value="telephone_WO_c"/>
+         </Action>
+         <Next-Node>GetsCOP11</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true" inactive="true">
+         <Name>GetsCOP11</Name>
+         <Description>Gets only the last four numbers of Telephone Number</Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.JavaNode</Class-Name>
+            <Param name="in_scope" value="telephone_number"/>
+            <Param name="javacode" value="constant:public String toCOP() {return telephone_number.substring(4);}"/>
+            <Param name="method" value="constant:toCOP"/>
+            <Param name="output_var" value="telephone"/>
+         </Action>
+         <Next-Node>SearchZystem11</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>SearchZystem11</Name>
+         <Description>Search Credentials for activate SSW</Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.QueryInventory</Class-Name>
+            <Param name="bean" value="constant:com.hpe.ov.activator.inventory.NetworkElement"/>
+            <Param name="find_by_method" value="constant:findByNetworkelementid"/>
+            <Param name="return_array" value="constant:true"/>
+            <Param name="variable" value="net_send"/>
+            <Param name="key_value0" value="ssw_id"/>
+         </Action>
+         <Next-Node>Zystem?11</Next-Node>
+      </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>Zystem?11</Name>
+         <Description>Params for Activate SSW finded?</Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
+            <Param name="op1" value="net_send#"/>
+            <Param name="op2" value="constant:0"/>
+         </Action>
+         <True-Next-Node>VariableMapper711</True-Next-Node>
+         <False-Next-Node>MapSSW1211</False-Next-Node>
+      </Rule-Node>
+      <Process-Node disablePersistence="true">
+         <Name>VariableMapper711</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="171"/>
+            <Param name="wtth_result_desc" value="UNDO_OK_No network element found."/>
+         </Action>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>MapSSW1211</Name>
+         <Description>Credentials Map</Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="password_enc" value="%net_send[0].password%"/>
+            <Param name="user" value="%net_send[0].userName%"/>
+         </Action>
+         <Next-Node>Decrypt11</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>Decrypt11</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Decrypt</Class-Name>
+            <Param name="decrypted_text" value="passwd"/>
+            <Param name="encrypted_text" value="password_enc"/>
+         </Action>
+         <Next-Node>VariableMapper51</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>VariableMapper51</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="authurl" value="ims.claro.com.co"/>
+            <Param name="password" value="%passwd%"/>
+            <Param name="telephone_full" value="%telephone_number%"/>
+            <Param name="username" value="%net_send[0].userName%"/>
+         </Action>
+         <Next-Node>XMLMapper</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>XMLMapper</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.XMLMapper</Class-Name>
+            <Param name="features" value="/msg/body/feature#"/>
+            <Param name="ignore_missing_tags" value="true"/>
+            <Param name="validate" value="false"/>
+            <Param name="xml_var" value="xml_message"/>
+         </Action>
+         <Next-Node>ForEach1</Next-Node>
+      </Process-Node>
+      <Rule-Node>
+         <Name>ForEach1</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.ForEach</Class-Name>
+            <Param name="element" value="feature_element"/>
+            <Param name="list" value="features"/>
+            <Param name="remaining" value="feature_element_remaining"/>
+         </Action>
+         <True-Next-Node>XMLMapper2</True-Next-Node>
+         <False-Next-Node>Log3111111</False-Next-Node>
+      </Rule-Node>
+      <Process-Node disablePersistence="true">
+         <Name>XMLMapper2</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.XMLMapper</Class-Name>
+            <Param name="aditional_info" value="/additional_info"/>
+            <Param name="enabled" value="/enabled"/>
+            <Param name="feature_code" value="/feature_code"/>
+            <Param name="ignore_missing_tags" value="true"/>
+            <Param name="provisioned" value="/provisioned"/>
+            <Param name="telephone_number" value="/telephone_number"/>
+            <Param name="validate" value="false"/>
+            <Param name="xml_var" value="feature_element"/>
+         </Action>
+         <Next-Node>Switch</Next-Node>
+      </Process-Node>
+      <Switch-Node disablePersistence="true">
+         <Name>Switch</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.SwitchCase</Class-Name>
+            <Param name="key" value="enabled"/>
+            <Param name="case0" value="constant:ON"/>
+            <Param name="case1" value="constant:OFF"/>
+         </Action>
+         <Switch name="case0">ActCF111</Switch>
+         <Switch name="case1">DeactCF111</Switch>
+         <Default>Log</Default>
+      </Switch-Node>
+      <Process-Node>
+         <Name>Log3111111</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="INFORMATIVE"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="Modify of all CF Successfully. Cause: %s"/>
+            <Param name="param0" value="result_desc"/>
+         </Action>
+         <Next-Node>EndWorkFlowTime111</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>EndWorkFlowTime111</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.DateConverter</Class-Name>
+            <Param name="in_current_time" value="0"/>
+            <Param name="result" value="end_wf_time"/>
+            <Param name="return_date_millis" value="0"/>
+         </Action>
+         <Next-Node>Assign211</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>Assign211</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Assign</Class-Name>
+            <Param name="value" value="end_wf_time"/>
+            <Param name="variable" value="end_wf_millis"/>
+         </Action>
+         <Next-Node>Multiply111</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>Multiply111</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Multiply</Class-Name>
+            <Param name="op0" value="difference_start_end_time"/>
+            <Param name="op1" value="START_TIME"/>
+         </Action>
+         <Next-Node>Add111</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>Add111</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Add</Class-Name>
+            <Param name="op0" value="difference_start_end_time"/>
+            <Param name="op1" value="end_wf_millis"/>
+         </Action>
+         <Next-Node>Log121</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>Log121</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="INFORMATIVE"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="Transaction MODIFY CALL FEATURES IMS full time: %s"/>
+            <Param name="param0" value="difference_start_end_time"/>
+         </Action>
+      </Process-Node>
+      <Process-Node>
+         <Name>ActCF111</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.StartJobAndWait</Class-Name>
+            <Param name="queue" value="controller_queue"/>
+            <Param name="workflow_name" value="constant:WTTH_ACT_CALL_FEATURES"/>
+            <Param name="destination0" value="controller_JOB_ID"/>
+            <Param name="outputvar0" value="wtth_result_code"/>
+            <Param name="variable0" value="JOB_ID"/>
+            <Param name="destination1" value="aditional_info"/>
+            <Param name="outputvar1" value="wtth_result_desc"/>
+            <Param name="variable1" value="aditional_info"/>
+            <Param name="destination2" value="enabled"/>
+            <Param name="variable2" value="enabled"/>
+            <Param name="destination3" value="feature_code"/>
+            <Param name="variable3" value="feature_code"/>
+            <Param name="destination4" value="provisioned"/>
+            <Param name="variable4" value="provisioned"/>
+            <Param name="destination5" value="telephone_number"/>
+            <Param name="variable5" value="telephone_number"/>
+            <Param name="destination6" value="password"/>
+            <Param name="variable6" value="password"/>
+            <Param name="destination7" value="username"/>
+            <Param name="variable7" value="username"/>
+         </Action>
+         <Next-Node>Equal1</Next-Node>
+      </Process-Node>
+      <Process-Node inactive="true">
+         <Name>DeactCF11</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.StartJobAndWait</Class-Name>
+            <Param name="queue" value="controller_queue"/>
+            <Param name="workflow_name" value="constant:WTTH_DEACT_CALL_FEATURES"/>
+            <Param name="destination0" value="controller_JOB_ID"/>
+            <Param name="outputvar0" value="wtth_result_code"/>
+            <Param name="variable0" value="JOB_ID"/>
+            <Param name="destination1" value="aditional_info"/>
+            <Param name="outputvar1" value="wtth_result_desc"/>
+            <Param name="variable1" value="aditional_info"/>
+            <Param name="destination2" value="enabled"/>
+            <Param name="variable2" value="enabled"/>
+            <Param name="destination3" value="feature_code"/>
+            <Param name="variable3" value="feature_code"/>
+            <Param name="destination4" value="provisioned"/>
+            <Param name="variable4" value="provisioned"/>
+            <Param name="destination5" value="telephone_number"/>
+            <Param name="variable5" value="telephone_number"/>
+            <Param name="destination6" value="password"/>
+            <Param name="variable6" value="password"/>
+            <Param name="destination7" value="username"/>
+            <Param name="variable7" value="username"/>
+         </Action>
+         <Next-Node>Log311111112</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>DeactCF111</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.StartJobAndWait</Class-Name>
+            <Param name="queue" value="controller_queue"/>
+            <Param name="workflow_name" value="constant:WTTH_DEACT_CALL_FEATURES"/>
+            <Param name="destination0" value="controller_JOB_ID"/>
+            <Param name="outputvar0" value="wtth_result_code"/>
+            <Param name="variable0" value="JOB_ID"/>
+            <Param name="destination1" value="aditional_info"/>
+            <Param name="outputvar1" value="wtth_result_desc"/>
+            <Param name="variable1" value="aditional_info"/>
+            <Param name="destination2" value="enabled"/>
+            <Param name="variable2" value="enabled"/>
+            <Param name="destination3" value="feature_code"/>
+            <Param name="variable3" value="feature_code"/>
+            <Param name="destination4" value="provisioned"/>
+            <Param name="variable4" value="provisioned"/>
+            <Param name="destination5" value="telephone_number"/>
+            <Param name="variable5" value="telephone_number"/>
+            <Param name="destination6" value="password"/>
+            <Param name="variable6" value="password"/>
+            <Param name="destination7" value="username"/>
+            <Param name="variable7" value="username"/>
+         </Action>
+         <Next-Node>Equal11</Next-Node>
+      </Process-Node>
+      <Process-Node inactive="true">
+         <Name>DeactCF112</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.StartJobAndWait</Class-Name>
+            <Param name="queue" value="controller_queue"/>
+            <Param name="workflow_name" value="constant:WTTH_ACT_CALL_FEATURES"/>
+            <Param name="destination0" value="controller_JOB_ID"/>
+            <Param name="outputvar0" value="wtth_result_code"/>
+            <Param name="variable0" value="JOB_ID"/>
+            <Param name="destination1" value="aditional_info"/>
+            <Param name="outputvar1" value="wtth_result_desc"/>
+            <Param name="variable1" value="aditional_info"/>
+            <Param name="destination2" value="enabled"/>
+            <Param name="variable2" value="enabled"/>
+            <Param name="destination3" value="feature_code"/>
+            <Param name="variable3" value="feature_code"/>
+            <Param name="destination4" value="provisioned"/>
+            <Param name="variable4" value="provisioned"/>
+            <Param name="destination5" value="telephone_number"/>
+            <Param name="variable5" value="telephone_number"/>
+            <Param name="destination6" value="password"/>
+            <Param name="variable6" value="password"/>
+            <Param name="destination7" value="username"/>
+            <Param name="variable7" value="username"/>
+         </Action>
+         <Next-Node>Log311111112</Next-Node>
+      </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>Equal1</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
+            <Param name="op1" value="constant:0"/>
+            <Param name="op2" value="wtth_result_code"/>
+         </Action>
+         <True-Next-Node>Log31111111</True-Next-Node>
+         <False-Next-Node>DeactCF11</False-Next-Node>
+      </Rule-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>Equal11</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
+            <Param name="op1" value="constant:0"/>
+            <Param name="op2" value="wtth_result_code"/>
+         </Action>
+         <True-Next-Node>Log311111111</True-Next-Node>
+         <False-Next-Node>DeactCF112</False-Next-Node>
+      </Rule-Node>
+      <Process-Node>
+         <Name>Log</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="ERROR"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="Value in the tag enable is incorrect: tag  = %s"/>
+            <Param name="param0" value="enabled"/>
+         </Action>
+         <Next-Node>ForEach1</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>Log31111111</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="INFORMATIVE"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="ACT CF Successfully. Cause: %s"/>
+            <Param name="param0" value="result_desc"/>
+         </Action>
+         <Next-Node>ForEach1</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>Log311111111</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="INFORMATIVE"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="DEACT CF Successfully. Cause: %s"/>
+            <Param name="param0" value="result_desc"/>
+         </Action>
+         <Next-Node>ForEach1</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>Log311111112</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="WARNING"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="ROLLBACK CF Successfully. Cause: %s"/>
+            <Param name="param0" value="result_desc"/>
+         </Action>
+         <Next-Node>ForEach1</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>PutMessage2</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="Activation successfully. Result_code: %s --- Result_description: %s "/>
+            <Param name="queue" value="SSW_WTTH"/>
+            <Param name="param0" value="wtth_result_code"/>
+            <Param name="param1" value="wtth_result_desc"/>
+         </Action>
+      </Process-Node>
+   </Nodes>
+   <Error-Handler>
+      <Name>SyncHandler</Name>
+      <Class-Name>com.hp.ov.activator.mwfm.component.builtin.SyncHandler</Class-Name>
+      <Param name="job_id" value="controller_JOB_ID"/>
+      <Param name="queue" value="constant:controller_queue"/>
+      <Param name="variable0" value="wtth_result_code"/>
+      <Param name="variable1" value="wtth_result_desc"/>
+   </Error-Handler>
+   <End-Handler>
+      <Name>SyncHandler1</Name>
+      <Class-Name>com.hp.ov.activator.mwfm.component.builtin.SyncHandler</Class-Name>
+      <Param name="job_id" value="controller_JOB_ID"/>
+      <Param name="queue" value="constant:controller_queue"/>
+      <Param name="variable0" value="wtth_result_code"/>
+      <Param name="variable1" value="wtth_result_desc"/>
+   </End-Handler>
+   <Case-Packet>
+      <Variable name="ABBRNUMBER_value" type="String"/>
+      <Variable name="AGCFName_value" type="String"/>
+      <Variable name="ANNOTATION" type="String"/>
+      <Variable name="BREAK_POINT" type="String"/>
+      <Variable name="CBABLV_value" type="String"/>
+      <Variable name="COP_value" type="String"/>
+      <Variable name="CSIMPU_value" type="String"/>
+      <Variable name="CWPATTERN_value" type="String"/>
+      <Variable name="DEFAULT_ROLE" type="String"/>
+      <Variable name="DESTIMPU_value" type="String"/>
+      <Variable name="DIMPU_value" type="String"/>
+      <Variable name="EMPTY_STRING" type="String"/>
+      <Variable name="ETC" type="String"/>
+      <Variable name="EX_STEP_NAME" type="String"/>
+      <Variable name="FILE_URL_PREFIX" type="String"/>
+      <Variable name="FTIMPU_value" type="String"/>
+      <Variable name="GMODE_value" type="String"/>
+      <Variable name="HLIIMPU_value" type="String"/>
+      <Variable name="HOST_NAME" type="String"/>
+      <Variable name="JOB_ID" type="Integer"/>
+      <Variable name="KILLED" type="Boolean"/>
+      <Variable name="KILL_ROLE" type="String"/>
+      <Variable name="MACRO_OUTPUT" type="Object"/>
+      <Variable name="MASTER_CHILD_JOBS" type="Object"/>
+      <Variable name="MUTEX" type="Boolean"/>
+      <Variable name="NULL" type="Object"/>
+      <Variable name="PATTERN_value" type="String"/>
+      <Variable name="PRIORITY" type="Integer"/>
+      <Variable name="PUI_value" type="String"/>
+      <Variable name="RESERVATIONS" type="Object"/>
+      <Variable name="RET_TEXT" type="String"/>
+      <Variable name="RET_VALUE" type="Integer"/>
+      <Variable name="RUNTIME" type="Object"/>
+      <Variable name="SCHEDULED_INFO" type="Object"/>
+      <Variable name="SERVICE_ID" type="String"/>
+      <Variable name="SIIMPU_value" type="String"/>
+      <Variable name="SIMPU_value" type="String"/>
+      <Variable name="SOLUTION_ETC" type="String"/>
+      <Variable name="SOLUTION_NAME" type="String"/>
+      <Variable name="SOLUTION_VAR" type="String"/>
+      <Variable name="SOR_ID" type="Integer"/>
+      <Variable name="START_ROLE" type="String"/>
+      <Variable name="START_TIME" type="Integer"/>
+      <Variable name="STATUS" type="String"/>
+      <Variable name="STEP_NAME" type="String"/>
+      <Variable name="SUBSTEP" type="String"/>
+      <Variable name="THROW_EXCEP" type="Boolean"/>
+      <Variable name="TIMEOUT" type="Boolean"/>
+      <Variable name="TPTY_value" type="String"/>
+      <Variable name="TRACE_ROLE" type="String"/>
+      <Variable name="UNIQUE_WORKFLOW" type="Integer"/>
+      <Variable name="VAR" type="String"/>
+      <Variable name="WORKFLOW_EXCEPTION" type="Object"/>
+      <Variable name="WORKFLOW_EXECUTION_STATUS" type="String"/>
+      <Variable name="WORKFLOW_NAME" type="String"/>
+      <Variable name="WORKFLOW_ORDER_ID" type="String"/>
+      <Variable name="WORKFLOW_STATE" type="String"/>
+      <Variable name="WORKFLOW_TYPE" type="String"/>
+      <Variable name="WORKFLOW_VERSION" type="Integer"/>
+      <Variable name="action_Name" type="String"/>
+      <Variable name="action_type" type="String"/>
+      <Variable name="activation_description" type="String"/>
+      <Variable name="activation_major_code" type="Integer"/>
+      <Variable name="activation_minor_code" type="Integer"/>
+      <Variable name="ad_info" type="String"/>
+      <Variable name="aditional_array" type="Object"/>
+      <Variable name="aditional_array_remaining" type="Object"/>
+      <Variable name="aditional_element" type="Object"/>
+      <Variable name="aditional_info" type="String"/>
+      <Variable name="aditional_info_remaining" type="Object"/>
+      <Variable name="aditional_val" type="Object"/>
+      <Variable name="array_index" type="Integer"/>
+      <Variable name="authurl" type="String"/>
+      <Variable name="ciy_code" type="String"/>
+      <Variable name="controller_JOB_ID" type="Integer"/>
+      <Variable name="country_code" type="String"/>
+      <Variable name="difference_start_end_time" type="Integer"/>
+      <Variable name="enabled" type="String"/>
+      <Variable name="end_wf_millis" type="Integer"/>
+      <Variable name="end_wf_time" type="String"/>
+      <Variable name="feature_code" type="String"/>
+      <Variable name="feature_element" type="Object"/>
+      <Variable name="feature_element_remaining" type="Object"/>
+      <Variable name="features" type="Object"/>
+      <Variable name="flag" type="Boolean"/>
+      <Variable name="geo_id" type="String"/>
+      <Variable name="last_result_code" type="String"/>
+      <Variable name="last_result_desc" type="String"/>
+      <Variable name="message_url" type="String"/>
+      <Variable name="method_counter_call" type="Integer"/>
+      <Variable name="method_counter_modsbr" type="Integer"/>
+      <Variable name="moduleName" type="String"/>
+      <Variable name="module_name" type="String"/>
+      <Variable name="net_send" type="Object"/>
+      <Variable name="output_request" type="String"/>
+      <Variable name="output_result" type="String"/>
+      <Variable name="params_val" type="Object"/>
+      <Variable name="passw" type="String"/>
+      <Variable name="passwd" type="String"/>
+      <Variable name="password" type="String"/>
+      <Variable name="password_enc" type="String"/>
+      <Variable name="provisioned" type="String"/>
+      <Variable name="result_code" type="String"/>
+      <Variable name="result_desc" type="String"/>
+      <Variable name="service_class" type="String"/>
+      <Variable name="skip_activation" type="Boolean"/>
+      <Variable name="ssw_id" type="String"/>
+      <Variable name="telephone" type="String"/>
+      <Variable name="telephone_WO_c" type="String"/>
+      <Variable name="telephone_full" type="String"/>
+      <Variable name="telephone_number" type="String"/>
+      <Variable name="telephone_number_feature" type="String"/>
+      <Variable name="template_obj" type="Object"/>
+      <Variable name="template_type" type="String"/>
+      <Variable name="user" type="String"/>
+      <Variable name="username" type="String"/>
+      <Variable name="valido" type="Boolean"/>
+      <Variable name="which_xml" type="String"/>
+      <Variable name="which_xml_s" type="String"/>
+      <Variable name="ws_response" type="String"/>
+      <Variable name="wtth_result_code" type="String"/>
+      <Variable name="wtth_result_desc" type="String"/>
+      <Variable name="xml_message" type="String"/>
+      <Variable name="xml_text" type="String"/>
+      <Variable name="xsl_template" type="String"/>
+   </Case-Packet>
+   <Initial-Case-Packet>
+      <Variable-Value name="FILE_URL_PREFIX" value="file:///"/>
+      <Variable-Value name="SOLUTION_NAME" value="WTTH"/>
+      <Variable-Value name="WORKFLOW_NAME" value="WTTH_MOD_CALL_FEATURES"/>
+      <Variable-Value name="WORKFLOW_VERSION" value="-1"/>
+      <Variable-Value name="difference_start_end_time" value="-1"/>
+      <Variable-Value name="flag" value="false"/>
+      <Variable-Value name="method_counter_call" value="0"/>
+      <Variable-Value name="method_counter_modsbr" value="0"/>
+   </Initial-Case-Packet>
+   <Coordinates>
+      <Position>
+         <Name>ActCF111</Name>
+         <X>188</X>
+         <Y>384</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Add111</Name>
+         <X>82</X>
+         <Y>317</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Assign211</Name>
+         <X>0</X>
+         <Y>238</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>CodeCity11</Name>
+         <X>410</X>
+         <Y>14</Y>
+         <Width>66</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>CodeCountry11</Name>
+         <X>309</X>
+         <Y>14</Y>
+         <Width>86</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>DeactCF11</Name>
+         <X>190</X>
+         <Y>524</Y>
+         <Width>63</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>DeactCF111</Name>
+         <X>371</X>
+         <Y>385</Y>
+         <Width>69</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>DeactCF112</Name>
+         <X>401</X>
+         <Y>523</Y>
+         <Width>69</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Decrypt11</Name>
+         <X>631</X>
+         <Y>165</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>EndWorkFlowTime111</Name>
+         <X>41</X>
+         <Y>164</Y>
+         <Width>115</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Equal1</Name>
+         <X>187</X>
+         <Y>462</Y>
+         <Width>62</Width>
+         <Height>24</Height>
+      </Position>
+      <Position>
+         <Name>Equal11</Name>
+         <X>387</X>
+         <Y>467</Y>
+         <Width>68</Width>
+         <Height>24</Height>
+      </Position>
+      <Position>
+         <Name>ForEach1</Name>
+         <X>414</X>
+         <Y>254</Y>
+         <Width>75</Width>
+         <Height>24</Height>
+      </Position>
+      <Position>
+         <Name>GetsCOP11</Name>
+         <X>721</X>
+         <Y>14</Y>
+         <Width>65</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Java1</Name>
+         <X>629</X>
+         <Y>14</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Log</Name>
+         <X>149</X>
+         <Y>292</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Log11</Name>
+         <X>225</X>
+         <Y>18</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Log121</Name>
+         <X>0</X>
+         <Y>322</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Log3111111</Name>
+         <X>179</X>
+         <Y>192</Y>
+         <Width>69</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Log31111111</Name>
+         <X>16</X>
+         <Y>445</Y>
+         <Width>75</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Log311111111</Name>
+         <X>510</X>
+         <Y>445</Y>
+         <Width>81</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Log311111112</Name>
+         <X>284</X>
+         <Y>581</Y>
+         <Width>81</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>MapSSW1211</Name>
+         <X>523</X>
+         <Y>165</Y>
+         <Width>76</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Multiply111</Name>
+         <X>81</X>
+         <Y>231</Y>
+         <Width>64</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>PutMessage2</Name>
+         <X>298</X>
+         <Y>151</Y>
+         <Width>74</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>ReadFile</Name>
+         <X>30</X>
+         <Y>92</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>SearchZystem11</Name>
+         <X>667</X>
+         <Y>74</Y>
+         <Width>90</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Switch</Name>
+         <X>255</X>
+         <Y>299</Y>
+         <Width>57</Width>
+         <Height>24</Height>
+      </Position>
+      <Position>
+         <Name>VariableMapper1</Name>
+         <X>120</X>
+         <Y>14</Y>
+         <Width>90</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>VariableMapper21</Name>
+         <X>12</X>
+         <Y>14</Y>
+         <Width>96</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>VariableMapper51</Name>
+         <X>613</X>
+         <Y>242</Y>
+         <Width>96</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>VariableMapper711</Name>
+         <X>177</X>
+         <Y>114</Y>
+         <Width>102</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>XMLMapper</Name>
+         <X>516</X>
+         <Y>242</Y>
+         <Width>65</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>XMLMapper2</Name>
+         <X>352</X>
+         <Y>287</Y>
+         <Width>71</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Zystem?11</Name>
+         <X>520</X>
+         <Y>126</Y>
+         <Width>82</Width>
+         <Height>24</Height>
+      </Position>
+      <Arrows>
+         <Name>ActCF111</Name>
+         <True-Arrow>
+            <Type>3</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Add111</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Assign211</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>CodeCity11</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>CodeCountry11</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>DeactCF11</Name>
+         <True-Arrow>
+            <Type>3</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>DeactCF111</Name>
+         <True-Arrow>
+            <Type>3</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>DeactCF112</Name>
+         <True-Arrow>
+            <Type>3</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Decrypt11</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>EndWorkFlowTime111</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Equal1</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Equal11</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>ForEach1</Name>
+         <True-Arrow>
+            <Type>3</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>3</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>GetsCOP11</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Java1</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Log</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Log11</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Log121</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Log3111111</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Log31111111</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Log311111111</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Log311111112</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>MapSSW1211</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Multiply111</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>PutMessage2</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>ReadFile</Name>
+         <True-Arrow>
+            <Type>2</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>SearchZystem11</Name>
+         <True-Arrow>
+            <Type>2</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Switch</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+         <Switch-Arrow>
+            <Default-Arrow>
+               <Type>0</Type>
+               <DeltaX>0</DeltaX>
+               <DeltaY>0</DeltaY>
+            </Default-Arrow>
+            <Case-Arrow>
+               <Name>case0</Name>
+               <Type>0</Type>
+               <DeltaX>0</DeltaX>
+               <DeltaY>0</DeltaY>
+            </Case-Arrow>
+            <Case-Arrow>
+               <Name>case1</Name>
+               <Type>0</Type>
+               <DeltaX>0</DeltaX>
+               <DeltaY>0</DeltaY>
+            </Case-Arrow>
+         </Switch-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>VariableMapper1</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>VariableMapper21</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>VariableMapper51</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>VariableMapper711</Name>
+         <True-Arrow>
+            <Type>2</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>XMLMapper</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>XMLMapper2</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Zystem?11</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>-181</DeltaX>
+            <DeltaY>97</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+   </Coordinates>
+</Workflow>
