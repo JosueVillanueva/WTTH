@@ -70,8 +70,7 @@
             <Param name="component_name" value="WTTH_NNC"/>
             <Param name="log_level" value="INFORMATIVE"/>
             <Param name="log_manager" value="WTTH_log_manager"/>
-            <Param name="log_message" value="%s "/>
-            <Param name="param0" value="JSESSIONID"/>
+            <Param name="log_message" value="variable:nnc_login_file"/>
          </Action>
          <Next-Node>XMLMapperLogin</Next-Node>
       </Process-Node>
@@ -103,19 +102,30 @@
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.IsTrue</Class-Name>
             <Param name="op1" value="identificador_sesion"/>
          </Action>
-         <True-Next-Node>HttpSoapRequestWTTHLoad</True-Next-Node>
-         <False-Next-Node>mapErrorLogin</False-Next-Node>
+         <True-Next-Node>ComposeMessageLoad</True-Next-Node>
+         <False-Next-Node>LoginResponseError</False-Next-Node>
       </Rule-Node>
+      <Process-Node disablePersistence="true">
+         <Name>ComposeMessageLoad</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.ComposeMessage</Class-Name>
+            <Param name="output_var" value="nnc_Load_file"/>
+            <Param name="template_file" value="constant:WTTH_LOADDEVICE_NNC.xml"/>
+            <Param name="use_solution_dir" value="constant:true"/>
+         </Action>
+         <Next-Node>HttpSoapRequestWTTHLoad</Next-Node>
+      </Process-Node>
       <Process-Node>
          <Name>HttpSoapRequestWTTHLoad</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.http.HttpSoapRequestWTTH</Class-Name>
             <Param name="module" value="constant:http_sender_wtth_nnc_device"/>
             <Param name="path" value="Path"/>
-            <Param name="request" value="constant:file:///opt/OV/ServiceActivator/solutions/WTTH/etc/template_files/WTTH_LOADDEVICE_NNC.xml"/>
+            <Param name="request" value="nnc_Load_file"/>
             <Param name="request_type" value="constant:POST"/>
             <Param name="response" value="nnc_load_code"/>
             <Param name="session_id" value="identificador_sesion"/>
+            <Param name="throw_excep" value="constant:false"/>
          </Action>
          <Next-Node>LoadRequest</Next-Node>
       </Process-Node>
@@ -126,7 +136,7 @@
             <Param name="component_name" value="WTTH_NNC"/>
             <Param name="log_level" value="INFORMATIVE"/>
             <Param name="log_manager" value="WTTH_log_manager"/>
-            <Param name="log_message" value="file:///opt/OV/ServiceActivator/solutions/WTTH/etc/template_files/WTTH_LOADDEVICE_NNC.xml"/>
+            <Param name="log_message" value="variable:nnc_Load_file"/>
          </Action>
          <Next-Node>XMLMapperLoad</Next-Node>
       </Process-Node>
@@ -159,19 +169,30 @@
             <Param name="op1" value="nnc_load_response"/>
             <Param name="op2" value="constant:true"/>
          </Action>
-         <True-Next-Node>HttpSoapRequestWTTHLock</True-Next-Node>
-         <False-Next-Node>mapErrorLoad</False-Next-Node>
+         <True-Next-Node>ComposeMessageLock</True-Next-Node>
+         <False-Next-Node>LoadResponse1</False-Next-Node>
       </Rule-Node>
+      <Process-Node disablePersistence="true">
+         <Name>ComposeMessageLock</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.ComposeMessage</Class-Name>
+            <Param name="output_var" value="nnc_Lock_file"/>
+            <Param name="template_file" value="constant:WTTH_LOCKDEVICE_NNC.xml"/>
+            <Param name="use_solution_dir" value="constant:true"/>
+         </Action>
+         <Next-Node>HttpSoapRequestWTTHLock</Next-Node>
+      </Process-Node>
       <Process-Node>
          <Name>HttpSoapRequestWTTHLock</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.http.HttpSoapRequestWTTH</Class-Name>
             <Param name="module" value="constant:http_sender_wtth_nnc_device"/>
             <Param name="path" value="Path"/>
-            <Param name="request" value="constant:file:///opt/OV/ServiceActivator/solutions/WTTH/etc/template_files/WTTH_LOCKDEVICE_NNC.xml"/>
+            <Param name="request" value="nnc_Lock_file"/>
             <Param name="request_type" value="constant:POST"/>
             <Param name="response" value="nnc_lock_code"/>
             <Param name="session_id" value="identificador_sesion"/>
+            <Param name="throw_excep" value="constant:false"/>
          </Action>
          <Next-Node>LockRequest</Next-Node>
       </Process-Node>
@@ -182,7 +203,7 @@
             <Param name="component_name" value="WTTH_NNC"/>
             <Param name="log_level" value="INFORMATIVE"/>
             <Param name="log_manager" value="WTTH_log_manager"/>
-            <Param name="log_message" value="file:///opt/OV/ServiceActivator/solutions/WTTH/etc/template_files/WTTH_LOCKDEVICE_NNC.xml"/>
+            <Param name="log_message" value="variable:nnc_Lock_file"/>
          </Action>
          <Next-Node>XMLMapperLock</Next-Node>
       </Process-Node>
@@ -216,7 +237,7 @@
             <Param name="op2" value="constant:true"/>
          </Action>
          <True-Next-Node>VariableMapperConfig</True-Next-Node>
-         <False-Next-Node>mapErrorLock</False-Next-Node>
+         <False-Next-Node>LockResponse1</False-Next-Node>
       </Rule-Node>
       <Process-Node disablePersistence="true">
          <Name>VariableMapperConfig</Name>
@@ -249,6 +270,7 @@
             <Param name="request_type" value="constant:POST"/>
             <Param name="response" value="nnc_config_code"/>
             <Param name="session_id" value="identificador_sesion"/>
+            <Param name="throw_excep" value="constant:false"/>
          </Action>
          <Next-Node>ConfigRequest</Next-Node>
       </Process-Node>
@@ -292,19 +314,30 @@
             <Param name="op1" value="nnc_config_response"/>
             <Param name="op2" value="constant:true"/>
          </Action>
-         <True-Next-Node>HttpSoapRequestWTTHSave</True-Next-Node>
-         <False-Next-Node>mapErrorConfig</False-Next-Node>
+         <True-Next-Node>ComposeMessageSave</True-Next-Node>
+         <False-Next-Node>LockResponse11</False-Next-Node>
       </Rule-Node>
+      <Process-Node disablePersistence="true">
+         <Name>ComposeMessageSave</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.ComposeMessage</Class-Name>
+            <Param name="output_var" value="nnc_Save_file"/>
+            <Param name="template_file" value="constant:WTTH_SAVEANDACTIVATE_NNC.xml"/>
+            <Param name="use_solution_dir" value="constant:true"/>
+         </Action>
+         <Next-Node>HttpSoapRequestWTTHSave</Next-Node>
+      </Process-Node>
       <Process-Node>
          <Name>HttpSoapRequestWTTHSave</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.http.HttpSoapRequestWTTH</Class-Name>
             <Param name="module" value="constant:http_sender_wtth_nnc_device"/>
             <Param name="path" value="Path"/>
-            <Param name="request" value="constant:file:///opt/OV/ServiceActivator/solutions/WTTH/etc/template_files/WTTH_SAVEANDACTIVATE_NNC.xml"/>
+            <Param name="request" value="nnc_Save_file"/>
             <Param name="request_type" value="POST"/>
             <Param name="response" value="nnc_configactivate_code"/>
             <Param name="session_id" value="identificador_sesion"/>
+            <Param name="throw_excep" value="constant:false"/>
          </Action>
          <Next-Node>SaveRequest</Next-Node>
       </Process-Node>
@@ -315,7 +348,7 @@
             <Param name="component_name" value="WTTH_NNC"/>
             <Param name="log_level" value="INFORMATIVE"/>
             <Param name="log_manager" value="WTTH_log_manager"/>
-            <Param name="log_message" value="file:///opt/OV/ServiceActivator/solutions/WTTH/etc/template_files/WTTH_SAVEANDACTIVATE_NNC.xml"/>
+            <Param name="log_message" value="variable:nnc_Save_file"/>
          </Action>
          <Next-Node>XMLMapperSave</Next-Node>
       </Process-Node>
@@ -348,19 +381,30 @@
             <Param name="op1" value="nnc_configactivate_response"/>
             <Param name="op2" value="constant:SUCCESS"/>
          </Action>
-         <True-Next-Node>HttpSoapRequestWTTHUnlock</True-Next-Node>
-         <False-Next-Node>mapErrorSave</False-Next-Node>
+         <True-Next-Node>ComposeMessageUnlock</True-Next-Node>
+         <False-Next-Node>LockResponse12</False-Next-Node>
       </Rule-Node>
+      <Process-Node disablePersistence="true">
+         <Name>ComposeMessageUnlock</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.ComposeMessage</Class-Name>
+            <Param name="output_var" value="nnc_Unlock_file"/>
+            <Param name="template_file" value="constant:WTTH_UNLOCKDEVICE_NNC.xml"/>
+            <Param name="use_solution_dir" value="constant:true"/>
+         </Action>
+         <Next-Node>HttpSoapRequestWTTHUnlock</Next-Node>
+      </Process-Node>
       <Process-Node>
          <Name>HttpSoapRequestWTTHUnlock</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.http.HttpSoapRequestWTTH</Class-Name>
             <Param name="module" value="constant:http_sender_wtth_nnc_device"/>
             <Param name="path" value="Path"/>
-            <Param name="request" value="constant:file:///opt/OV/ServiceActivator/solutions/WTTH/etc/template_files/WTTH_UNLOCKDEVICE_NNC.xml"/>
+            <Param name="request" value="nnc_Unlock_file"/>
             <Param name="request_type" value="POST"/>
             <Param name="response" value="nnc_unlock_code"/>
             <Param name="session_id" value="identificador_sesion"/>
+            <Param name="throw_excep" value="constant:false"/>
          </Action>
          <Next-Node>UnlockRequest</Next-Node>
       </Process-Node>
@@ -371,7 +415,7 @@
             <Param name="component_name" value="WTTH_NNC"/>
             <Param name="log_level" value="INFORMATIVE"/>
             <Param name="log_manager" value="WTTH_log_manager"/>
-            <Param name="log_message" value="file:///opt/OV/ServiceActivator/solutions/WTTH/etc/template_files/WTTH_UNLOCKDEVICE_NNC.xml"/>
+            <Param name="log_message" value="variable:nnc_Unlock_file"/>
          </Action>
          <Next-Node>XMLMapperUnlock</Next-Node>
       </Process-Node>
@@ -404,19 +448,30 @@
             <Param name="op1" value="nnc_unlock_response"/>
             <Param name="op2" value="constant:true"/>
          </Action>
-         <True-Next-Node>HttpSoapRequestWTTHLogout</True-Next-Node>
-         <False-Next-Node>mapErrorUnlock</False-Next-Node>
+         <True-Next-Node>ComposeMessageLogout</True-Next-Node>
+         <False-Next-Node>LockResponse121</False-Next-Node>
       </Rule-Node>
+      <Process-Node disablePersistence="true">
+         <Name>ComposeMessageLogout</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.ComposeMessage</Class-Name>
+            <Param name="output_var" value="nnc_Logout_file"/>
+            <Param name="template_file" value="constant:WTTH_LOGOUT_NNC.xml"/>
+            <Param name="use_solution_dir" value="constant:true"/>
+         </Action>
+         <Next-Node>HttpSoapRequestWTTHLogout</Next-Node>
+      </Process-Node>
       <Process-Node>
          <Name>HttpSoapRequestWTTHLogout</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.http.HttpSoapRequestWTTH</Class-Name>
             <Param name="module" value="http_sender_wtth_nnc_admin"/>
             <Param name="path" value="Path"/>
-            <Param name="request" value="constant:file:///opt/OV/ServiceActivator/solutions/WTTH/etc/template_files/WTTH_LOGOUT_NNC.xml"/>
+            <Param name="request" value="nnc_Logout_file"/>
             <Param name="request_type" value="POST"/>
             <Param name="response" value="nnc_logout_code"/>
             <Param name="session_id" value="identificador_sesion"/>
+            <Param name="throw_excep" value="constant:false"/>
          </Action>
          <Next-Node>LogoutRequest</Next-Node>
       </Process-Node>
@@ -427,7 +482,7 @@
             <Param name="component_name" value="WTTH_NNC"/>
             <Param name="log_level" value="INFORMATIVE"/>
             <Param name="log_manager" value="WTTH_log_manager"/>
-            <Param name="log_message" value="file:///opt/OV/ServiceActivator/solutions/WTTH/etc/template_files/WTTH_LOGOUT_NNC.xml"/>
+            <Param name="log_message" value="variable:nnc_Logout_file"/>
          </Action>
          <Next-Node>XMLMapperLogout</Next-Node>
       </Process-Node>
@@ -460,9 +515,26 @@
             <Param name="op1" value="nnc_logout_response"/>
             <Param name="op2" value="constant:true"/>
          </Action>
-         <True-Next-Node>mapError0</True-Next-Node>
-         <False-Next-Node>mapErrorLogout</False-Next-Node>
+         <True-Next-Node>Error</True-Next-Node>
+         <False-Next-Node>LockResponse1211</False-Next-Node>
       </Rule-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>Error</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.IsTrue</Class-Name>
+            <Param name="op1" value="wtth_result_code_int"/>
+         </Action>
+         <True-Next-Node>mapErrorOut</True-Next-Node>
+         <False-Next-Node>mapError0</False-Next-Node>
+      </Rule-Node>
+      <Process-Node disablePersistence="true">
+         <Name>mapErrorOut</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="%wtth_result_code_int%"/>
+            <Param name="wtth_result_desc" value="%wtth_result_desc_int%"/>
+         </Action>
+      </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>mapError0</Name>
          <Action>
@@ -471,77 +543,172 @@
             <Param name="wtth_result_desc" value="OK. Transaction executed"/>
          </Action>
       </Process-Node>
+      <Process-Node>
+         <Name>LockResponse1211</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="WTTH_NNC"/>
+            <Param name="log_level" value="INFORMATIVE"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="HTTP 500. Internal Server Error. Logout Failure. Number %s"/>
+            <Param name="param0" value="customer_id"/>
+         </Action>
+         <Next-Node>mapErrorLogout</Next-Node>
+      </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>mapErrorLogout</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="wtth_result_code" value="206"/>
-            <Param name="wtth_result_desc" value="%nnc_logout_code%"/>
+            <Param name="wtth_result_code" value="207"/>
+            <Param name="wtth_result_desc" value="HTTP 500. Internal Server Error. Logout Failure"/>
          </Action>
+      </Process-Node>
+      <Process-Node>
+         <Name>LockResponse121</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="WTTH_NNC"/>
+            <Param name="log_level" value="INFORMATIVE"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="HTTP 500. Internal Server Error. Unlock Device Failure. Number %s"/>
+            <Param name="param0" value="customer_id"/>
+         </Action>
+         <Next-Node>mapErrorUnlock</Next-Node>
       </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>mapErrorUnlock</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="wtth_result_code" value="205"/>
-            <Param name="wtth_result_desc" value="%nnc_unlock_code%"/>
+            <Param name="wtth_result_code" value="206"/>
+            <Param name="wtth_result_desc" value="HTTP 500. Internal Server Error. Unlock Device Failure"/>
          </Action>
+         <Next-Node>PutMessage22</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>PutMessage22</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="error s% descripcion s%"/>
+            <Param name="queue" value="error"/>
+            <Param name="param0" value="wtth_result_code"/>
+            <Param name="param1" value="wtth_result_desc"/>
+         </Action>
+      </Process-Node>
+      <Process-Node>
+         <Name>LockResponse12</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="WTTH_NNC"/>
+            <Param name="log_level" value="INFORMATIVE"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="HTTP 500. Internal Server Error. Save and Activate Failure. Number %s"/>
+            <Param name="param0" value="customer_id"/>
+         </Action>
+         <Next-Node>mapErrorSave</Next-Node>
       </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>mapErrorSave</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="wtth_result_code" value="204"/>
-            <Param name="wtth_result_desc" value="%nnc_configactivate_code%"/>
+            <Param name="wtth_result_code_int" value="205"/>
+            <Param name="wtth_result_desc_int" value="HTTP 500. Internal Server Error. Save and Activate Failure"/>
          </Action>
          <Next-Node>HttpSoapRequestWTTHUnlock</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>LockResponse11</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="WTTH_NNC"/>
+            <Param name="log_level" value="INFORMATIVE"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="HTTP 500. Internal Server Error. Add Config Element Failure. Number %s"/>
+            <Param name="param0" value="customer_id"/>
+         </Action>
+         <Next-Node>mapErrorConfig</Next-Node>
       </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>mapErrorConfig</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="wtth_result_code" value="204"/>
-            <Param name="wtth_result_desc" value="%nnc_config_code%"/>
+            <Param name="wtth_result_code_int" value="204"/>
+            <Param name="wtth_result_desc_int" value="HTTP 500. Internal Server Error. Add Config Element Failure"/>
          </Action>
          <Next-Node>HttpSoapRequestWTTHUnlock</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>LockResponse1</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="WTTH_NNC"/>
+            <Param name="log_level" value="INFORMATIVE"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="HTTP 500. Internal Server Error. Lock Device Failure. Number %s"/>
+            <Param name="param0" value="customer_id"/>
+         </Action>
+         <Next-Node>mapErrorLock</Next-Node>
       </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>mapErrorLock</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="wtth_result_code" value="203"/>
-            <Param name="wtth_result_desc" value="%nnc_lock_code%"/>
+            <Param name="wtth_result_code_int" value="203"/>
+            <Param name="wtth_result_desc_int" value="HTTP 500. Internal Server Error. Lock Device Failure"/>
          </Action>
+         <Next-Node>HttpSoapRequestWTTHLogout</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>LoadResponse1</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="WTTH_NNC"/>
+            <Param name="log_level" value="INFORMATIVE"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="HTTP 500. Internal Server Error. Load Device Failure. Number %s"/>
+            <Param name="param0" value="customer_id"/>
+         </Action>
+         <Next-Node>mapErrorLoad</Next-Node>
       </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>mapErrorLoad</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="wtth_result_code" value="202"/>
-            <Param name="wtth_result_desc" value="%nnc_load_code%"/>
+            <Param name="wtth_result_code_int" value="202"/>
+            <Param name="wtth_result_desc_int" value="HTTP 500. Internal Server Error. Load Device Failure"/>
          </Action>
          <Next-Node>HttpSoapRequestWTTHLogout</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>LoginResponseError</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="WTTH_NNC"/>
+            <Param name="log_level" value="INFORMATIVE"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="HTTP 500. Internal Server Error. Login Failure. Number %s"/>
+            <Param name="param0" value="customer_id"/>
+         </Action>
+         <Next-Node>mapErrorLogin</Next-Node>
       </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>mapErrorLogin</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="wtth_result_code" value="201"/>
-            <Param name="wtth_result_desc" value="%JSESSIONID%"/>
+            <Param name="wtth_result_desc" value="HTTP 500. Internal Server Error. Login Failure"/>
          </Action>
       </Process-Node>
    </Nodes>
    <Error-Handler>
-      <Name>PutMessageHandler</Name>
-      <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessageHandler</Class-Name>
-      <Param name="message" value="variable:RET_TEXT"/>
-      <Param name="queue" value="error"/>
+      <Name>VariableMapperHandler</Name>
+      <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapperHandler</Class-Name>
+      <Param name="RET_TEXT" value="%wtth_result_desc%"/>
    </Error-Handler>
    <Error-Handler>
       <Name>SyncHandler</Name>
       <Class-Name>com.hp.ov.activator.mwfm.component.builtin.SyncHandler</Class-Name>
       <Param name="job_id" value="services_JOB_ID"/>
-      <Param name="queue" value="controller_queue"/>
+      <Param name="queue" value="constant:controller_queue"/>
       <Param name="variable0" value="wtth_result_code"/>
       <Param name="variable1" value="wtth_result_desc"/>
    </Error-Handler>
@@ -549,7 +716,7 @@
       <Name>SyncHandler1</Name>
       <Class-Name>com.hp.ov.activator.mwfm.component.builtin.SyncHandler</Class-Name>
       <Param name="job_id" value="services_JOB_ID"/>
-      <Param name="queue" value="controller_queue"/>
+      <Param name="queue" value="constant:controller_queue"/>
       <Param name="variable0" value="wtth_result_code"/>
       <Param name="variable1" value="wtth_result_desc"/>
    </End-Handler>
@@ -607,7 +774,6 @@
       <Variable name="activation_minor_code" type="Integer"/>
       <Variable name="addConfigElement" type="String"/>
       <Variable name="addConfig_template_file" type="String"/>
-      <Variable name="controller_queue" type="String"/>
       <Variable name="count_ims_to_mov" type="Integer"/>
       <Variable name="count_mov_to_ims" type="Integer"/>
       <Variable name="create_date" type="String"/>
@@ -630,6 +796,11 @@
       <Variable name="mobile_numbers" type="String"/>
       <Variable name="module_name" type="String"/>
       <Variable name="mov_to_ims_obj" type="Object"/>
+      <Variable name="nnc_Load_file" type="String"/>
+      <Variable name="nnc_Lock_file" type="String"/>
+      <Variable name="nnc_Logout_file" type="String"/>
+      <Variable name="nnc_Save_file" type="String"/>
+      <Variable name="nnc_Unlock_file" type="String"/>
       <Variable name="nnc_addConfig_file" type="String"/>
       <Variable name="nnc_config_code" type="String"/>
       <Variable name="nnc_config_response" type="String"/>
@@ -639,11 +810,14 @@
       <Variable name="nnc_load_code" type="String"/>
       <Variable name="nnc_load_file" type="String"/>
       <Variable name="nnc_load_response" type="String"/>
+      <Variable name="nnc_load_response_error" type="String"/>
       <Variable name="nnc_lock_code" type="String"/>
       <Variable name="nnc_lock_response" type="String"/>
       <Variable name="nnc_login_file" type="String"/>
+      <Variable name="nnc_login_response_error" type="String"/>
       <Variable name="nnc_logout_code" type="String"/>
       <Variable name="nnc_logout_response" type="String"/>
+      <Variable name="nnc_response_error" type="String"/>
       <Variable name="nnc_unlock_code" type="String"/>
       <Variable name="nnc_unlock_response" type="String"/>
       <Variable name="pass_sftp" type="String"/>
@@ -672,7 +846,9 @@
       <Variable name="user_sftp" type="String"/>
       <Variable name="username_nnc" type="String"/>
       <Variable name="wtth_result_code" type="Integer"/>
+      <Variable name="wtth_result_code_int" type="String"/>
       <Variable name="wtth_result_desc" type="String"/>
+      <Variable name="wtth_result_desc_int" type="String"/>
       <Variable name="xml_ims_to_mov" type="String"/>
       <Variable name="xml_ims_to_mov_tmp" type="String"/>
       <Variable name="xml_mov_to_ims" type="String"/>
@@ -684,139 +860,222 @@
       <Variable-Value name="SOLUTION_NAME" value="WTTH"/>
       <Variable-Value name="WORKFLOW_NAME" value="WTTH_NNC_ALTA"/>
       <Variable-Value name="WORKFLOW_VERSION" value="-1"/>
-      <Variable-Value name="controller_queue" value="controller_queue"/>
       <Variable-Value name="separator" value=","/>
    </Initial-Case-Packet>
    <Coordinates>
       <Position>
          <Name>ComposeMessageConfig</Name>
-         <X>2569</X>
+         <X>3008</X>
          <Y>279</Y>
          <Width>127</Width>
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>ComposeMessageLoad</Name>
+         <X>1098</X>
+         <Y>281</Y>
+         <Width>119</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>ComposeMessageLock</Name>
+         <X>1970</X>
+         <Y>281</Y>
+         <Width>117</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>ComposeMessageLogin</Name>
-         <X>345</X>
+         <X>346</X>
          <Y>279</Y>
          <Width>121</Width>
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>ComposeMessageLogout</Name>
+         <X>5600</X>
+         <Y>277</Y>
+         <Width>129</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>ComposeMessageSave</Name>
+         <X>3939</X>
+         <Y>279</Y>
+         <Width>120</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>ComposeMessageUnlock</Name>
+         <X>4740</X>
+         <Y>278</Y>
+         <Width>127</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>ConfigDevice</Name>
-         <X>3384</X>
+         <X>3815</X>
          <Y>291</Y>
          <Width>93</Width>
          <Height>24</Height>
       </Position>
       <Position>
          <Name>ConfigRequest</Name>
-         <X>2928</X>
+         <X>3397</X>
          <Y>279</Y>
          <Width>81</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>ConfigResponse</Name>
-         <X>3220</X>
+         <X>3677</X>
          <Y>279</Y>
          <Width>88</Width>
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>Error</Name>
+         <X>6557</X>
+         <Y>297</Y>
+         <Width>54</Width>
+         <Height>24</Height>
+      </Position>
+      <Position>
          <Name>HTTPRequestLogin</Name>
-         <X>482</X>
+         <X>494</X>
          <Y>279</Y>
          <Width>100</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>HttpSoapRequestWTTHConfig</Name>
-         <X>2730</X>
+         <X>3171</X>
          <Y>279</Y>
          <Width>155</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>HttpSoapRequestWTTHLoad</Name>
-         <X>1109</X>
-         <Y>279</Y>
+         <X>1274</X>
+         <Y>280</Y>
          <Width>147</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>HttpSoapRequestWTTHLock</Name>
-         <X>1765</X>
+         <X>2149</X>
          <Y>279</Y>
          <Width>145</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>HttpSoapRequestWTTHLogout</Name>
-         <X>5043</X>
-         <Y>279</Y>
+         <X>5767</X>
+         <Y>277</Y>
          <Width>157</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>HttpSoapRequestWTTHSave</Name>
-         <X>3516</X>
+         <X>4099</X>
          <Y>279</Y>
          <Width>148</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>HttpSoapRequestWTTHUnlock</Name>
-         <X>4315</X>
-         <Y>279</Y>
+         <X>4903</X>
+         <Y>278</Y>
          <Width>155</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>LoadDevice</Name>
-         <X>1642</X>
-         <Y>291</Y>
+         <X>1845</X>
+         <Y>293</Y>
          <Width>85</Width>
          <Height>24</Height>
       </Position>
       <Position>
          <Name>LoadRequest</Name>
-         <X>1304</X>
-         <Y>279</Y>
+         <X>1463</X>
+         <Y>280</Y>
          <Width>73</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>LoadResponse</Name>
-         <X>1533</X>
-         <Y>279</Y>
+         <X>1721</X>
+         <Y>280</Y>
          <Width>80</Width>
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>LoadResponse1</Name>
+         <X>1844</X>
+         <Y>540</Y>
+         <Width>86</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>LockDevice</Name>
-         <X>2292</X>
+         <X>2725</X>
          <Y>291</Y>
          <Width>83</Width>
          <Height>24</Height>
       </Position>
       <Position>
          <Name>LockRequest</Name>
-         <X>1951</X>
+         <X>2334</X>
          <Y>279</Y>
          <Width>71</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>LockResponse</Name>
-         <X>2182</X>
+         <X>2586</X>
          <Y>279</Y>
          <Width>78</Width>
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>LockResponse1</Name>
+         <X>2724</X>
+         <Y>447</Y>
+         <Width>84</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>LockResponse11</Name>
+         <X>3816</X>
+         <Y>372</Y>
+         <Width>90</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>LockResponse12</Name>
+         <X>4615</X>
+         <Y>392</Y>
+         <Width>90</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>LockResponse121</Name>
+         <X>5468</X>
+         <Y>389</Y>
+         <Width>96</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>LockResponse1211</Name>
+         <X>6331</X>
+         <Y>418</Y>
+         <Width>102</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>Log</Name>
-         <X>235</X>
+         <X>252</X>
          <Y>279</Y>
          <Width>61</Width>
          <Height>48</Height>
@@ -830,204 +1089,225 @@
       </Position>
       <Position>
          <Name>LoginRequest</Name>
-         <X>618</X>
+         <X>620</X>
          <Y>279</Y>
          <Width>75</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>LoginResponse</Name>
-         <X>850</X>
+         <X>851</X>
          <Y>279</Y>
          <Width>82</Width>
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>LoginResponseError</Name>
+         <X>976</X>
+         <Y>493</Y>
+         <Width>106</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>Logout</Name>
-         <X>5660</X>
-         <Y>291</Y>
+         <X>6351</X>
+         <Y>297</Y>
          <Width>63</Width>
          <Height>24</Height>
       </Position>
       <Position>
          <Name>LogoutRequest</Name>
-         <X>5242</X>
+         <X>5963</X>
          <Y>279</Y>
          <Width>83</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>LogoutResponse</Name>
-         <X>5499</X>
+         <X>6216</X>
          <Y>279</Y>
          <Width>90</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>PrintStart</Name>
-         <X>10</X>
+         <X>0</X>
          <Y>279</Y>
          <Width>61</Width>
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>PutMessage22</Name>
+         <X>5476</X>
+         <Y>591</Y>
+         <Width>80</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>SaveActivate</Name>
-         <X>4173</X>
-         <Y>291</Y>
+         <X>4612</X>
+         <Y>290</Y>
          <Width>94</Width>
          <Height>24</Height>
       </Position>
       <Position>
          <Name>SaveRequest</Name>
-         <X>3718</X>
+         <X>4278</X>
          <Y>279</Y>
          <Width>74</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>SaveResponse</Name>
-         <X>4002</X>
+         <X>4498</X>
          <Y>279</Y>
          <Width>81</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>UnlockDevice</Name>
-         <X>4901</X>
-         <Y>291</Y>
+         <X>5469</X>
+         <Y>290</Y>
          <Width>93</Width>
          <Height>24</Height>
       </Position>
       <Position>
          <Name>UnlockRequest</Name>
-         <X>4516</X>
-         <Y>279</Y>
+         <X>5092</X>
+         <Y>278</Y>
          <Width>81</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>UnlockResponse</Name>
-         <X>4767</X>
-         <Y>279</Y>
+         <X>5349</X>
+         <Y>278</Y>
          <Width>88</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>VariableMapperConfig</Name>
-         <X>2415</X>
+         <X>2852</X>
          <Y>279</Y>
          <Width>115</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>VariableMapperLogin</Name>
-         <X>110</X>
+         <X>96</X>
          <Y>279</Y>
          <Width>109</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>XMLMapperConfig</Name>
-         <X>3070</X>
+         <X>3524</X>
          <Y>279</Y>
          <Width>96</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>XMLMapperLoad</Name>
-         <X>1425</X>
-         <Y>279</Y>
+         <X>1591</X>
+         <Y>280</Y>
          <Width>88</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>XMLMapperLock</Name>
-         <X>2061</X>
+         <X>2446</X>
          <Y>279</Y>
          <Width>86</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>XMLMapperLogin</Name>
-         <X>737</X>
+         <X>738</X>
          <Y>279</Y>
          <Width>90</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>XMLMapperLogout</Name>
-         <X>5372</X>
+         <X>6084</X>
          <Y>279</Y>
          <Width>98</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>XMLMapperSave</Name>
-         <X>3856</X>
+         <X>4381</X>
          <Y>279</Y>
          <Width>89</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>XMLMapperUnlock</Name>
-         <X>4648</X>
-         <Y>279</Y>
+         <X>5208</X>
+         <Y>278</Y>
          <Width>96</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>mapError0</Name>
-         <X>5771</X>
-         <Y>279</Y>
+         <X>6746</X>
+         <Y>285</Y>
          <Width>61</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>mapErrorConfig</Name>
-         <X>3388</X>
-         <Y>482</Y>
+         <X>3819</X>
+         <Y>671</Y>
          <Width>85</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>mapErrorLoad</Name>
-         <X>1646</X>
-         <Y>528</Y>
+         <X>1848</X>
+         <Y>853</Y>
          <Width>77</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>mapErrorLock</Name>
-         <X>2296</X>
-         <Y>441</Y>
+         <X>2729</X>
+         <Y>768</Y>
          <Width>75</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>mapErrorLogin</Name>
-         <X>989</X>
-         <Y>398</Y>
+         <X>990</X>
+         <Y>589</Y>
          <Width>79</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>mapErrorLogout</Name>
-         <X>5648</X>
-         <Y>428</Y>
+         <X>6339</X>
+         <Y>525</Y>
          <Width>87</Width>
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>mapErrorOut</Name>
+         <X>6547</X>
+         <Y>419</Y>
+         <Width>72</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>mapErrorSave</Name>
-         <X>4181</X>
-         <Y>415</Y>
+         <X>4621</X>
+         <Y>487</Y>
          <Width>78</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>mapErrorUnlock</Name>
-         <X>4905</X>
-         <Y>456</Y>
+         <X>5474</X>
+         <Y>487</Y>
          <Width>85</Width>
          <Height>48</Height>
       </Position>
@@ -1045,7 +1325,72 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>ComposeMessageLoad</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>ComposeMessageLock</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>ComposeMessageLogin</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>ComposeMessageLogout</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>ComposeMessageSave</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>ComposeMessageUnlock</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
@@ -1085,6 +1430,19 @@
       </Arrows>
       <Arrows>
          <Name>ConfigResponse</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Error</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
@@ -1227,6 +1585,19 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>LoadResponse1</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>LockDevice</Name>
          <True-Arrow>
             <Type>0</Type>
@@ -1254,6 +1625,71 @@
       </Arrows>
       <Arrows>
          <Name>LockResponse</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>LockResponse1</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>LockResponse11</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>LockResponse12</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>LockResponse121</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>LockResponse1211</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
@@ -1318,6 +1754,19 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>LoginResponseError</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>Logout</Name>
          <True-Arrow>
             <Type>0</Type>
@@ -1358,6 +1807,19 @@
       </Arrows>
       <Arrows>
          <Name>PrintStart</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>PutMessage22</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
@@ -1606,7 +2068,7 @@
       <Arrows>
          <Name>mapErrorLock</Name>
          <True-Arrow>
-            <Type>0</Type>
+            <Type>2</Type>
             <DeltaX>0</DeltaX>
             <DeltaY>0</DeltaY>
          </True-Arrow>
@@ -1631,6 +2093,19 @@
       </Arrows>
       <Arrows>
          <Name>mapErrorLogout</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>mapErrorOut</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
@@ -1668,5 +2143,12 @@
             <DeltaY>0</DeltaY>
          </False-Arrow>
       </Arrows>
+      <State-Circle>
+         <Name>UNDEFINED</Name>
+         <X>80</X>
+         <Y>80</Y>
+         <Radius>40</Radius>
+         <Color>-16776961</Color>
+      </State-Circle>
    </Coordinates>
 </Workflow>
