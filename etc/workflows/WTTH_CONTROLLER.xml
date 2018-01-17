@@ -37,7 +37,7 @@
          <Name>mapPath</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="path_xsl" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/WTTHColombia/XSLs/TransformXmlParams.xsl"/>
+            <Param name="path_xsl" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/TransformXmlParams.xsl"/>
             <Param name="wtth_result_code" value="-1"/>
             <Param name="wtth_result_desc" value="Unknown Error"/>
          </Action>

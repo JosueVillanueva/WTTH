@@ -10,7 +10,7 @@
          <Name>VariableMapper</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="local_path" value="%SOLUTION_ETC%/template_files/WTTHColombia/SALIDAS/"/>
+            <Param name="local_path" value="/var/tmp/WTTH/salidas/"/>
             <Param name="path_file_properties" value="%SOLUTION_ETC%/template_files/reportes.properties"/>
             <Param name="report_type" value="servicioswtth"/>
          </Action>

@@ -48,15 +48,15 @@
          <Name>MapPaths</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="path_gz" value="%SOLUTION_ETC%/template_files/WTTHColombia/SALIDAS/"/>
-            <Param name="path_xml_ims_to_mov" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/WTTHColombia/SALIDAS/%table_ims_to_mov%.xml"/>
-            <Param name="path_xml_mov_to_ims" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/WTTHColombia/SALIDAS/%table_mov_to_ims%.xml"/>
-            <Param name="path_xml_sftp" value="%SOLUTION_ETC%/template_files/WTTHColombia/SALIDAS/"/>
-            <Param name="path_xml_update_tables" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/WTTHColombia/SALIDAS/WTTH_update_tables.xml"/>
-            <Param name="path_xsl_ims_to_mov" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/WTTHColombia/XSLs/WTTH_ims_to_mov_b.xsl"/>
-            <Param name="path_xsl_mov_to_ims" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/WTTHColombia/XSLs/WTTH_mov_to_ims_b.xsl"/>
-            <Param name="path_xsl_sftp" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/WTTHColombia/XSLs/sftp.xsl"/>
-            <Param name="path_xsl_update_tables" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/WTTHColombia/XSLs/WTTH_update_tables.xsl"/>
+            <Param name="path_gz" value="/var/tmp/WTTH/salidas/"/>
+            <Param name="path_xml_ims_to_mov" value="%FILE_URL_PREFIX%/var/tmp/WTTH/salidas/%table_ims_to_mov%.xml"/>
+            <Param name="path_xml_mov_to_ims" value="%FILE_URL_PREFIX%/var/tmp/WTTH/salidas/%table_mov_to_ims%.xml"/>
+            <Param name="path_xml_sftp" value="/var/tmp/WTTH/salidas/"/>
+            <Param name="path_xml_update_tables" value="%FILE_URL_PREFIX%/var/tmp/WTTH/salidas/WTTH_update_tables.xml"/>
+            <Param name="path_xsl_ims_to_mov" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/WTTH_ims_to_mov_b.xsl"/>
+            <Param name="path_xsl_mov_to_ims" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/WTTH_mov_to_ims_b.xsl"/>
+            <Param name="path_xsl_sftp" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/sftp.xsl"/>
+            <Param name="path_xsl_update_tables" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/WTTH_update_tables.xsl"/>
             <Param name="remote_file_path_sftp" value="/code/lrt"/>
          </Action>
          <Next-Node>Switch</Next-Node>
@@ -121,8 +121,6 @@
       </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>DecryptPass</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Decrypt</Class-Name>
             <Param name="decrypted_text" value="pass_sftp"/>
@@ -620,7 +618,7 @@
          <Name>cleanSftpPath</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="path_xml_sftp" value="%SOLUTION_ETC%/template_files/WTTHColombia/SALIDAS/"/>
+            <Param name="path_xml_sftp" value="/var/tmp/WTTH/salidas/"/>
          </Action>
          <Next-Node>mapSftpParams11</Next-Node>
       </Process-Node>
@@ -887,7 +885,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="local_file_name_sftp" value="%table_ims_to_mov%.xml.gz"/>
-            <Param name="local_file_path_sftp" value="%SOLUTION_ETC%/template_files/WTTHColombia/SALIDAS/"/>
+            <Param name="local_file_path_sftp" value="/var/tmp/WTTH/salidas/"/>
             <Param name="path_xml_sftp" value="%FILE_URL_PREFIX%/%path_xml_sftp%sftp_%table_ims_to_mov%.xml"/>
             <Param name="remote_file_name_sftp" value="%table_ims_to_mov%.xml.gz"/>
             <Param name="sftp_operation" value="put"/>
@@ -900,7 +898,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="local_file_name_sftp" value="%table_mov_to_ims%.xml.gz"/>
-            <Param name="local_file_path_sftp" value="%SOLUTION_ETC%/template_files/WTTHColombia/SALIDAS/"/>
+            <Param name="local_file_path_sftp" value="/var/tmp/WTTH/salidas/"/>
             <Param name="path_xml_sftp" value="%FILE_URL_PREFIX%/%path_xml_sftp%sftp_%table_mov_to_ims%.xml"/>
             <Param name="remote_file_name_sftp" value="%table_mov_to_ims%.xml.gz"/>
             <Param name="sftp_operation" value="put"/>
