@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><localRoutes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-<route>
-<user type="E164">+573108128121</user>
-<next type="regex">!sip:+5713931655@mgcfims!</next>
-</route>
-</localRoutes>
