@@ -1,0 +1,68 @@
+import java.io.File;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.util.ArrayList;
+
+public String[] getFileList() {
+	try{
+		File dir = new File(path_in);
+		String[] files = dir.list();
+		if (files == null){
+			return null;
+		}else{
+			for (int i = 0; i < files.length; i++){
+				if (files[i].contains("WTTH") && files[i].contains(".")){
+					System.out.println("**********************************************"+files[i]);
+					File source = new File (path_in+files[i]);
+					File destination = new File (path_prog+files[i]);
+					
+					//File source = new File (path_in+files[i]);
+					//File destination = new File (path_prog+files[i]);
+					try{
+						destination.delete();
+						System.out.println("-- DELETED --" + destination);
+					}catch (Exception e){
+						System.out.println("-- File does not exist --" + destination);
+					}
+					boolean bool;
+					System.out.println("-------------------------------- "+source+" --- "+ destination);
+					bool = source.renameTo(destination);
+					System.out.println("-------------------------------- "+bool);
+				}
+			}
+			return files;
+		}
+	}catch (Exception e) {      
+		return null;
+	}     
+}
+public ArrayList<String> getAccounts() {
+	file_prog = path_prog+file;
+	file_proc = path_proc+file;
+	String line = null;
+	File fileIn = null;
+	ArrayList<String> accounts = new ArrayList<String>();
+	try{
+		fileIn = new java.io.File(file_prog);	
+		FileReader linReader = new FileReader(fileIn);
+		BufferedReader br = new BufferedReader(linReader);
+		
+		try{
+			while ((line = br.readLine()) != null){
+				if (line.length() > 0)
+					accounts.add(line);
+			}
+		}catch(Exception e){
+			accounts = null;
+			e.printStackTrace();
+		}finally{
+			linReader.close();
+		}
+	}catch(Exception e){
+		accounts = null;
+		e.printStackTrace();
+		return accounts;
+	}
+	return accounts;
+}

@@ -1,0 +1,10 @@
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public boolean validateNumber(){         
+        boolean valid = false;         
+        Pattern pat = Pattern.compile("[+0-9]{11}");
+        Matcher mat = pat.matcher(telephone_number);
+        if (mat.matches()) {valid = true;}
+	return valid;
+}
