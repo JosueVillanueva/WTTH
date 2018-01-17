@@ -331,7 +331,7 @@
          <Name>VariableMapper31</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="xsl_template" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/WTTHColombia/XSLs/%template_obj[0].templateName%.xsl"/>
+            <Param name="xsl_template" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/%template_obj[0].templateName%.xsl"/>
          </Action>
          <Next-Node>PutMessage41</Next-Node>
       </Process-Node>
@@ -772,7 +772,7 @@
          <Name>VariableMapper311</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="xsl_template" value="%SOLUTION_ETC%/template_files/WTTHColombia/XSLs/%template_obj[0].templateName%.xsl"/>
+            <Param name="xsl_template" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/%template_obj[0].templateName%.xsl"/>
          </Action>
          <Next-Node>PutMessage411</Next-Node>
       </Process-Node>

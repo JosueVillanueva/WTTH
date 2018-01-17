@@ -69,7 +69,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="xml_text" value="%FILE_URL_PREFIX%%SOLUTION_ETC%\template_files\WTTHColombia\XMLs\SALIDAS_callfeatures\WTTH_%template_type%_%feature_code%.xml"/>
-            <Param name="xsl_template" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/WTTHColombia/XSLs/WTTH_%template_type%_MODSBR_CALLFEATURES.xsl"/>
+            <Param name="xsl_template" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/WTTH_%template_type%_MODSBR_CALLFEATURES.xsl"/>
          </Action>
          <Next-Node>TransformXML</Next-Node>
       </Process-Node>
@@ -414,7 +414,7 @@
    <Initial-Case-Packet>
       <Variable-Value name="FILE_URL_PREFIX" value="file:///"/>
       <Variable-Value name="SOLUTION_NAME" value="WTTH"/>
-      <Variable-Value name="WORKFLOW_NAME" value="WTTH_DEACTIVATE_CALL_FEATURES"/>
+      <Variable-Value name="WORKFLOW_NAME" value="WTTH_DEACT_CALL_FEATURES"/>
       <Variable-Value name="WORKFLOW_VERSION" value="-1"/>
       <Variable-Value name="flag" value="false"/>
       <Variable-Value name="method_counter_call" value="0"/>
