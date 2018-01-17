@@ -443,6 +443,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="wtth_result_code" value="3"/>
+            <Param name="wtth_result_desc" value="Action is not known"/>
          </Action>
          <Next-Node>ModifOK?</Next-Node>
       </Process-Node>
