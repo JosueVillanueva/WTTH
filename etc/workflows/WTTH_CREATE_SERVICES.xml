@@ -162,7 +162,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.CreateInventory</Class-Name>
             <Param name="bean" value="constant:com.hpe.ov.activator.inventory.Services"/>
-            <Param name="throw_excep" value="constant:true"/>
+            <Param name="throw_excep" value="constant:false"/>
             <Param name="key_field0" value="constant:accountNumber"/>
             <Param name="key_value0" value="account_number"/>
             <Param name="key_field1" value="constant:accountStatus"/>

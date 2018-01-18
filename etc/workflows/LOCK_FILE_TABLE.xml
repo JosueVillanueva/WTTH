@@ -101,9 +101,10 @@
             <Param name="component_name" value="variable:WORKFLOW_NAME"/>
             <Param name="log_level" value="INFORMATIVE"/>
             <Param name="log_manager" value="WTTH_log_manager"/>
-            <Param name="log_message" value="fixed_telephone_number_new %s services_job_id %s"/>
+            <Param name="log_message" value="fixed_telephone_number_new %s services_job_id %s retry %s"/>
             <Param name="param0" value="fixed_telephone_number_new"/>
             <Param name="param1" value="services_JOB_ID"/>
+            <Param name="param2" value="count_retries"/>
          </Action>
          <Next-Node>Add</Next-Node>
       </Process-Node>
