@@ -680,9 +680,9 @@
     Destination: $ACTIVATOR_ETC/config
   =============================================================================
 -->
-  <!--Config>
-    <File>**/*</File>
-  </Config-->
+  <Config>
+    <File>/xsd/*.xsd</File>
+  </Config>
   
 <!--
   TEMPLATES
@@ -703,9 +703,8 @@
   =============================================================================
 -->
   <Templates>
-    <File>WTTHColombia/XMLs/*.xml</File>
-    <File>WTTHColombia/XSLs/*.xsl</File>
-	<File>WTTHColombia/XSLs/*.xsd</File>
+    <File>*.xml</File>
+    <File>*.xsl</File>
   </Templates>
   
 <!--
@@ -717,10 +716,9 @@
     <Third-Party-Lib> element (described earlier in this file).
     
     If a workflow node or handler in the runtime system is subject to be
-    overwritten, the Deployment Manager will save a backup of the old node or
-    handler in the directory <SolutionName>/<Backup> and add a record to the
     "checksums_N.xml" file.
- 
+
+	
     Source:      <BaseDir>/etc/designer
     Destination: $ACTIVATOR_ETC/designer
   =============================================================================
@@ -822,12 +820,9 @@
   =============================================================================
 -->
 
-  <!--SQL>
-    <Deploy>create_table_X.sql</Deploy>
-    <Deploy>create_table_Y.sql</Deploy>
-    <Deploy>populate_tables.sql</Deploy>
-    <Undeploy>drop_tables.sql</Undeploy>
-  </SQL-->
+  <SQL>
+    <Deploy>INSERTS_WTTH.sql</Deploy>
+  </SQL>
   
 <!--
   CUSTOM SCRIPTS
