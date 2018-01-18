@@ -280,8 +280,8 @@
             <Param name="component_name" value="WTTH_NNC"/>
             <Param name="log_level" value="INFORMATIVE"/>
             <Param name="log_manager" value="WTTH_log_manager"/>
-            <Param name="log_message" value="Respuesta %s "/>
-            <Param name="param0" value="nnc_config_code"/>
+            <Param name="log_message" value="XML Enviado:  %s "/>
+            <Param name="param0" value="nnc_delConfig_file"/>
          </Action>
          <Next-Node>XMLMapperDelete</Next-Node>
       </Process-Node>
@@ -846,7 +846,7 @@
       <Variable name="xml_mov_to_ims_tmp" type="String"/>
    </Case-Packet>
    <Initial-Case-Packet>
-      <Variable-Value name="FILE_URL_PREFIX" value="file:///"/>
+      <Variable-Value name="FILE_URL_PREFIX" value="file://"/>
       <Variable-Value name="Path" value="/ACMEWS"/>
       <Variable-Value name="SOLUTION_NAME" value="WTTH"/>
       <Variable-Value name="WORKFLOW_NAME" value="WTTH_NNC_BAJA"/>
@@ -857,184 +857,184 @@
    <Coordinates>
       <Position>
          <Name>ComposeMessageDel</Name>
-         <X>3032</X>
+         <X>3022</X>
          <Y>288</Y>
-         <Width>111</Width>
+         <Width>133</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>ComposeMessageLoad</Name>
-         <X>1175</X>
+         <X>1164</X>
          <Y>283</Y>
-         <Width>119</Width>
+         <Width>142</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>ComposeMessageLock</Name>
-         <X>2046</X>
+         <X>2035</X>
          <Y>290</Y>
-         <Width>117</Width>
+         <Width>140</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>ComposeMessageLogin</Name>
-         <X>349</X>
+         <X>338</X>
          <Y>279</Y>
-         <Width>121</Width>
+         <Width>144</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>ComposeMessageLogout</Name>
-         <X>5510</X>
+         <X>5499</X>
          <Y>287</Y>
-         <Width>129</Width>
+         <Width>152</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>ComposeMessageSave</Name>
-         <X>3866</X>
+         <X>3857</X>
          <Y>289</Y>
-         <Width>120</Width>
+         <Width>140</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>ComposeMessageUnlock</Name>
-         <X>4676</X>
+         <X>4664</X>
          <Y>289</Y>
-         <Width>127</Width>
+         <Width>152</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>DelResponseError</Name>
-         <X>3743</X>
+         <X>3735</X>
          <Y>394</Y>
-         <Width>96</Width>
+         <Width>114</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>DeleteRequest</Name>
-         <X>3379</X>
+         <X>3373</X>
          <Y>288</Y>
-         <Width>81</Width>
+         <Width>94</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>DeleteResponse</Name>
-         <X>3624</X>
+         <X>3617</X>
          <Y>288</Y>
-         <Width>88</Width>
+         <Width>103</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>Error</Name>
-         <X>6380</X>
+         <X>6378</X>
          <Y>299</Y>
-         <Width>54</Width>
-         <Height>24</Height>
+         <Width>59</Width>
+         <Height>25</Height>
       </Position>
       <Position>
          <Name>HTTPRequestLogin</Name>
-         <X>503</X>
+         <X>494</X>
          <Y>279</Y>
-         <Width>100</Width>
+         <Width>119</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>HttpSoapRequestWTTHConfig</Name>
-         <X>3194</X>
+         <X>3182</X>
          <Y>288</Y>
-         <Width>155</Width>
+         <Width>181</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>HttpSoapRequestWTTHLoad</Name>
-         <X>1361</X>
+         <X>1349</X>
          <Y>286</Y>
-         <Width>147</Width>
+         <Width>173</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>HttpSoapRequestWTTHLock</Name>
-         <X>2216</X>
+         <X>2204</X>
          <Y>289</Y>
-         <Width>145</Width>
+         <Width>171</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>HttpSoapRequestWTTHLogout</Name>
-         <X>5673</X>
+         <X>5661</X>
          <Y>287</Y>
-         <Width>157</Width>
+         <Width>183</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>HttpSoapRequestWTTHSave</Name>
-         <X>4021</X>
+         <X>4010</X>
          <Y>289</Y>
-         <Width>148</Width>
+         <Width>171</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>HttpSoapRequestWTTHUnlock</Name>
-         <X>4832</X>
+         <X>4819</X>
          <Y>288</Y>
-         <Width>155</Width>
+         <Width>183</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>LoadDevice</Name>
-         <X>1918</X>
+         <X>1913</X>
          <Y>301</Y>
-         <Width>85</Width>
-         <Height>24</Height>
+         <Width>96</Width>
+         <Height>25</Height>
       </Position>
       <Position>
          <Name>LoadRequest</Name>
-         <X>1552</X>
+         <X>1547</X>
          <Y>288</Y>
-         <Width>73</Width>
+         <Width>85</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>LoadResponse</Name>
-         <X>1796</X>
+         <X>1790</X>
          <Y>289</Y>
-         <Width>80</Width>
+         <Width>94</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>LoadResponseError</Name>
-         <X>1908</X>
+         <X>1899</X>
          <Y>459</Y>
-         <Width>104</Width>
+         <Width>123</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>LockDevice</Name>
-         <X>2755</X>
+         <X>2750</X>
          <Y>300</Y>
-         <Width>83</Width>
-         <Height>24</Height>
+         <Width>94</Width>
+         <Height>25</Height>
       </Position>
       <Position>
          <Name>LockRequest</Name>
-         <X>2396</X>
+         <X>2391</X>
          <Y>289</Y>
-         <Width>71</Width>
+         <Width>83</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>LockResponse</Name>
-         <X>2623</X>
+         <X>2617</X>
          <Y>289</Y>
-         <Width>78</Width>
+         <Width>92</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>LockResponseError</Name>
-         <X>2747</X>
+         <X>2738</X>
          <Y>419</Y>
-         <Width>102</Width>
+         <Width>121</Width>
          <Height>48</Height>
       </Position>
       <Position>
@@ -1046,254 +1046,254 @@
       </Position>
       <Position>
          <Name>Login</Name>
-         <X>1023</X>
+         <X>1021</X>
          <Y>291</Y>
-         <Width>55</Width>
-         <Height>24</Height>
+         <Width>60</Width>
+         <Height>25</Height>
       </Position>
       <Position>
          <Name>LoginRequest</Name>
-         <X>643</X>
+         <X>638</X>
          <Y>279</Y>
-         <Width>75</Width>
+         <Width>87</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>LoginResponse</Name>
-         <X>904</X>
+         <X>898</X>
          <Y>279</Y>
-         <Width>82</Width>
+         <Width>96</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>LoginResponse1</Name>
-         <X>1008</X>
+         <X>1001</X>
          <Y>461</Y>
-         <Width>88</Width>
+         <Width>104</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>Logout</Name>
-         <X>6278</X>
+         <X>6276</X>
          <Y>299</Y>
-         <Width>63</Width>
-         <Height>24</Height>
+         <Width>68</Width>
+         <Height>25</Height>
       </Position>
       <Position>
          <Name>LogoutRequest</Name>
-         <X>5876</X>
+         <X>5871</X>
          <Y>287</Y>
-         <Width>83</Width>
+         <Width>95</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>LogoutResponse</Name>
-         <X>6133</X>
+         <X>6127</X>
          <Y>287</Y>
-         <Width>90</Width>
+         <Width>104</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>LogoutResponseError</Name>
-         <X>6252</X>
+         <X>6243</X>
          <Y>442</Y>
-         <Width>114</Width>
+         <Width>133</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>PrintStart</Name>
          <X>11</X>
          <Y>279</Y>
-         <Width>61</Width>
+         <Width>62</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>SaveActivate</Name>
-         <X>4557</X>
+         <X>4554</X>
          <Y>301</Y>
-         <Width>94</Width>
-         <Height>24</Height>
+         <Width>101</Width>
+         <Height>25</Height>
       </Position>
       <Position>
          <Name>SaveRequest</Name>
-         <X>4199</X>
+         <X>4195</X>
          <Y>289</Y>
-         <Width>74</Width>
+         <Width>83</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>SaveResponse</Name>
-         <X>4427</X>
+         <X>4422</X>
          <Y>289</Y>
-         <Width>81</Width>
+         <Width>92</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>SaveResponseError</Name>
-         <X>4552</X>
+         <X>4545</X>
          <Y>387</Y>
-         <Width>105</Width>
+         <Width>121</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>UnlockDevice</Name>
-         <X>5379</X>
+         <X>5373</X>
          <Y>300</Y>
-         <Width>93</Width>
-         <Height>24</Height>
+         <Width>106</Width>
+         <Height>25</Height>
       </Position>
       <Position>
          <Name>UnlockRequest</Name>
-         <X>5020</X>
+         <X>5014</X>
          <Y>288</Y>
-         <Width>81</Width>
+         <Width>95</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>UnlockResponse</Name>
-         <X>5257</X>
+         <X>5250</X>
          <Y>288</Y>
-         <Width>88</Width>
+         <Width>104</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>UnlockResponseError</Name>
-         <X>5369</X>
+         <X>5359</X>
          <Y>395</Y>
-         <Width>112</Width>
+         <Width>133</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>VariableMapperConfig</Name>
-         <X>2880</X>
+         <X>2869</X>
          <Y>288</Y>
-         <Width>115</Width>
+         <Width>139</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>VariableMapperLogin</Name>
-         <X>111</X>
+         <X>100</X>
+         <Y>279</Y>
+         <Width>133</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>XMLMapperDelete</Name>
+         <X>3479</X>
+         <Y>288</Y>
+         <Width>116</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>XMLMapperLoad</Name>
+         <X>1667</X>
+         <Y>288</Y>
+         <Width>107</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>XMLMapperLock</Name>
+         <X>2490</X>
+         <Y>289</Y>
+         <Width>105</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>XMLMapperLogin</Name>
+         <X>758</X>
          <Y>279</Y>
          <Width>109</Width>
          <Height>48</Height>
       </Position>
       <Position>
-         <Name>XMLMapperDelete</Name>
-         <X>3488</X>
-         <Y>288</Y>
-         <Width>96</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>XMLMapperLoad</Name>
-         <X>1676</X>
-         <Y>288</Y>
-         <Width>88</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>XMLMapperLock</Name>
-         <X>2499</X>
-         <Y>289</Y>
-         <Width>86</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
-         <Name>XMLMapperLogin</Name>
-         <X>767</X>
-         <Y>279</Y>
-         <Width>90</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
          <Name>XMLMapperLogout</Name>
-         <X>5995</X>
+         <X>5986</X>
          <Y>287</Y>
-         <Width>98</Width>
+         <Width>117</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>XMLMapperSave</Name>
-         <X>4304</X>
+         <X>4297</X>
          <Y>288</Y>
-         <Width>89</Width>
+         <Width>105</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>XMLMapperUnlock</Name>
-         <X>5132</X>
+         <X>5122</X>
          <Y>288</Y>
-         <Width>96</Width>
+         <Width>117</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>deleteDevice</Name>
-         <X>3745</X>
+         <X>3739</X>
          <Y>301</Y>
-         <Width>92</Width>
-         <Height>24</Height>
+         <Width>104</Width>
+         <Height>25</Height>
       </Position>
       <Position>
          <Name>mapError</Name>
-         <X>6377</X>
+         <X>6376</X>
          <Y>374</Y>
-         <Width>61</Width>
+         <Width>65</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>mapError0</Name>
-         <X>6473</X>
+         <X>6468</X>
          <Y>287</Y>
-         <Width>61</Width>
+         <Width>73</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>mapErrorDelete</Name>
-         <X>3750</X>
+         <X>3742</X>
          <Y>541</Y>
-         <Width>85</Width>
+         <Width>102</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>mapErrorLoad</Name>
-         <X>1921</X>
+         <X>1914</X>
          <Y>633</Y>
-         <Width>77</Width>
+         <Width>93</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>mapErrorLock</Name>
-         <X>2761</X>
+         <X>2754</X>
          <Y>585</Y>
-         <Width>75</Width>
+         <Width>91</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>mapErrorLogin</Name>
-         <X>1014</X>
+         <X>1007</X>
          <Y>551</Y>
-         <Width>79</Width>
+         <Width>95</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>mapErrorLogout</Name>
-         <X>6266</X>
+         <X>6259</X>
          <Y>560</Y>
-         <Width>87</Width>
+         <Width>103</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>mapErrorSave</Name>
-         <X>4565</X>
+         <X>4559</X>
          <Y>485</Y>
-         <Width>78</Width>
+         <Width>91</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>mapErrorUnlock</Name>
-         <X>5383</X>
+         <X>5375</X>
          <Y>512</Y>
-         <Width>85</Width>
+         <Width>103</Width>
          <Height>48</Height>
       </Position>
       <Arrows>
