@@ -4,15 +4,34 @@
 <Workflow Init-On-Startup="false" Unique="false" auditEnabled="false" auditStateChangeEvent="false" autoAuditEnabled="true" disablePersistence="true" statEnabled="false">
    <Name>WTTH_DAILY_REPORT</Name>
    <Solution>WTTH</Solution>
-   <Start-Node>VariableMapper</Start-Node>
+   <Start-Node>AskFor2</Start-Node>
    <Nodes>
+      <Process-Node>
+         <Name>AskFor2</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.AskFor</Class-Name>
+            <Param name="queue" value="variable:WORKFLOW_NAME"/>
+            <Param name="label0" value="Report_type"/>
+            <Param name="variable0" value="report_type"/>
+         </Action>
+         <Next-Node>IsTrue</Next-Node>
+      </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>IsTrue</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.IsTrue</Class-Name>
+            <Param name="op1" value="report_type"/>
+         </Action>
+         <True-Next-Node>VariableMapper</True-Next-Node>
+         <False-Next-Node>PutMessage2</False-Next-Node>
+      </Rule-Node>
       <Process-Node disablePersistence="true">
          <Name>VariableMapper</Name>
+         <Description>report_type=servicioswtth</Description>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="local_path" value="/var/tmp/WTTH/salidas/"/>
             <Param name="path_file_properties" value="%SOLUTION_ETC%/template_files/reportes.properties"/>
-            <Param name="report_type" value="servicioswtth"/>
          </Action>
          <Next-Node>CustomReport</Next-Node>
       </Process-Node>
@@ -30,11 +49,30 @@
          <Name>PutMessage</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
-            <Param name="message" value="result code %s description %s"/>
+            <Param name="message" value="result code %s description %s report_type %s"/>
             <Param name="queue" value="variable:WORKFLOW_NAME"/>
             <Param name="param0" value="report_result_code"/>
             <Param name="param1" value="report_result_desc"/>
+            <Param name="param2" value="report_type"/>
          </Action>
+      </Process-Node>
+      <Process-Node>
+         <Name>PutMessage2</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="report_type %s is empty?"/>
+            <Param name="queue" value="variable:WORKFLOW_NAME"/>
+            <Param name="param0" value="report_type"/>
+         </Action>
+         <Next-Node>VariableMapper2</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>VariableMapper2</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="report_type" value="servicioswtth"/>
+         </Action>
+         <Next-Node>VariableMapper</Next-Node>
       </Process-Node>
    </Nodes>
    <Case-Packet>
@@ -103,26 +141,67 @@
    </Initial-Case-Packet>
    <Coordinates>
       <Position>
+         <Name>AskFor2</Name>
+         <X>170</X>
+         <Y>85</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>CustomReport</Name>
-         <X>411</X>
+         <X>659</X>
          <Y>85</Y>
          <Width>91</Width>
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>IsTrue</Name>
+         <X>272</X>
+         <Y>96</Y>
+         <Width>67</Width>
+         <Height>26</Height>
+      </Position>
+      <Position>
          <Name>PutMessage</Name>
-         <X>537</X>
+         <X>785</X>
          <Y>85</Y>
          <Width>78</Width>
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>PutMessage2</Name>
+         <X>263</X>
+         <Y>171</Y>
+         <Width>85</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>VariableMapper</Name>
-         <X>275</X>
+         <X>523</X>
          <Y>85</Y>
          <Width>100</Width>
          <Height>48</Height>
       </Position>
+      <Position>
+         <Name>VariableMapper2</Name>
+         <X>520</X>
+         <Y>171</Y>
+         <Width>107</Width>
+         <Height>48</Height>
+      </Position>
+      <Arrows>
+         <Name>AskFor2</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
       <Arrows>
          <Name>CustomReport</Name>
          <True-Arrow>
@@ -137,6 +216,19 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>IsTrue</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>PutMessage</Name>
          <True-Arrow>
             <Type>0</Type>
@@ -150,7 +242,33 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>PutMessage2</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>VariableMapper</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>VariableMapper2</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>

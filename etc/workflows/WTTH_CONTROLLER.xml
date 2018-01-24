@@ -7,7 +7,7 @@
    <Description>Controller of WTTH</Description>
    <Start-Node>PutMessage</Start-Node>
    <Nodes>
-      <Process-Node>
+      <Process-Node inactive="true">
          <Name>PutMessage</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
@@ -164,7 +164,7 @@
          <Name>PutMessage4</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
-            <Param name="message" value="ERROR....wtth_result_code %s wtth_result_desc %s"/>
+            <Param name="message" value="-wtth_result_code[%s] -wtth_result_desc[%s]"/>
             <Param name="queue" value="variable:WORKFLOW_NAME"/>
             <Param name="param0" value="wtth_result_code"/>
             <Param name="param1" value="wtth_result_desc"/>
@@ -224,7 +224,7 @@
          </Action>
          <Next-Node>PutMessage END TIME11</Next-Node>
       </Process-Node>
-      <Process-Node>
+      <Process-Node inactive="true">
          <Name>PutMessage END TIME11</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
@@ -461,7 +461,7 @@
          <Name>PutMessage2</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
-            <Param name="message" value="OK...wtth_result_code %s wtth_result_desc %s"/>
+            <Param name="message" value="-wtth_result_code[%s] -wtth_result_desc[%s]"/>
             <Param name="queue" value="variable:WORKFLOW_NAME"/>
             <Param name="param0" value="wtth_result_code"/>
             <Param name="param1" value="wtth_result_desc"/>
