@@ -208,7 +208,7 @@
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.WasPreviousNodeOK</Class-Name>
          </Action>
          <True-Next-Node>action=create?</True-Next-Node>
-         <False-Next-Node>mapError</False-Next-Node>
+         <False-Next-Node>mapError10</False-Next-Node>
       </Rule-Node>
       <Rule-Node disablePersistence="true">
          <Name>action=create?</Name>
@@ -502,7 +502,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="wtth_result_code" value="8"/>
-            <Param name="wtth_result_desc" value="Cannot insert in customer in database"/>
+            <Param name="wtth_result_desc" value="Cannot insert customer in database"/>
          </Action>
          <Next-Node>mapActionName1</Next-Node>
       </Process-Node>
@@ -648,11 +648,11 @@
          <Next-Node>Error</Next-Node>
       </Process-Node>
       <Process-Node disablePersistence="true">
-         <Name>mapError</Name>
+         <Name>mapError10</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="wtth_result_code" value="7"/>
-            <Param name="wtth_result_desc" value="no se pudo insertar el registro en base de datos."/>
+            <Param name="wtth_result_code" value="10"/>
+            <Param name="wtth_result_desc" value="Cannot insert service in database"/>
          </Action>
          <Next-Node>mapActionName1</Next-Node>
       </Process-Node>
@@ -1201,13 +1201,6 @@
          <Height>48</Height>
       </Position>
       <Position>
-         <Name>mapError</Name>
-         <X>1246</X>
-         <Y>190</Y>
-         <Width>64</Width>
-         <Height>48</Height>
-      </Position>
-      <Position>
          <Name>mapError00</Name>
          <X>3058</X>
          <Y>128</Y>
@@ -1274,6 +1267,13 @@
          <Name>mapError09</Name>
          <X>420</X>
          <Y>312</Y>
+         <Width>78</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>mapError10</Name>
+         <X>1239</X>
+         <Y>190</Y>
          <Width>78</Width>
          <Height>48</Height>
       </Position>
@@ -1912,19 +1912,6 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
-         <Name>mapError</Name>
-         <True-Arrow>
-            <Type>3</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </True-Arrow>
-         <False-Arrow>
-            <Type>0</Type>
-            <DeltaX>0</DeltaX>
-            <DeltaY>0</DeltaY>
-         </False-Arrow>
-      </Arrows>
-      <Arrows>
          <Name>mapError00</Name>
          <True-Arrow>
             <Type>0</Type>
@@ -2043,6 +2030,19 @@
       </Arrows>
       <Arrows>
          <Name>mapError09</Name>
+         <True-Arrow>
+            <Type>3</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>mapError10</Name>
          <True-Arrow>
             <Type>3</Type>
             <DeltaX>0</DeltaX>
