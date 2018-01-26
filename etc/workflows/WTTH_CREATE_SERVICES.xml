@@ -54,8 +54,32 @@
             <Param name="op1" value="services_obj#"/>
             <Param name="op2" value="constant:0"/>
          </Action>
-         <True-Next-Node>LockTable</True-Next-Node>
+         <True-Next-Node>getImsToMov1</True-Next-Node>
          <False-Next-Node>mapError07</False-Next-Node>
+      </Rule-Node>
+      <Process-Node>
+         <Name>getImsToMov1</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.QueryInventory</Class-Name>
+            <Param name="bean" value="constant:com.hpe.ov.activator.inventory.IMStoMov"/>
+            <Param name="find_by_method" value="constant:findAll"/>
+            <Param name="return_array" value="constant:true"/>
+            <Param name="variable" value="ims_to_mov_obj"/>
+            <Param name="where" value="constant:FIXED_NUMBER =&apos;%s&apos; or MOBILE_NUMBER=&apos;%s&apos;"/>
+            <Param name="param0" value="fixed_telephone_number_new"/>
+            <Param name="param1" value="mobile_telephone_number_new"/>
+         </Action>
+         <Next-Node>imsToMov?1</Next-Node>
+      </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>imsToMov?1</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
+            <Param name="op1" value="ims_to_mov_obj#"/>
+            <Param name="op2" value="constant:0"/>
+         </Action>
+         <True-Next-Node>LockTable</True-Next-Node>
+         <False-Next-Node>mapError09</False-Next-Node>
       </Rule-Node>
       <Process-Node>
          <Name>LockTable</Name>
@@ -703,6 +727,15 @@
          <Next-Node>Error</Next-Node>
       </Process-Node>
       <Process-Node disablePersistence="true">
+         <Name>mapError09</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="7"/>
+            <Param name="wtth_result_desc" value="Telephone number already exist"/>
+         </Action>
+         <Next-Node>Error</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
          <Name>mapError07</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
@@ -829,6 +862,7 @@
       <Variable name="error_handling_obj" type="Object"/>
       <Variable name="fixed_telephone_number_new" type="String"/>
       <Variable name="geographical_location_id" type="String"/>
+      <Variable name="ims_to_mov_obj" type="Object"/>
       <Variable name="message_url" type="String"/>
       <Variable name="mobile_telephone_number_new" type="String"/>
       <Variable name="module_name" type="String"/>
@@ -860,8 +894,8 @@
       </Position>
       <Position>
          <Name>IMS</Name>
-         <X>484</X>
-         <Y>128</Y>
+         <X>573</X>
+         <Y>49</Y>
          <Width>61</Width>
          <Height>48</Height>
       </Position>
@@ -895,8 +929,8 @@
       </Position>
       <Position>
          <Name>LockTable</Name>
-         <X>392</X>
-         <Y>128</Y>
+         <X>426</X>
+         <Y>49</Y>
          <Width>67</Width>
          <Height>48</Height>
       </Position>
@@ -1076,10 +1110,24 @@
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>getImsToMov1</Name>
+         <X>286</X>
+         <Y>49</Y>
+         <Width>94</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>imsOK?</Name>
          <X>567</X>
          <Y>139</Y>
          <Width>72</Width>
+         <Height>26</Height>
+      </Position>
+      <Position>
+         <Name>imsToMov?1</Name>
+         <X>409</X>
+         <Y>133</Y>
+         <Width>101</Width>
          <Height>26</Height>
       </Position>
       <Position>
@@ -1219,6 +1267,13 @@
          <Name>mapError08</Name>
          <X>1538</X>
          <Y>238</Y>
+         <Width>78</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>mapError09</Name>
+         <X>420</X>
+         <Y>312</Y>
          <Width>78</Width>
          <Height>48</Height>
       </Position>
@@ -1688,7 +1743,33 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>getImsToMov1</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>imsOK?</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>imsToMov?1</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
@@ -1951,6 +2032,19 @@
          <Name>mapError08</Name>
          <True-Arrow>
             <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>mapError09</Name>
+         <True-Arrow>
+            <Type>3</Type>
             <DeltaX>0</DeltaX>
             <DeltaY>0</DeltaY>
          </True-Arrow>
