@@ -5,17 +5,165 @@
    <Name>WTTH_VALIDATE_SERVICES</Name>
    <Solution>WTTH</Solution>
    <Description>Validate a XML file with a XSD file</Description>
-   <Start-Node>Start</Start-Node>
+   <Start-Node>Log11</Start-Node>
    <Nodes>
+      <Process-Node>
+         <Name>Log11</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="INFORMATIVE"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="#################Start %s Action %s parentJOB_ID %s -xml_message[%s]#######################"/>
+            <Param name="param0" value="WORKFLOW_NAME"/>
+            <Param name="param1" value="action_name"/>
+            <Param name="param2" value="controller_JOB_ID"/>
+            <Param name="param3" value="xml_message"/>
+         </Action>
+         <Next-Node>mapPaths1</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>mapPaths1</Name>
+         <Description>%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/WTTHColombia/XSLs/cambio_CF.xsd</Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="path_xsd_cf" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/config/xsd/cambio_CF.xsd"/>
+            <Param name="path_xsd_services" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/config/xsd/activate_wtth.xsd"/>
+            <Param name="path_xsl" value="%FILE_URL_PREFIX%/%SOLUTION_ETC%/template_files/TransformXmlParams.xsl"/>
+            <Param name="path_xsl_cf" value="%FILE_URL_PREFIX%/%SOLUTION_ETC%/template_files/TransformXmlParamsCF.xsl"/>
+            <Param name="xml_message_input" value="%xml_message%"/>
+         </Action>
+         <Next-Node>TransformXML12</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>TransformXML12</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.TransformXML</Class-Name>
+            <Param name="output_var" value="xml_message"/>
+            <Param name="xml_var" value="xml_message"/>
+            <Param name="xsl_url" value="path_xsl"/>
+         </Action>
+         <Next-Node>MapServicesHeader</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>MapServicesHeader</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.XMLMapper</Class-Name>
+            <Param name="account_number" value="/msg/header/account_number"/>
+            <Param name="account_status" value="/msg/header/account_status"/>
+            <Param name="action_name" value="/msg/header/action_name"/>
+            <Param name="building_unit" value="/msg/header/building_unit"/>
+            <Param name="customer" value="/msg/header/customer"/>
+            <Param name="email_customer" value="/msg/header/email_customer"/>
+            <Param name="geographical_location_id" value="/msg/header/geographical_location_id"/>
+            <Param name="ignore_missing_tags" value="true"/>
+            <Param name="origin_id" value="/msg/header/origin_id"/>
+            <Param name="parent_account" value="/msg/header/parent_account"/>
+            <Param name="password_customer" value="/msg/header/password_customer"/>
+            <Param name="request_date" value="/msg/header/request_date"/>
+            <Param name="scope" value="/msg/header/scope"/>
+            <Param name="service_type" value="/msg/header/service_type"/>
+            <Param name="service_wo" value="/msg/header/service_wo"/>
+            <Param name="throw_excep" value="constant:false"/>
+            <Param name="validate" value="false"/>
+            <Param name="xml_var" value="xml_message"/>
+         </Action>
+         <Next-Node>mapHeaderOK?</Next-Node>
+      </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>mapHeaderOK?</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.WasPreviousNodeOK</Class-Name>
+         </Action>
+         <True-Next-Node>PutMessage</True-Next-Node>
+         <False-Next-Node>mapErrorCode001</False-Next-Node>
+      </Rule-Node>
       <Process-Node inactive="true">
-         <Name>Start</Name>
+         <Name>PutMessage</Name>
+         <Description></Description>
+         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
-            <Param name="message" value="Start WF %s"/>
+            <Param name="message" value="action_name %s"/>
             <Param name="queue" value="variable:WORKFLOW_NAME"/>
-            <Param name="param0" value="WORKFLOW_NAME"/>
+            <Param name="param0" value="action_name"/>
          </Action>
-         <Next-Node>Log1</Next-Node>
+         <Next-Node>Upper Action1</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>Upper Action1</Name>
+         <Description>upper mac_address_cm</Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.JavaNode</Class-Name>
+            <Param name="javacode" value="constant:public String strUpper(String str1){return str1.toUpperCase();}"/>
+            <Param name="method" value="constant:strUpper"/>
+            <Param name="output_var" value="action_name"/>
+            <Param name="arg0" value="action_name"/>
+         </Action>
+         <Next-Node>Switch</Next-Node>
+      </Process-Node>
+      <Switch-Node disablePersistence="true">
+         <Name>Switch</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.SwitchCase</Class-Name>
+            <Param name="key" value="action_name"/>
+            <Param name="case0" value="constant:MODIFYCALLFEATURES"/>
+            <Param name="case1" value="constant:CHECKSERVICE"/>
+         </Action>
+         <Switch name="case0">Validate XML cf</Switch>
+         <Switch name="case1">DoNothing</Switch>
+         <Default>Validate XML2</Default>
+      </Switch-Node>
+      <Process-Node disablePersistence="true">
+         <Name>mapErrorCode001</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="1"/>
+            <Param name="wtth_result_desc" value="XML invalid"/>
+         </Action>
+         <Next-Node>Error1</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>Error1</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.DoNothing</Class-Name>
+         </Action>
+         <Next-Node>LogError1</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>LogError1</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="ERROR"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="-action_name[%s] -parent_JOB_ID[%s] -wtth_result_code[%s] -wtth_result_desc[%s] -message_error[%s]"/>
+            <Param name="param0" value="action_name"/>
+            <Param name="param1" value="controller_JOB_ID"/>
+            <Param name="param2" value="wtth_result_code"/>
+            <Param name="param3" value="wtth_result_desc"/>
+            <Param name="param4" value="message_error"/>
+         </Action>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>DoNothing</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.DoNothing</Class-Name>
+         </Action>
+         <Next-Node>mapErrorCode000</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>Error</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.DoNothing</Class-Name>
+         </Action>
+         <Next-Node>LogError</Next-Node>
       </Process-Node>
       <Process-Node>
          <Name>Log1</Name>
@@ -32,59 +180,77 @@
          </Action>
          <Next-Node>mapPaths</Next-Node>
       </Process-Node>
-      <Process-Node disablePersistence="true">
-         <Name>mapPaths</Name>
-         <Description>%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/WTTHColombia/XSLs/cambio_CF.xsd</Description>
+      <Process-Node>
+         <Name>LogEnd</Name>
          <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="path_xsd_cf" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/config/xsd/cambio_CF.xsd"/>
-            <Param name="path_xsd_services" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/config/xsd/activate_wtth.xsd"/>
-            <Param name="path_xsl" value="%FILE_URL_PREFIX%/%SOLUTION_ETC%/template_files/TransformXmlParams.xsl"/>
-            <Param name="path_xsl_cf" value="%FILE_URL_PREFIX%/%SOLUTION_ETC%/template_files/TransformXmlParamsCF.xsl"/>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="INFORMATIVE"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="-action_name[%s] -fixed_number[%s] -wtth_result_code[%s] -wtth_result_desc[%s] -JOB_ID[%s]"/>
+            <Param name="param0" value="action_name"/>
+            <Param name="param1" value="fixed_telephone_number_new"/>
+            <Param name="param2" value="wtth_result_code"/>
+            <Param name="param3" value="wtth_result_desc"/>
+            <Param name="param4" value="controller_JOB_ID"/>
          </Action>
-         <Next-Node>Validate XML</Next-Node>
       </Process-Node>
       <Process-Node>
-         <Name>Validate XML</Name>
-         <Description>Validate a XML file with a XSD file</Description>
+         <Name>LogEnd1</Name>
          <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.rtc.ValidateXMLWithXSD</Class-Name>
-            <Param name="error_message" value="message_error"/>
-            <Param name="input_xml" value="xml_message"/>
-            <Param name="result" value="wtth_result_code"/>
-            <Param name="xsd_file" value="path_xsd_services"/>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="INFORMATIVE"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="is CF %s fixed_telephone_number_new %s parent_job_id %s"/>
+            <Param name="param0" value="isCF"/>
+            <Param name="param1" value="fixed_telephone_number_new"/>
+            <Param name="param4" value="controller_JOB_ID"/>
          </Action>
-         <Next-Node>validateOK?</Next-Node>
+         <Next-Node>account_number?</Next-Node>
       </Process-Node>
-      <Rule-Node disablePersistence="true">
-         <Name>validateOK?</Name>
-         <Description>validate xml of input</Description>
+      <Process-Node>
+         <Name>LogEnd11</Name>
          <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
-            <Param name="op1" value="wtth_result_code"/>
-            <Param name="op2" value="constant:0"/>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="INFORMATIVE"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="is CF %s fixed_telephone_number_new %s parent_job_id %s"/>
+            <Param name="param0" value="isCF"/>
+            <Param name="param1" value="fixed_telephone_number_new"/>
+            <Param name="param4" value="controller_JOB_ID"/>
          </Action>
-         <True-Next-Node>PutMessage2</True-Next-Node>
-         <False-Next-Node>PutMessage3</False-Next-Node>
-      </Rule-Node>
-      <Process-Node inactive="true">
-         <Name>PutMessage2</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
-            <Param name="message" value="OK"/>
-            <Param name="queue" value="variable:WORKFLOW_NAME"/>
-         </Action>
-         <Next-Node>TransformXML1</Next-Node>
+         <Next-Node>account_number?1</Next-Node>
       </Process-Node>
-      <Process-Node disablePersistence="true">
-         <Name>TransformXML1</Name>
+      <Process-Node>
+         <Name>LogEnd2</Name>
          <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.TransformXML</Class-Name>
-            <Param name="output_var" value="xml_message"/>
-            <Param name="xml_var" value="xml_message"/>
-            <Param name="xsl_url" value="path_xsl"/>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="INFORMATIVE"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="-action_name[%s] -fixed_number[%s] -wtth_result_code[%s] -wtth_result_desc[%s] -JOB_ID[%s]"/>
+            <Param name="param0" value="action_name"/>
+            <Param name="param1" value="fixed_telephone_number_new"/>
+            <Param name="param2" value="wtth_result_code"/>
+            <Param name="param3" value="wtth_result_desc"/>
+            <Param name="param4" value="controller_JOB_ID"/>
          </Action>
-         <Next-Node>MapServices</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>LogError</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
+            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
+            <Param name="log_level" value="INFORMATIVE"/>
+            <Param name="log_manager" value="WTTH_log_manager"/>
+            <Param name="log_message" value="-action_name[%s] -parent_JOB_ID[%s] -wtth_result_code[%s] -wtth_result_desc[%s] "/>
+            <Param name="param0" value="action_name"/>
+            <Param name="param1" value="controller_JOB_ID"/>
+            <Param name="param2" value="wtth_result_code"/>
+            <Param name="param3" value="wtth_result_desc"/>
+         </Action>
       </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>MapServices</Name>
@@ -120,136 +286,6 @@
          </Action>
          <Next-Node>set isCF</Next-Node>
       </Process-Node>
-      <Process-Node disablePersistence="true">
-         <Name>set isCF</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="isCF" value="false"/>
-         </Action>
-         <Next-Node>fixedtn?</Next-Node>
-      </Process-Node>
-      <Rule-Node disablePersistence="true">
-         <Name>fixedtn?</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.IsTrue</Class-Name>
-            <Param name="op1" value="fixed_telephone_number_new"/>
-         </Action>
-         <True-Next-Node>mobiletn?</True-Next-Node>
-         <False-Next-Node>mapErrorCode02</False-Next-Node>
-      </Rule-Node>
-      <Rule-Node disablePersistence="true">
-         <Name>mobiletn?</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.IsTrue</Class-Name>
-            <Param name="op1" value="mobile_telephone_number_new"/>
-         </Action>
-         <True-Next-Node>account_number?</True-Next-Node>
-         <False-Next-Node>mapErrorCode03</False-Next-Node>
-      </Rule-Node>
-      <Rule-Node disablePersistence="true">
-         <Name>account_number?</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.IsTrue</Class-Name>
-            <Param name="op1" value="account_number"/>
-         </Action>
-         <True-Next-Node>mapErrorCode00</True-Next-Node>
-         <False-Next-Node>mapErrorCode04</False-Next-Node>
-      </Rule-Node>
-      <Process-Node disablePersistence="true">
-         <Name>mapErrorCode00</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="wtth_result_code" value="0"/>
-            <Param name="wtth_result_desc" value="Transaction Succesful"/>
-         </Action>
-         <Next-Node>LogEnd</Next-Node>
-      </Process-Node>
-      <Process-Node>
-         <Name>LogEnd</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
-            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
-            <Param name="log_level" value="INFORMATIVE"/>
-            <Param name="log_manager" value="WTTH_log_manager"/>
-            <Param name="log_message" value="-action_name[%s] -fixed_number[%s] -wtth_result_code[%s] -wtth_result_desc[%s] -JOB_ID[%s]"/>
-            <Param name="param0" value="action_name"/>
-            <Param name="param1" value="fixed_telephone_number_new"/>
-            <Param name="param2" value="wtth_result_code"/>
-            <Param name="param3" value="wtth_result_desc"/>
-            <Param name="param4" value="controller_JOB_ID"/>
-         </Action>
-      </Process-Node>
-      <Process-Node disablePersistence="true">
-         <Name>mapErrorCode04</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="wtth_result_code" value="4"/>
-            <Param name="wtth_result_desc" value="Account number is empty"/>
-         </Action>
-         <Next-Node>Error</Next-Node>
-      </Process-Node>
-      <Process-Node disablePersistence="true">
-         <Name>Error</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.DoNothing</Class-Name>
-         </Action>
-         <Next-Node>LogError</Next-Node>
-      </Process-Node>
-      <Process-Node>
-         <Name>LogError</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
-            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
-            <Param name="log_level" value="INFORMATIVE"/>
-            <Param name="log_manager" value="WTTH_log_manager"/>
-            <Param name="log_message" value="-action_name[%s] -parent_JOB_ID[%s] -wtth_result_code[%s] -wtth_result_desc[%s] "/>
-            <Param name="param0" value="action_name"/>
-            <Param name="param1" value="controller_JOB_ID"/>
-            <Param name="param2" value="wtth_result_code"/>
-            <Param name="param3" value="wtth_result_desc"/>
-         </Action>
-      </Process-Node>
-      <Process-Node disablePersistence="true">
-         <Name>mapErrorCode03</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="wtth_result_code" value="3"/>
-            <Param name="wtth_result_desc" value="Mobile telephone number is empty"/>
-         </Action>
-         <Next-Node>Error</Next-Node>
-      </Process-Node>
-      <Process-Node disablePersistence="true">
-         <Name>mapErrorCode02</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="wtth_result_code" value="2"/>
-            <Param name="wtth_result_desc" value="Fixed thelephone number is empty"/>
-         </Action>
-         <Next-Node>Error</Next-Node>
-      </Process-Node>
-      <Process-Node inactive="true">
-         <Name>PutMessage3</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
-            <Param name="message" value="no OK %s message_error %s"/>
-            <Param name="queue" value="variable:WORKFLOW_NAME"/>
-            <Param name="param0" value="wtth_result_code"/>
-            <Param name="param1" value="message_error"/>
-         </Action>
-         <Next-Node>Validate XML1</Next-Node>
-      </Process-Node>
-      <Process-Node>
-         <Name>Validate XML1</Name>
-         <Description>Validate a XML file with a XSD file</Description>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.rtc.ValidateXMLWithXSD</Class-Name>
-            <Param name="error_message" value="message_error"/>
-            <Param name="input_xml" value="xml_message"/>
-            <Param name="result" value="wtth_result_code"/>
-            <Param name="xsd_file" value="path_xsd_cf"/>
-         </Action>
-         <Next-Node>MapServices1</Next-Node>
-      </Process-Node>
       <Process-Node disablePersistence="true" inactive="true">
          <Name>MapServices1</Name>
          <Action>
@@ -273,27 +309,6 @@
             <Param name="xml_var" value="xml_message"/>
          </Action>
          <Next-Node>validate2OK?</Next-Node>
-      </Process-Node>
-      <Rule-Node disablePersistence="true">
-         <Name>validate2OK?</Name>
-         <Description>validate xml of CF</Description>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
-            <Param name="op1" value="wtth_result_code"/>
-            <Param name="op2" value="constant:0"/>
-         </Action>
-         <True-Next-Node>TransformXML11</True-Next-Node>
-         <False-Next-Node>PutMessage31</False-Next-Node>
-      </Rule-Node>
-      <Process-Node disablePersistence="true">
-         <Name>TransformXML11</Name>
-         <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.TransformXML</Class-Name>
-            <Param name="output_var" value="xml_message"/>
-            <Param name="xml_var" value="xml_message"/>
-            <Param name="xsl_url" value="path_xsl_cf"/>
-         </Action>
-         <Next-Node>MapServices11</Next-Node>
       </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>MapServices11</Name>
@@ -319,6 +334,35 @@
          </Action>
          <Next-Node>PutMessage21</Next-Node>
       </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>MapServices2</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.XMLMapper</Class-Name>
+            <Param name="fixed_telephone_number_new" value="/msg/body/service/fixed_telephone_number/new_value"/>
+            <Param name="fixed_telephone_number_old" value="/msg/body/service/fixed_telephone_number/old_value"/>
+            <Param name="ignore_missing_tags" value="true"/>
+            <Param name="mobile_telephone_number_new" value="/msg/body/service/mobile_telephone_number/new_value"/>
+            <Param name="mobile_telephone_number_old" value="/msg/body/service/mobile_telephone_number/new_value"/>
+            <Param name="service_id_new" value="/msg/body/service/service_id/new_value"/>
+            <Param name="service_id_old" value="/msg/body/service/service_id/old_value"/>
+            <Param name="ssw_id_new" value="/msg/body/service/ssw_id/new_value"/>
+            <Param name="ssw_id_old" value="/msg/body/service/ssw_id/old_value"/>
+            <Param name="transaction_id_new" value="/msg/body/service/transaction_id/new_value"/>
+            <Param name="transaction_id_old" value="/msg/body/service/transaction_id/old_value"/>
+            <Param name="validate" value="false"/>
+            <Param name="xml_var" value="xml_message"/>
+         </Action>
+         <Next-Node>fixedtn?1</Next-Node>
+      </Process-Node>
+      <Process-Node inactive="true">
+         <Name>PutMessage2</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="OK"/>
+            <Param name="queue" value="variable:WORKFLOW_NAME"/>
+         </Action>
+         <Next-Node>TransformXML1</Next-Node>
+      </Process-Node>
       <Process-Node inactive="true">
          <Name>PutMessage21</Name>
          <Action>
@@ -331,19 +375,16 @@
          </Action>
          <Next-Node>LogEnd1</Next-Node>
       </Process-Node>
-      <Process-Node>
-         <Name>LogEnd1</Name>
+      <Process-Node inactive="true">
+         <Name>PutMessage3</Name>
          <Action>
-            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Log</Class-Name>
-            <Param name="component_name" value="variable:WORKFLOW_NAME"/>
-            <Param name="log_level" value="INFORMATIVE"/>
-            <Param name="log_manager" value="WTTH_log_manager"/>
-            <Param name="log_message" value="is CF %s fixed_telephone_number_new %s parent_job_id %s"/>
-            <Param name="param0" value="isCF"/>
-            <Param name="param1" value="fixed_telephone_number_new"/>
-            <Param name="param4" value="controller_JOB_ID"/>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="no OK %s message_error %s"/>
+            <Param name="queue" value="variable:WORKFLOW_NAME"/>
+            <Param name="param0" value="wtth_result_code"/>
+            <Param name="param1" value="message_error"/>
          </Action>
-         <Next-Node>account_number?</Next-Node>
+         <Next-Node>Validate XML1</Next-Node>
       </Process-Node>
       <Process-Node>
          <Name>PutMessage31</Name>
@@ -357,6 +398,224 @@
          </Action>
          <Next-Node>mapErrorCode01</Next-Node>
       </Process-Node>
+      <Process-Node inactive="true">
+         <Name>PutMessage4</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="message_error %s wtth_result_code %s"/>
+            <Param name="queue" value="variable:WORKFLOW_NAME"/>
+            <Param name="param0" value="message_error"/>
+            <Param name="param1" value="wtth_result_code"/>
+         </Action>
+         <Next-Node>mapErrorCode001</Next-Node>
+      </Process-Node>
+      <Process-Node inactive="true">
+         <Name>PutMessage5</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="message_error %s wtth_result_code %s -fixed_tn[%s]"/>
+            <Param name="queue" value="variable:WORKFLOW_NAME"/>
+            <Param name="param0" value="message_error"/>
+            <Param name="param1" value="wtth_result_code"/>
+            <Param name="param2" value="fixed_telephone_number_new"/>
+         </Action>
+         <Next-Node>mapErrorCode001</Next-Node>
+      </Process-Node>
+      <Process-Node inactive="true">
+         <Name>PutMessage6</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="xml_message %s"/>
+            <Param name="queue" value="variable:WORKFLOW_NAME"/>
+            <Param name="param0" value="xml_message"/>
+         </Action>
+         <Next-Node>LogEnd11</Next-Node>
+      </Process-Node>
+      <Process-Node inactive="true">
+         <Name>Start</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="Start WF %s"/>
+            <Param name="queue" value="variable:WORKFLOW_NAME"/>
+            <Param name="param0" value="WORKFLOW_NAME"/>
+         </Action>
+         <Next-Node>Log1</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>TransformXML1</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.TransformXML</Class-Name>
+            <Param name="output_var" value="xml_message"/>
+            <Param name="xml_var" value="xml_message"/>
+            <Param name="xsl_url" value="path_xsl"/>
+         </Action>
+         <Next-Node>MapServices</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>TransformXML11</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.TransformXML</Class-Name>
+            <Param name="output_var" value="xml_message"/>
+            <Param name="xml_var" value="xml_message"/>
+            <Param name="xsl_url" value="path_xsl_cf"/>
+         </Action>
+         <Next-Node>MapServices11</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>TransformXML111</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.TransformXML</Class-Name>
+            <Param name="output_var" value="xml_message"/>
+            <Param name="xml_var" value="xml_message_input"/>
+            <Param name="xsl_url" value="path_xsl"/>
+         </Action>
+         <Next-Node>MapServices2</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>TransformXMLCF</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.TransformXML</Class-Name>
+            <Param name="output_var" value="xml_message"/>
+            <Param name="xml_var" value="xml_message_input"/>
+            <Param name="xsl_url" value="path_xsl_cf"/>
+         </Action>
+         <Next-Node>PutMessage6</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>Validate XML</Name>
+         <Description>Validate a XML file with a XSD file</Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.rtc.ValidateXMLWithXSD</Class-Name>
+            <Param name="error_message" value="message_error"/>
+            <Param name="input_xml" value="xml_message"/>
+            <Param name="result" value="wtth_result_code"/>
+            <Param name="xsd_file" value="path_xsd_services"/>
+         </Action>
+         <Next-Node>validateOK?</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>Validate XML cf</Name>
+         <Description>Validate a XML file with a XSD file</Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.rtc.ValidateXMLWithXSD</Class-Name>
+            <Param name="error_message" value="message_error"/>
+            <Param name="input_xml" value="xml_message_input"/>
+            <Param name="result" value="wtth_result_code"/>
+            <Param name="xsd_file" value="path_xsd_cf"/>
+         </Action>
+         <Next-Node>validate2OK?11</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>Validate XML1</Name>
+         <Description>Validate a XML file with a XSD file</Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.rtc.ValidateXMLWithXSD</Class-Name>
+            <Param name="error_message" value="message_error"/>
+            <Param name="input_xml" value="xml_message"/>
+            <Param name="result" value="wtth_result_code"/>
+            <Param name="xsd_file" value="path_xsd_cf"/>
+         </Action>
+         <Next-Node>MapServices1</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>Validate XML2</Name>
+         <Description>Validate a XML file with a XSD file</Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.rtc.ValidateXMLWithXSD</Class-Name>
+            <Param name="error_message" value="message_error"/>
+            <Param name="input_xml" value="xml_message_input"/>
+            <Param name="result" value="wtth_result_code"/>
+            <Param name="xsd_file" value="path_xsd_services"/>
+         </Action>
+         <Next-Node>validate2OK?1</Next-Node>
+      </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>account_number?</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.IsTrue</Class-Name>
+            <Param name="op1" value="account_number"/>
+         </Action>
+         <True-Next-Node>mapErrorCode00</True-Next-Node>
+         <False-Next-Node>mapErrorCode04</False-Next-Node>
+      </Rule-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>account_number?1</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.IsTrue</Class-Name>
+            <Param name="op1" value="account_number"/>
+         </Action>
+         <True-Next-Node>mapErrorCode000</True-Next-Node>
+         <False-Next-Node>mapErrorCode004</False-Next-Node>
+      </Rule-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>fixedtn?</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.IsTrue</Class-Name>
+            <Param name="op1" value="fixed_telephone_number_new"/>
+         </Action>
+         <True-Next-Node>mobiletn?</True-Next-Node>
+         <False-Next-Node>mapErrorCode02</False-Next-Node>
+      </Rule-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>fixedtn?1</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.IsTrue</Class-Name>
+            <Param name="op1" value="fixed_telephone_number_new"/>
+         </Action>
+         <True-Next-Node>mobiletn?1</True-Next-Node>
+         <False-Next-Node>mapErrorCode002</False-Next-Node>
+      </Rule-Node>
+      <Process-Node disablePersistence="true">
+         <Name>mapErrorCode00</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="0"/>
+            <Param name="wtth_result_desc" value="Transaction Succesful"/>
+         </Action>
+         <Next-Node>LogEnd</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>mapErrorCode000</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="0"/>
+            <Param name="wtth_result_desc" value="OK. Transaction executed succesful"/>
+         </Action>
+         <Next-Node>LogEnd2</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>mapErrorCode002</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="2"/>
+            <Param name="wtth_result_desc" value="Fixed thelephone number is empty"/>
+         </Action>
+         <Next-Node>Error1</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>mapErrorCode003</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="3"/>
+            <Param name="wtth_result_desc" value="Mobile telephone number is empty"/>
+         </Action>
+         <Next-Node>Error1</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>mapErrorCode004</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="4"/>
+            <Param name="wtth_result_desc" value="Account number is empty"/>
+         </Action>
+         <Next-Node>Error1</Next-Node>
+      </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>mapErrorCode01</Name>
          <Action>
@@ -366,6 +625,115 @@
          </Action>
          <Next-Node>Error</Next-Node>
       </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>mapErrorCode02</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="2"/>
+            <Param name="wtth_result_desc" value="Fixed thelephone number is empty"/>
+         </Action>
+         <Next-Node>Error</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>mapErrorCode03</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="3"/>
+            <Param name="wtth_result_desc" value="Mobile telephone number is empty"/>
+         </Action>
+         <Next-Node>Error</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>mapErrorCode04</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="4"/>
+            <Param name="wtth_result_desc" value="Account number is empty"/>
+         </Action>
+         <Next-Node>Error</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>mapPaths</Name>
+         <Description>%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/WTTHColombia/XSLs/cambio_CF.xsd</Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="path_xsd_cf" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/config/xsd/cambio_CF.xsd"/>
+            <Param name="path_xsd_services" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/config/xsd/activate_wtth.xsd"/>
+            <Param name="path_xsl" value="%FILE_URL_PREFIX%/%SOLUTION_ETC%/template_files/TransformXmlParams.xsl"/>
+            <Param name="path_xsl_cf" value="%FILE_URL_PREFIX%/%SOLUTION_ETC%/template_files/TransformXmlParamsCF.xsl"/>
+         </Action>
+         <Next-Node>Validate XML</Next-Node>
+      </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>mobiletn?</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.IsTrue</Class-Name>
+            <Param name="op1" value="mobile_telephone_number_new"/>
+         </Action>
+         <True-Next-Node>account_number?</True-Next-Node>
+         <False-Next-Node>mapErrorCode03</False-Next-Node>
+      </Rule-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>mobiletn?1</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.IsTrue</Class-Name>
+            <Param name="op1" value="mobile_telephone_number_new"/>
+         </Action>
+         <True-Next-Node>account_number?1</True-Next-Node>
+         <False-Next-Node>mapErrorCode003</False-Next-Node>
+      </Rule-Node>
+      <Process-Node disablePersistence="true">
+         <Name>set isCF</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="isCF" value="false"/>
+         </Action>
+         <Next-Node>fixedtn?</Next-Node>
+      </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>validate2OK?</Name>
+         <Description>validate xml of CF</Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
+            <Param name="op1" value="wtth_result_code"/>
+            <Param name="op2" value="constant:0"/>
+         </Action>
+         <True-Next-Node>TransformXML11</True-Next-Node>
+         <False-Next-Node>PutMessage31</False-Next-Node>
+      </Rule-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>validate2OK?1</Name>
+         <Description>validate xml of CF</Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
+            <Param name="op1" value="wtth_result_code"/>
+            <Param name="op2" value="constant:0"/>
+         </Action>
+         <True-Next-Node>TransformXML111</True-Next-Node>
+         <False-Next-Node>PutMessage4</False-Next-Node>
+      </Rule-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>validate2OK?11</Name>
+         <Description>validate xml of CF</Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
+            <Param name="op1" value="wtth_result_code"/>
+            <Param name="op2" value="constant:0"/>
+         </Action>
+         <True-Next-Node>TransformXMLCF</True-Next-Node>
+         <False-Next-Node>PutMessage5</False-Next-Node>
+      </Rule-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>validateOK?</Name>
+         <Description>validate xml of input</Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
+            <Param name="op1" value="wtth_result_code"/>
+            <Param name="op2" value="constant:0"/>
+         </Action>
+         <True-Next-Node>PutMessage2</True-Next-Node>
+         <False-Next-Node>PutMessage3</False-Next-Node>
+      </Rule-Node>
    </Nodes>
    <Error-Handler>
       <Name>PutMessageHandler</Name>
@@ -503,6 +871,7 @@
       <Variable name="wtth_result_code" type="Integer"/>
       <Variable name="wtth_result_desc" type="String"/>
       <Variable name="xml_message" type="String"/>
+      <Variable name="xml_message_input" type="String"/>
       <Variable name="xml_var" type="String"/>
    </Case-Packet>
    <Initial-Case-Packet>
@@ -513,6 +882,13 @@
    </Initial-Case-Packet>
    <Coordinates>
       <Position>
+         <Name>DoNothing</Name>
+         <X>738</X>
+         <Y>682</Y>
+         <Width>68</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>Error</Name>
          <X>953</X>
          <Y>470</Y>
@@ -520,9 +896,23 @@
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>Error1</Name>
+         <X>1613</X>
+         <Y>1238</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>Log1</Name>
          <X>172</X>
          <Y>115</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Log11</Name>
+         <X>25</X>
+         <Y>879</Y>
          <Width>61</Width>
          <Height>48</Height>
       </Position>
@@ -541,10 +931,31 @@
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>LogEnd11</Name>
+         <X>1300</X>
+         <Y>744</Y>
+         <Width>65</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>LogEnd2</Name>
+         <X>1974</X>
+         <Y>812</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>LogError</Name>
          <X>953</X>
          <Y>543</Y>
          <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>LogError1</Name>
+         <X>1971</X>
+         <Y>1238</Y>
+         <Width>66</Width>
          <Height>48</Height>
       </Position>
       <Position>
@@ -566,6 +977,27 @@
          <X>1183</X>
          <Y>115</Y>
          <Width>96</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>MapServices2</Name>
+         <X>1326</X>
+         <Y>812</Y>
+         <Width>89</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>MapServicesHeader</Name>
+         <X>321</X>
+         <Y>879</Y>
+         <Width>123</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>PutMessage</Name>
+         <X>461</X>
+         <Y>879</Y>
+         <Width>78</Width>
          <Height>48</Height>
       </Position>
       <Position>
@@ -597,11 +1029,39 @@
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>PutMessage4</Name>
+         <X>964</X>
+         <Y>887</Y>
+         <Width>85</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>PutMessage5</Name>
+         <X>870</X>
+         <Y>863</Y>
+         <Width>85</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>PutMessage6</Name>
+         <X>1172</X>
+         <Y>744</Y>
+         <Width>85</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>Start</Name>
          <X>81</X>
          <Y>115</Y>
          <Width>61</Width>
          <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Switch</Name>
+         <X>667</X>
+         <Y>890</Y>
+         <Width>64</Width>
+         <Height>26</Height>
       </Position>
       <Position>
          <Name>TransformXML1</Name>
@@ -613,8 +1073,36 @@
       <Position>
          <Name>TransformXML11</Name>
          <X>1055</X>
-         <Y>115</Y>
+         <Y>114</Y>
          <Width>108</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>TransformXML111</Name>
+         <X>1102</X>
+         <Y>812</Y>
+         <Width>115</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>TransformXML12</Name>
+         <X>201</X>
+         <Y>879</Y>
+         <Width>108</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>TransformXMLCF</Name>
+         <X>1018</X>
+         <Y>744</Y>
+         <Width>109</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Upper Action1</Name>
+         <X>554</X>
+         <Y>879</Y>
+         <Width>90</Width>
          <Height>48</Height>
       </Position>
       <Position>
@@ -625,9 +1113,23 @@
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>Validate XML cf</Name>
+         <X>741</X>
+         <Y>744</Y>
+         <Width>98</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>Validate XML1</Name>
          <X>679</X>
-         <Y>115</Y>
+         <Y>113</Y>
+         <Width>91</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Validate XML2</Name>
+         <X>742</X>
+         <Y>812</Y>
          <Width>91</Width>
          <Height>48</Height>
       </Position>
@@ -639,6 +1141,13 @@
          <Height>26</Height>
       </Position>
       <Position>
+         <Name>account_number?1</Name>
+         <X>1672</X>
+         <Y>823</Y>
+         <Width>138</Width>
+         <Height>26</Height>
+      </Position>
+      <Position>
          <Name>fixedtn?</Name>
          <X>1417</X>
          <Y>126</Y>
@@ -646,10 +1155,52 @@
          <Height>26</Height>
       </Position>
       <Position>
+         <Name>fixedtn?1</Name>
+         <X>1442</X>
+         <Y>823</Y>
+         <Width>81</Width>
+         <Height>26</Height>
+      </Position>
+      <Position>
          <Name>mapErrorCode00</Name>
          <X>1799</X>
          <Y>115</Y>
          <Width>107</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>mapErrorCode000</Name>
+         <X>1823</X>
+         <Y>812</Y>
+         <Width>114</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>mapErrorCode001</Name>
+         <X>949</X>
+         <Y>972</Y>
+         <Width>114</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>mapErrorCode002</Name>
+         <X>1425</X>
+         <Y>892</Y>
+         <Width>114</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>mapErrorCode003</Name>
+         <X>1556</X>
+         <Y>891</Y>
+         <Width>114</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>mapErrorCode004</Name>
+         <X>1684</X>
+         <Y>892</Y>
+         <Width>114</Width>
          <Height>48</Height>
       </Position>
       <Position>
@@ -681,10 +1232,24 @@
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>mapHeaderOK?</Name>
+         <X>323</X>
+         <Y>983</Y>
+         <Width>118</Width>
+         <Height>26</Height>
+      </Position>
+      <Position>
          <Name>mapPaths</Name>
-         <X>285</X>
+         <X>273</X>
          <Y>115</Y>
          <Width>66</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>mapPaths1</Name>
+         <X>108</X>
+         <Y>879</Y>
+         <Width>73</Width>
          <Height>48</Height>
       </Position>
       <Position>
@@ -692,6 +1257,13 @@
          <X>1542</X>
          <Y>126</Y>
          <Width>85</Width>
+         <Height>26</Height>
+      </Position>
+      <Position>
+         <Name>mobiletn?1</Name>
+         <X>1567</X>
+         <Y>823</Y>
+         <Width>92</Width>
          <Height>26</Height>
       </Position>
       <Position>
@@ -709,12 +1281,39 @@
          <Height>26</Height>
       </Position>
       <Position>
+         <Name>validate2OK?1</Name>
+         <X>951</X>
+         <Y>823</Y>
+         <Width>110</Width>
+         <Height>26</Height>
+      </Position>
+      <Position>
+         <Name>validate2OK?11</Name>
+         <X>854</X>
+         <Y>755</Y>
+         <Width>117</Width>
+         <Height>26</Height>
+      </Position>
+      <Position>
          <Name>validateOK?</Name>
          <X>482</X>
          <Y>126</Y>
          <Width>96</Width>
          <Height>26</Height>
       </Position>
+      <Arrows>
+         <Name>DoNothing</Name>
+         <True-Arrow>
+            <Type>2</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
       <Arrows>
          <Name>Error</Name>
          <True-Arrow>
@@ -729,7 +1328,33 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>Error1</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>Log1</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Log11</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
@@ -768,7 +1393,46 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>LogEnd11</Name>
+         <True-Arrow>
+            <Type>2</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>LogEnd2</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>LogError</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>LogError1</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
@@ -810,6 +1474,45 @@
          <Name>MapServices11</Name>
          <True-Arrow>
             <Type>3</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>MapServices2</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>MapServicesHeader</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>PutMessage</Name>
+         <True-Arrow>
+            <Type>0</Type>
             <DeltaX>0</DeltaX>
             <DeltaY>0</DeltaY>
          </True-Arrow>
@@ -872,6 +1575,45 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>PutMessage4</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>PutMessage5</Name>
+         <True-Arrow>
+            <Type>3</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>PutMessage6</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>Start</Name>
          <True-Arrow>
             <Type>0</Type>
@@ -883,6 +1625,38 @@
             <DeltaX>0</DeltaX>
             <DeltaY>0</DeltaY>
          </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Switch</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+         <Switch-Arrow>
+            <Default-Arrow>
+               <Type>3</Type>
+               <DeltaX>0</DeltaX>
+               <DeltaY>0</DeltaY>
+            </Default-Arrow>
+            <Case-Arrow>
+               <Name>case0</Name>
+               <Type>3</Type>
+               <DeltaX>0</DeltaX>
+               <DeltaY>0</DeltaY>
+            </Case-Arrow>
+            <Case-Arrow>
+               <Name>case1</Name>
+               <Type>3</Type>
+               <DeltaX>0</DeltaX>
+               <DeltaY>0</DeltaY>
+            </Case-Arrow>
+         </Switch-Arrow>
       </Arrows>
       <Arrows>
          <Name>TransformXML1</Name>
@@ -911,7 +1685,72 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>TransformXML111</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>TransformXML12</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>TransformXMLCF</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Upper Action1</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>Validate XML</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Validate XML cf</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
@@ -937,7 +1776,33 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>Validate XML2</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>account_number?</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>account_number?1</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
@@ -963,9 +1828,87 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>fixedtn?1</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>mapErrorCode00</Name>
          <True-Arrow>
             <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>mapErrorCode000</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>mapErrorCode001</Name>
+         <True-Arrow>
+            <Type>3</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>mapErrorCode002</Name>
+         <True-Arrow>
+            <Type>3</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>mapErrorCode003</Name>
+         <True-Arrow>
+            <Type>3</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>mapErrorCode004</Name>
+         <True-Arrow>
+            <Type>3</Type>
             <DeltaX>0</DeltaX>
             <DeltaY>0</DeltaY>
          </True-Arrow>
@@ -1028,6 +1971,19 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>mapHeaderOK?</Name>
+         <True-Arrow>
+            <Type>2</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>mapPaths</Name>
          <True-Arrow>
             <Type>0</Type>
@@ -1041,7 +1997,33 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>mapPaths1</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>mobiletn?</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>mobiletn?1</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
@@ -1068,6 +2050,32 @@
       </Arrows>
       <Arrows>
          <Name>validate2OK?</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>validate2OK?1</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>validate2OK?11</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
