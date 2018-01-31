@@ -153,7 +153,7 @@
          <Name>VariableMapper5</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
-            <Param name="template_name" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/WTTHColombia/XSLs/check_services.xsl"/>
+            <Param name="template_name" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/template_files/check_services.xsl"/>
             <Param name="wtth_result_code" value="0"/>
             <Param name="wtth_result_desc" value="DO_OK Successfully!"/>
          </Action>

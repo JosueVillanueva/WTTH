@@ -153,9 +153,10 @@
          <Name>PutMessage9</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
-            <Param name="message" value="Cuantos: %s"/>
+            <Param name="message" value="Value: %s, Param: %s"/>
             <Param name="queue" value="Si_entro"/>
-            <Param name="param0" value="ssw_status_res.paramValue"/>
+            <Param name="param0" value="ssw_status_res.Value"/>
+            <Param name="param1" value="ssw_status_res.Parameter"/>
          </Action>
          <Next-Node>GenericJavaHashMap</Next-Node>
       </Process-Node>
@@ -165,9 +166,9 @@
             <Class-Name>com.hp.ov.activator.custom.node.GenericJavaHashMap</Class-Name>
             <Param name="hpsa_context" value="params_val"/>
             <Param name="operation" value="constant:put"/>
-            <Param name="key0" value="ssw_status_res.paramName"/>
+            <Param name="key0" value="ssw_status_res.Parameter"/>
             <Param name="result0" value="params_val"/>
-            <Param name="value0" value="ssw_status_res.paramValue"/>
+            <Param name="value0" value="ssw_status_res.Value"/>
          </Action>
          <Next-Node>PutMessage10</Next-Node>
       </Process-Node>
@@ -185,9 +186,11 @@
          <Name>PutMessage8</Name>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
-            <Param name="message" value="el valor: %s"/>
+            <Param name="message" value="el valor: %s. geo_id: %s. service_class: %s"/>
             <Param name="queue" value="param_val"/>
             <Param name="param0" value="params_val#"/>
+            <Param name="param1" value="geo_id"/>
+            <Param name="param2" value="service_class"/>
          </Action>
          <Next-Node>GenericJavaHashMap2</Next-Node>
       </Process-Node>
@@ -2030,8 +2033,8 @@
       </Position>
       <Position>
          <Name>QuerySSWStatus1</Name>
-         <X>669</X>
-         <Y>18</Y>
+         <X>676</X>
+         <Y>24</Y>
          <Width>99</Width>
          <Height>48</Height>
       </Position>

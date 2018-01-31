@@ -51,7 +51,7 @@
             <Param name="op1" value="valido"/>
          </Action>
          <True-Next-Node>NumberTelephone11</True-Next-Node>
-         <False-Next-Node>Log2</False-Next-Node>
+         <False-Next-Node>VariableMapper7412</False-Next-Node>
       </Rule-Node>
       <Process-Node disablePersistence="true">
          <Name>NumberTelephone11</Name>
@@ -97,6 +97,15 @@
          <Switch name="case11">VariableMapper18</Switch>
          <Default>VariableMapper7</Default>
       </Switch-Node>
+      <Process-Node disablePersistence="true">
+         <Name>VariableMapper7412</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="190"/>
+            <Param name="wtth_result_desc" value="UNDO_OK_No se pudo crear el CF: %feature_code% por que el número enviado esta incorrecto. Teléfono: %telephone_number%"/>
+         </Action>
+         <Next-Node>Log2</Next-Node>
+      </Process-Node>
       <Process-Node>
          <Name>Log2</Name>
          <Action>
@@ -1091,8 +1100,8 @@
       </Position>
       <Position>
          <Name>Log2</Name>
-         <X>514</X>
-         <Y>14</Y>
+         <X>593</X>
+         <Y>11</Y>
          <Width>61</Width>
          <Height>48</Height>
       </Position>
@@ -1464,6 +1473,13 @@
          <Name>VariableMapper7411</Name>
          <X>594</X>
          <Y>1027</Y>
+         <Width>108</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>VariableMapper7412</Name>
+         <X>447</X>
+         <Y>11</Y>
          <Width>108</Width>
          <Height>48</Height>
       </Position>
@@ -2474,6 +2490,19 @@
       </Arrows>
       <Arrows>
          <Name>VariableMapper7411</Name>
+         <True-Arrow>
+            <Type>2</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>VariableMapper7412</Name>
          <True-Arrow>
             <Type>2</Type>
             <DeltaX>0</DeltaX>

@@ -71,9 +71,8 @@
             <Param name="find_by_method" value="constant:findAll"/>
             <Param name="return_array" value="constant:true"/>
             <Param name="variable" value="services_obj"/>
-            <Param name="where" value="constant:CUSTOMER_ID = &apos;%s&apos; AND PARAM_VALUE = &apos;%s&apos;"/>
+            <Param name="where" value="constant:CUSTOMER_ID = &apos;%s&apos; AND PARAM_NAME = &apos;fixed_telephone_number&apos;"/>
             <Param name="param0" value="account_number"/>
-            <Param name="param1" value="telephone_number"/>
          </Action>
          <Next-Node>Equal2</Next-Node>
       </Process-Node>
@@ -85,7 +84,7 @@
             <Param name="op2" value="constant:0"/>
          </Action>
          <True-Next-Node>MapSSW9.11122</True-Next-Node>
-         <False-Next-Node>SearchZystem11</False-Next-Node>
+         <False-Next-Node>VariableMapper3</False-Next-Node>
       </Rule-Node>
       <Process-Node disablePersistence="true">
          <Name>MapSSW9.11122</Name>
@@ -93,7 +92,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="wtth_result_code" value="179"/>
-            <Param name="wtth_result_desc" value="UNDO_OK The telephone number and the account number in the database aren´t the same in the request. Please check that telephone number %telephone_number% corresponds to the account number %account_number%."/>
+            <Param name="wtth_result_desc" value="UNDO_OK Not found account_number: %account_number% in database."/>
          </Action>
          <Next-Node>DoNothing</Next-Node>
       </Process-Node>
@@ -102,6 +101,16 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.DoNothing</Class-Name>
          </Action>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>VariableMapper3</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="telephone_number" value="%services_obj[0].PARAM_VALUE%"/>
+         </Action>
+         <Next-Node>SearchZystem11</Next-Node>
       </Process-Node>
       <Process-Node>
          <Name>SearchZystem11</Name>
@@ -1023,6 +1032,13 @@
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>VariableMapper3</Name>
+         <X>591</X>
+         <Y>14</Y>
+         <Width>90</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>VariableMapper31</Name>
          <X>795</X>
          <Y>383</Y>
@@ -1665,6 +1681,19 @@
       </Arrows>
       <Arrows>
          <Name>VariableMapper2</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>VariableMapper3</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
