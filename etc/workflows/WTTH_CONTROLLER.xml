@@ -443,7 +443,7 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="wtth_result_code" value="11"/>
-            <Param name="wtth_result_desc" value="Action is not known"/>
+            <Param name="wtth_result_desc" value="Action is not known %action_name% tututu"/>
          </Action>
          <Next-Node>ModifOK?</Next-Node>
       </Process-Node>
@@ -614,12 +614,10 @@
             <Param name="destination0" value="controller_JOB_ID"/>
             <Param name="outputvar0" value="wtth_result_code"/>
             <Param name="variable0" value="JOB_ID"/>
-            <Param name="destination1" value="telephone_number"/>
             <Param name="outputvar1" value="wtth_result_desc"/>
-            <Param name="variable1" value="fixed_telephone_number_new"/>
+            <Param name="variable1" value="account_number"/>
             <Param name="destination2" value="action_Name"/>
             <Param name="variable2" value="action_name"/>
-            <Param name="variable3" value="account_number"/>
          </Action>
          <Next-Node>ModifOK?</Next-Node>
       </Process-Node>
@@ -632,12 +630,10 @@
             <Param name="destination0" value="controller_JOB_ID"/>
             <Param name="outputvar0" value="wtth_result_code"/>
             <Param name="variable0" value="JOB_ID"/>
-            <Param name="destination1" value="telephone_number"/>
             <Param name="outputvar1" value="wtth_result_desc"/>
-            <Param name="variable1" value="fixed_telephone_number_new"/>
+            <Param name="variable1" value="account_number"/>
             <Param name="destination2" value="action_Name"/>
             <Param name="variable2" value="action_name"/>
-            <Param name="variable3" value="account_number"/>
          </Action>
          <Next-Node>ModifOK?</Next-Node>
       </Process-Node>

@@ -19,7 +19,7 @@
                                              </xs:sequence>
                                       </xs:complexType>
                                </xs:element>
-                            <xs:element name="body" minOccurs="0">
+                            <xs:element name="body" minOccurs="1">
                                    <xs:complexType>
                                           <xs:sequence>
                                                  <xs:element name="voice" >

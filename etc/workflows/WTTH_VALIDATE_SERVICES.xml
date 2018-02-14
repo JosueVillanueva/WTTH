@@ -29,6 +29,7 @@
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
             <Param name="path_xsd_cf" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/config/xsd/cambio_CF.xsd"/>
             <Param name="path_xsd_services" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/config/xsd/activate_wtth.xsd"/>
+            <Param name="path_xsd_services_without_body" value="%FILE_URL_PREFIX%%SOLUTION_ETC%/config/xsd/xml_sin_body.xsd"/>
             <Param name="path_xsl" value="%FILE_URL_PREFIX%/%SOLUTION_ETC%/template_files/TransformXmlParams.xsl"/>
             <Param name="path_xsl_cf" value="%FILE_URL_PREFIX%/%SOLUTION_ETC%/template_files/TransformXmlParamsCF.xsl"/>
             <Param name="xml_message_input" value="%xml_message%"/>
@@ -40,11 +41,20 @@
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.TransformXML</Class-Name>
             <Param name="output_var" value="xml_message"/>
+            <Param name="throw_excep" value="constant:false"/>
             <Param name="xml_var" value="xml_message"/>
             <Param name="xsl_url" value="path_xsl"/>
          </Action>
-         <Next-Node>MapServicesHeader</Next-Node>
+         <Next-Node>transformok?</Next-Node>
       </Process-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>transformok?</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.WasPreviousNodeOK</Class-Name>
+         </Action>
+         <True-Next-Node>MapServicesHeader</True-Next-Node>
+         <False-Next-Node>mapErrorCode001</False-Next-Node>
+      </Rule-Node>
       <Process-Node disablePersistence="true">
          <Name>MapServicesHeader</Name>
          <Action>
@@ -72,8 +82,6 @@
       </Process-Node>
       <Rule-Node disablePersistence="true">
          <Name>mapHeaderOK?</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.WasPreviousNodeOK</Class-Name>
          </Action>
@@ -82,8 +90,6 @@
       </Rule-Node>
       <Process-Node inactive="true">
          <Name>PutMessage</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
             <Param name="message" value="action_name %s"/>
@@ -106,16 +112,18 @@
       </Process-Node>
       <Switch-Node disablePersistence="true">
          <Name>Switch</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.SwitchCase</Class-Name>
             <Param name="key" value="action_name"/>
             <Param name="case0" value="constant:MODIFYCALLFEATURES"/>
             <Param name="case1" value="constant:CHECKSERVICE"/>
+            <Param name="case2" value="constant:SUSPEND"/>
+            <Param name="case3" value="constant:REACTIVATE"/>
          </Action>
          <Switch name="case0">Validate XML cf</Switch>
          <Switch name="case1">DoNothing</Switch>
+         <Switch name="case2">DoNothing</Switch>
+         <Switch name="case3">DoNothing</Switch>
          <Default>Validate XML2</Default>
       </Switch-Node>
       <Process-Node disablePersistence="true">
@@ -151,12 +159,10 @@
       </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>DoNothing</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.DoNothing</Class-Name>
          </Action>
-         <Next-Node>mapErrorCode000</Next-Node>
+         <Next-Node>Validate XML21</Next-Node>
       </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>Error</Name>
@@ -164,6 +170,32 @@
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.DoNothing</Class-Name>
          </Action>
          <Next-Node>LogError</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>Java21</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.JavaNode</Class-Name>
+            <Param name="javafile" value="constant:check_tn.jtp"/>
+            <Param name="method" value="constant:validateFixedNumber"/>
+            <Param name="output_var" value="fixed_tn_valid"/>
+            <Param name="strict_scope" value="false"/>
+            <Param name="use_solution_dir" value="constant:true"/>
+            <Param name="arg0" value="fixed_telephone_number_new"/>
+         </Action>
+         <Next-Node>PutMessage8</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>Java211</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.JavaNode</Class-Name>
+            <Param name="javafile" value="constant:check_tn.jtp"/>
+            <Param name="method" value="constant:validateMobileNumber"/>
+            <Param name="output_var" value="mobile_tn_valid"/>
+            <Param name="strict_scope" value="false"/>
+            <Param name="use_solution_dir" value="constant:true"/>
+            <Param name="arg0" value="mobile_telephone_number_new"/>
+         </Action>
+         <Next-Node>tnmValid?</Next-Node>
       </Process-Node>
       <Process-Node>
          <Name>Log1</Name>
@@ -400,8 +432,6 @@
       </Process-Node>
       <Process-Node inactive="true">
          <Name>PutMessage4</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
             <Param name="message" value="message_error %s wtth_result_code %s"/>
@@ -413,8 +443,6 @@
       </Process-Node>
       <Process-Node inactive="true">
          <Name>PutMessage5</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
             <Param name="message" value="message_error %s wtth_result_code %s -fixed_tn[%s]"/>
@@ -427,8 +455,6 @@
       </Process-Node>
       <Process-Node inactive="true">
          <Name>PutMessage6</Name>
-         <Description></Description>
-         <State></State>
          <Action>
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
             <Param name="message" value="xml_message %s"/>
@@ -436,6 +462,29 @@
             <Param name="param0" value="xml_message"/>
          </Action>
          <Next-Node>LogEnd11</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>PutMessage7</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="message_error %s"/>
+            <Param name="queue" value="variable:WORKFLOW_NAME"/>
+            <Param name="param0" value="message_error"/>
+         </Action>
+         <Next-Node>validate2OK?12</Next-Node>
+      </Process-Node>
+      <Process-Node>
+         <Name>PutMessage8</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.PutMessage</Class-Name>
+            <Param name="message" value="valis %s fixed_tn %s"/>
+            <Param name="queue" value="variable:WORKFLOW_NAME"/>
+            <Param name="param0" value="valid"/>
+            <Param name="param1" value="fixed_telephone_number_new"/>
+         </Action>
+         <Next-Node>tnfValid?</Next-Node>
       </Process-Node>
       <Process-Node inactive="true">
          <Name>Start</Name>
@@ -535,6 +584,18 @@
          </Action>
          <Next-Node>validate2OK?1</Next-Node>
       </Process-Node>
+      <Process-Node>
+         <Name>Validate XML21</Name>
+         <Description>Validate a XML file with a XSD file</Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.rtc.ValidateXMLWithXSD</Class-Name>
+            <Param name="error_message" value="message_error"/>
+            <Param name="input_xml" value="xml_message_input"/>
+            <Param name="result" value="wtth_result_code"/>
+            <Param name="xsd_file" value="path_xsd_services_without_body"/>
+         </Action>
+         <Next-Node>PutMessage7</Next-Node>
+      </Process-Node>
       <Rule-Node disablePersistence="true">
          <Name>account_number?</Name>
          <Action>
@@ -550,7 +611,7 @@
             <Class-Name>com.hp.ov.activator.mwfm.component.builtin.IsTrue</Class-Name>
             <Param name="op1" value="account_number"/>
          </Action>
-         <True-Next-Node>mapErrorCode000</True-Next-Node>
+         <True-Next-Node>Java21</True-Next-Node>
          <False-Next-Node>mapErrorCode004</False-Next-Node>
       </Rule-Node>
       <Rule-Node disablePersistence="true">
@@ -615,6 +676,24 @@
             <Param name="wtth_result_desc" value="Account number is empty"/>
          </Action>
          <Next-Node>Error1</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>mapErrorCode005</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="5"/>
+            <Param name="wtth_result_desc" value="Format fixed TN invalid"/>
+         </Action>
+         <Next-Node>LogError1</Next-Node>
+      </Process-Node>
+      <Process-Node disablePersistence="true">
+         <Name>mapErrorCode006</Name>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.VariableMapper</Class-Name>
+            <Param name="wtth_result_code" value="6"/>
+            <Param name="wtth_result_desc" value="Format mobile TN invalid"/>
+         </Action>
+         <Next-Node>LogError1</Next-Node>
       </Process-Node>
       <Process-Node disablePersistence="true">
          <Name>mapErrorCode01</Name>
@@ -691,6 +770,28 @@
          <Next-Node>fixedtn?</Next-Node>
       </Process-Node>
       <Rule-Node disablePersistence="true">
+         <Name>tnfValid?</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.IsTrue</Class-Name>
+            <Param name="op1" value="fixed_tn_valid"/>
+         </Action>
+         <True-Next-Node>Java211</True-Next-Node>
+         <False-Next-Node>mapErrorCode005</False-Next-Node>
+      </Rule-Node>
+      <Rule-Node disablePersistence="true">
+         <Name>tnmValid?</Name>
+         <Description></Description>
+         <State></State>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.IsTrue</Class-Name>
+            <Param name="op1" value="mobile_tn_valid"/>
+         </Action>
+         <True-Next-Node>mapErrorCode000</True-Next-Node>
+         <False-Next-Node>mapErrorCode006</False-Next-Node>
+      </Rule-Node>
+      <Rule-Node disablePersistence="true">
          <Name>validate2OK?</Name>
          <Description>validate xml of CF</Description>
          <Action>
@@ -724,6 +825,17 @@
          <False-Next-Node>PutMessage5</False-Next-Node>
       </Rule-Node>
       <Rule-Node disablePersistence="true">
+         <Name>validate2OK?12</Name>
+         <Description>validate xml of CF</Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.Equal</Class-Name>
+            <Param name="op1" value="wtth_result_code"/>
+            <Param name="op2" value="constant:0"/>
+         </Action>
+         <True-Next-Node>mapErrorCode000</True-Next-Node>
+         <False-Next-Node>mapErrorCode001</False-Next-Node>
+      </Rule-Node>
+      <Rule-Node disablePersistence="true">
          <Name>validateOK?</Name>
          <Description>validate xml of input</Description>
          <Action>
@@ -734,6 +846,19 @@
          <True-Next-Node>PutMessage2</True-Next-Node>
          <False-Next-Node>PutMessage3</False-Next-Node>
       </Rule-Node>
+      <Process-Node>
+         <Name>validateTNM</Name>
+         <Description>valida numero de telefono movil</Description>
+         <Action>
+            <Class-Name>com.hp.ov.activator.mwfm.component.builtin.JavaNode</Class-Name>
+            <Param name="javacode" value="constant:public boolean validateNumber(String telephone_number){ valid = false;                  Pattern pat = Pattern.compile(&quot;[+0-9]{13}&quot;);         Matcher mat = pat.matcher(telephone_number);         if (mat.matches()) {valid = true;}         return valid;     }"/>
+            <Param name="method" value="constant:validateNumber"/>
+            <Param name="output_var" value="valid"/>
+            <Param name="throw_excep" value="constant:false"/>
+            <Param name="arg0" value="mobile_telephone_number_new"/>
+         </Action>
+         <Next-Node>tnmValid?</Next-Node>
+      </Process-Node>
    </Nodes>
    <Error-Handler>
       <Name>PutMessageHandler</Name>
@@ -842,12 +967,14 @@
       <Variable name="error_code" type="String"/>
       <Variable name="fixed_telephone_number_new" type="String"/>
       <Variable name="fixed_telephone_number_old" type="String"/>
+      <Variable name="fixed_tn_valid" type="Boolean"/>
       <Variable name="geographical_location_id" type="String"/>
       <Variable name="isCF" type="Boolean"/>
       <Variable name="message_error" type="String"/>
       <Variable name="message_url" type="String"/>
       <Variable name="mobile_telephone_number_new" type="String"/>
       <Variable name="mobile_telephone_number_old" type="String"/>
+      <Variable name="mobile_tn_valid" type="Boolean"/>
       <Variable name="module_name" type="String"/>
       <Variable name="origin_id" type="String"/>
       <Variable name="parent_account" type="String"/>
@@ -855,6 +982,7 @@
       <Variable name="path_xml_message" type="String"/>
       <Variable name="path_xsd_cf" type="String"/>
       <Variable name="path_xsd_services" type="String"/>
+      <Variable name="path_xsd_services_without_body" type="String"/>
       <Variable name="path_xsl" type="String"/>
       <Variable name="path_xsl_cf" type="String"/>
       <Variable name="request_date" type="String"/>
@@ -868,6 +996,7 @@
       <Variable name="ssw_id_old" type="String"/>
       <Variable name="transaction_id_new" type="String"/>
       <Variable name="transaction_id_old" type="String"/>
+      <Variable name="valid" type="Boolean"/>
       <Variable name="wtth_result_code" type="Integer"/>
       <Variable name="wtth_result_desc" type="String"/>
       <Variable name="xml_message" type="String"/>
@@ -903,6 +1032,20 @@
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>Java21</Name>
+         <X>1833</X>
+         <Y>812</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>Java211</Name>
+         <X>2020</X>
+         <Y>728</Y>
+         <Width>61</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>Log1</Name>
          <X>172</X>
          <Y>115</Y>
@@ -932,14 +1075,14 @@
       </Position>
       <Position>
          <Name>LogEnd11</Name>
-         <X>1300</X>
+         <X>1584</X>
          <Y>744</Y>
          <Width>65</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>LogEnd2</Name>
-         <X>1974</X>
+         <X>2368</X>
          <Y>812</Y>
          <Width>61</Width>
          <Height>48</Height>
@@ -953,7 +1096,7 @@
       </Position>
       <Position>
          <Name>LogError1</Name>
-         <X>1971</X>
+         <X>2219</X>
          <Y>1238</Y>
          <Width>66</Width>
          <Height>48</Height>
@@ -1030,8 +1173,8 @@
       </Position>
       <Position>
          <Name>PutMessage4</Name>
-         <X>964</X>
-         <Y>887</Y>
+         <X>1066</X>
+         <Y>885</Y>
          <Width>85</Width>
          <Height>48</Height>
       </Position>
@@ -1044,8 +1187,22 @@
       </Position>
       <Position>
          <Name>PutMessage6</Name>
-         <X>1172</X>
+         <X>1456</X>
          <Y>744</Y>
+         <Width>85</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>PutMessage7</Name>
+         <X>886</X>
+         <Y>622</Y>
+         <Width>85</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>PutMessage8</Name>
+         <X>1870</X>
+         <Y>736</Y>
          <Width>85</Width>
          <Height>48</Height>
       </Position>
@@ -1079,7 +1236,7 @@
       </Position>
       <Position>
          <Name>TransformXML111</Name>
-         <X>1102</X>
+         <X>1197</X>
          <Y>812</Y>
          <Width>115</Width>
          <Height>48</Height>
@@ -1093,7 +1250,7 @@
       </Position>
       <Position>
          <Name>TransformXMLCF</Name>
-         <X>1018</X>
+         <X>1324</X>
          <Y>744</Y>
          <Width>109</Width>
          <Height>48</Height>
@@ -1134,6 +1291,13 @@
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>Validate XML21</Name>
+         <X>826</X>
+         <Y>682</Y>
+         <Width>98</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
          <Name>account_number?</Name>
          <X>1647</X>
          <Y>126</Y>
@@ -1170,14 +1334,14 @@
       </Position>
       <Position>
          <Name>mapErrorCode000</Name>
-         <X>1823</X>
+         <X>2217</X>
          <Y>812</Y>
          <Width>114</Width>
          <Height>48</Height>
       </Position>
       <Position>
          <Name>mapErrorCode001</Name>
-         <X>949</X>
+         <X>1145</X>
          <Y>972</Y>
          <Width>114</Width>
          <Height>48</Height>
@@ -1200,6 +1364,20 @@
          <Name>mapErrorCode004</Name>
          <X>1684</X>
          <Y>892</Y>
+         <Width>114</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>mapErrorCode005</Name>
+         <X>1904</X>
+         <Y>897</Y>
+         <Width>114</Width>
+         <Height>48</Height>
+      </Position>
+      <Position>
+         <Name>mapErrorCode006</Name>
+         <X>2102</X>
+         <Y>897</Y>
          <Width>114</Width>
          <Height>48</Height>
       </Position>
@@ -1274,6 +1452,27 @@
          <Height>48</Height>
       </Position>
       <Position>
+         <Name>tnfValid?</Name>
+         <X>1922</X>
+         <Y>823</Y>
+         <Width>79</Width>
+         <Height>26</Height>
+      </Position>
+      <Position>
+         <Name>tnmValid?</Name>
+         <X>2116</X>
+         <Y>823</Y>
+         <Width>86</Width>
+         <Height>26</Height>
+      </Position>
+      <Position>
+         <Name>transformok?</Name>
+         <X>203</X>
+         <Y>959</Y>
+         <Width>105</Width>
+         <Height>26</Height>
+      </Position>
+      <Position>
          <Name>validate2OK?</Name>
          <X>932</X>
          <Y>126</Y>
@@ -1282,7 +1481,7 @@
       </Position>
       <Position>
          <Name>validate2OK?1</Name>
-         <X>951</X>
+         <X>1053</X>
          <Y>823</Y>
          <Width>110</Width>
          <Height>26</Height>
@@ -1295,16 +1494,30 @@
          <Height>26</Height>
       </Position>
       <Position>
+         <Name>validate2OK?12</Name>
+         <X>955</X>
+         <Y>693</Y>
+         <Width>117</Width>
+         <Height>26</Height>
+      </Position>
+      <Position>
          <Name>validateOK?</Name>
          <X>482</X>
          <Y>126</Y>
          <Width>96</Width>
          <Height>26</Height>
       </Position>
+      <Position>
+         <Name>validateTNM</Name>
+         <X>2010</X>
+         <Y>812</Y>
+         <Width>80</Width>
+         <Height>48</Height>
+      </Position>
       <Arrows>
          <Name>DoNothing</Name>
          <True-Arrow>
-            <Type>2</Type>
+            <Type>0</Type>
             <DeltaX>0</DeltaX>
             <DeltaY>0</DeltaY>
          </True-Arrow>
@@ -1329,6 +1542,32 @@
       </Arrows>
       <Arrows>
          <Name>Error1</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Java21</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>Java211</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
@@ -1577,7 +1816,7 @@
       <Arrows>
          <Name>PutMessage4</Name>
          <True-Arrow>
-            <Type>0</Type>
+            <Type>3</Type>
             <DeltaX>0</DeltaX>
             <DeltaY>0</DeltaY>
          </True-Arrow>
@@ -1602,6 +1841,32 @@
       </Arrows>
       <Arrows>
          <Name>PutMessage6</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>PutMessage7</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>PutMessage8</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
@@ -1652,6 +1917,18 @@
             </Case-Arrow>
             <Case-Arrow>
                <Name>case1</Name>
+               <Type>3</Type>
+               <DeltaX>0</DeltaX>
+               <DeltaY>0</DeltaY>
+            </Case-Arrow>
+            <Case-Arrow>
+               <Name>case2</Name>
+               <Type>3</Type>
+               <DeltaX>0</DeltaX>
+               <DeltaY>0</DeltaY>
+            </Case-Arrow>
+            <Case-Arrow>
+               <Name>case3</Name>
                <Type>3</Type>
                <DeltaX>0</DeltaX>
                <DeltaY>0</DeltaY>
@@ -1789,6 +2066,19 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>Validate XML21</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>account_number?</Name>
          <True-Arrow>
             <Type>0</Type>
@@ -1907,6 +2197,32 @@
       </Arrows>
       <Arrows>
          <Name>mapErrorCode004</Name>
+         <True-Arrow>
+            <Type>3</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>mapErrorCode005</Name>
+         <True-Arrow>
+            <Type>3</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>mapErrorCode006</Name>
          <True-Arrow>
             <Type>3</Type>
             <DeltaX>0</DeltaX>
@@ -2049,6 +2365,45 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>tnfValid?</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>tnmValid?</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>transformok?</Name>
+         <True-Arrow>
+            <Type>2</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>1</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>validate2OK?</Name>
          <True-Arrow>
             <Type>0</Type>
@@ -2088,7 +2443,33 @@
          </False-Arrow>
       </Arrows>
       <Arrows>
+         <Name>validate2OK?12</Name>
+         <True-Arrow>
+            <Type>2</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>3</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
          <Name>validateOK?</Name>
+         <True-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </True-Arrow>
+         <False-Arrow>
+            <Type>0</Type>
+            <DeltaX>0</DeltaX>
+            <DeltaY>0</DeltaY>
+         </False-Arrow>
+      </Arrows>
+      <Arrows>
+         <Name>validateTNM</Name>
          <True-Arrow>
             <Type>0</Type>
             <DeltaX>0</DeltaX>
